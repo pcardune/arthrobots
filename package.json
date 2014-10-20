@@ -8,16 +8,15 @@
     "react": "~0.11.2"
   },
   "devDependencies": {
-    "jsx-loader": "~0.0.0",
-    "webpack": "~0.11.0",
-    "url-loader": "~0.5.1",
-    "css-loader": "~0.6.2",
-    "style-loader": "~0.6.0",
+    "css-loader": "^0.9.0",
     "jest-cli": "~0.1.18",
-    "jslint": "~0.6.4"
+    "jsx-loader": "^0.11.2",
+    "style-loader": "^0.8.1",
+    "url-loader": "^0.5.5",
+    "webpack": "^1.4.8"
   },
   "scripts": {
-    "start": "webpack --watch --debug src/main.js build/main.js",
+    "start": "webpack --colors --display-error-details --watch --debug src/main.js build/main.js",
     "test": "jest"
   },
   "author": "Paul Carduner",
