@@ -1,5 +1,5 @@
-jest.dontMock('../../core/Class');
-jest.dontMock('../../robot/Robot');
+jest.dontMock('../Class');
+jest.dontMock('../Robot');
 jest.dontMock('../World');
 
 describe('World', function() {

@@ -1,14 +1,14 @@
-jest.dontMock('../../core/Class');
-jest.dontMock('../../robot/Robot');
-jest.dontMock('../../world/World');
+jest.dontMock('../Class');
+jest.dontMock('../Robot');
+jest.dontMock('../World');
 jest.dontMock('../lang');
 jest.dontMock('../parser');
 
 describe('lang parser', function() {
 
   beforeEach(function(){
-    World = require('../../world/World');
-    Robot = require('../../robot/Robot');
+    World = require('../World');
+    Robot = require('../Robot');
     gvr = {lang:require('../lang')}
     gvr.lang.parser = require('../parser');
     getParser = function(lines) {

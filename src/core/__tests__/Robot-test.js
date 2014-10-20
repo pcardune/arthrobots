@@ -1,12 +1,12 @@
-jest.dontMock('../../core/Class');
-jest.dontMock('../../world/World');
+jest.dontMock('../Class');
+jest.dontMock('../World');
 jest.dontMock('../Robot');
 
 describe('Robot', function() {
 
   beforeEach(function(){
     Robot = require('../Robot');
-    World = require('../../world/World');
+    World = require('../World');
     window.alert = jest.genMockFunction();
     keysOf = function(obj){
       var keys = [];

@@ -1,4 +1,4 @@
-jest.dontMock('../../core/Class');
+jest.dontMock('../Class');
 jest.dontMock('../lang');
 
 describe('lang Expression', function() {

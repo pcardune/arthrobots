@@ -1,5 +1,5 @@
-var Class = require('../core/Class');
-var LangParser = require('../lang/parser');
+var Class = require('./Class');
+var LangParser = require('./parser');
 
 /**
  * regex for any coordinate (x, y, direction) specification for an object.

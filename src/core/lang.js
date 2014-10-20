@@ -1,5 +1,5 @@
 
-var Class = require('../core/Class');
+var Class = require('./Class');
 
 var gvr = {lang:{}};
 

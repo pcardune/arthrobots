@@ -1,6 +1,6 @@
-jest.dontMock('../../core/Class');
-jest.dontMock('../../robot/robot');
-jest.dontMock('../../lang/parser');
+jest.dontMock('../Class');
+jest.dontMock('../robot');
+jest.dontMock('../parser');
 jest.dontMock('../World');
 jest.dontMock('../WorldParser');
 
@@ -9,7 +9,7 @@ describe('world parser', function() {
   beforeEach(function(){
     World = require('../World');
     gvr = {
-      robot:require('../../robot/robot')
+      robot:require('../robot')
     }
     WorldParser = require('../WorldParser');
     gvr.debug = jest.genMockFunction();

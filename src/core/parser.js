@@ -6,7 +6,7 @@ var gvr = {debug: function(){}};
 gvr.lang = require('./lang');
 gvr.lang.parser = {};
 
-var Class = require('../core/Class');
+var Class = require('./Class');
 
 /**
  * regex for an expression.

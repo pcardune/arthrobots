@@ -1,5 +1,5 @@
-var Class = require('../core/Class');
-var Robot = require('../robot/Robot');
+var Class = require('./Class');
+var Robot = require('./Robot');
 
 var World = Class.extend(
   /** @lends World# */

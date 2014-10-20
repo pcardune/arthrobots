@@ -1,4 +1,4 @@
-var Class = require('../core/Class');
+var Class = require('./Class');
 
 var Robot = Class.extend(
   /** @lends Robot# */
