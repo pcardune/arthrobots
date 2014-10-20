@@ -4,11 +4,7 @@
  */
 
 var Class = require('../core/Class');
-
-var gvr = {
-  world:{parser:{}},
-  lang:{parser:require('../lang/parser')}
-}
+var LangParser = require('../lang/parser');
 
 /**
  * regex for any coordinate (x, y, direction) specification for an object.
@@ -18,7 +14,7 @@ var gvr = {
  *   WALL 5 5 E 2 #2 walls eastern walls starting at 5,5 going north.
  * @constant
  */
-gvr.world.parser.SPEC = /^\s*(\w+)\s+(\d+)\s+(\d+)\s+([NESW])\s+(\d+)?\s*$/;
+var SPEC = /^\s*(\w+)\s+(\d+)\s+(\d+)\s+([NESW])\s+(\d+)?\s*$/;
 
 /**
  * regex for beepers.  Should match something like:
@@ -26,24 +22,24 @@ gvr.world.parser.SPEC = /^\s*(\w+)\s+(\d+)\s+(\d+)\s+([NESW])\s+(\d+)?\s*$/;
  * which means 5 beepers at coordinates (1,2)
  * @constant
  */
-gvr.world.parser.BEEPERS = /^\s*(\w+)\s+(\d+)\s+(\d+)\s+(\d+)\s*$/;
+var BEEPERS = /^\s*(\w+)\s+(\d+)\s+(\d+)\s+(\d+)\s*$/;
 
 /**
  * @constant
  */
-gvr.world.parser.EMPTY_LINE = gvr.lang.parser.EMPTY_LINE;
+var EMPTY_LINE = LangParser.EMPTY_LINE;
 
 
-gvr.world.parser.Parser = Class.extend(
+var WorldParser = Class.extend(
   /**
-   * @lends gvr.world.parser.Parser#
+   * @lends WorldParser#
    */
   {
     /**
      * @class parse lines into a world.
      * @constructs
-     * @param lines See {@link gvr.world.parser.Parser#lines}
-     * @param world See {@link gvr.world.parser.Parser#world}
+     * @param lines See {@link WorldParser#lines}
+     * @param world See {@link WorldParser#world}
      */
     init: function(lines, world){
       /**
@@ -65,11 +61,11 @@ gvr.world.parser.Parser = Class.extend(
     parse: function (){
       var name,xCoord,yCoord,count;
       for (var i =0; i < this.lines.length; i++){
-        var line = gvr.lang.parser.removeComment(this.lines[i]);
-        if (line.match(gvr.world.parser.EMPTY_LINE)){
+        var line = LangParser.removeComment(this.lines[i]);
+        if (line.match(EMPTY_LINE)){
           continue;
         }
-        var specMatch = line.match(gvr.world.parser.SPEC);
+        var specMatch = line.match(SPEC);
         if (specMatch){
           name = specMatch[1].toUpperCase();
           xCoord = parseInt(specMatch[2],10);
@@ -86,7 +82,7 @@ gvr.world.parser.Parser = Class.extend(
             this.world.setWall(xCoord, yCoord, direction, count);
           }
         }
-        var beepersMatch = line.match(gvr.world.parser.BEEPERS);
+        var beepersMatch = line.match(BEEPERS);
         if (beepersMatch){
           name = beepersMatch[1].toUpperCase();
           if (name == "BEEPERS"){
@@ -101,13 +97,4 @@ gvr.world.parser.Parser = Class.extend(
     }
   });
 
-
-/**
- * Create a new {@link gvr.world.parser.Parser} object.
- * @returns gvr.world.parser.Parser
- */
-gvr.world.parser.newParser = function(lines, world){
-  return new gvr.world.parser.Parser(lines, world);
-};
-
-module.exports = gvr.world.parser;
+module.exports = WorldParser;

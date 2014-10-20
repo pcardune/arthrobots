@@ -11,10 +11,10 @@ describe('world parser', function() {
       world:require('../world'),
       robot:require('../../robot/robot')
     }
-    gvr.world.parser = require('../parser');
+    WorldParser = require('../parser');
     gvr.debug = jest.genMockFunction();
     getParser = function(lines) {
-      return gvr.world.parser.newParser(lines, new gvr.world.World());
+      return new WorldParser(lines, new gvr.world.World());
     }
   });
 
