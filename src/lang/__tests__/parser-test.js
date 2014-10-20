@@ -1,23 +1,25 @@
 jest.dontMock('../../core/Class');
-jest.dontMock('../../robot/robot');
-jest.dontMock('../../world/world');
+jest.dontMock('../../robot/Robot');
+jest.dontMock('../../world/World');
 jest.dontMock('../lang');
 jest.dontMock('../parser');
 
 describe('lang parser', function() {
 
   beforeEach(function(){
-    gvr = {lang:require('../lang'), world:require('../../world/world'), robot:require('../../robot/robot')}
+    World = require('../../world/World');
+    Robot = require('../../robot/Robot');
+    gvr = {lang:require('../lang')}
     gvr.lang.parser = require('../parser');
     getParser = function(lines) {
-      return gvr.lang.parser.newParser(lines, (new gvr.world.World()).robot);
+      return gvr.lang.parser.newParser(lines, (new World()).robot);
     }
   });
 
   it("testCommand", function(){
     var block = getParser(['move']).parse();
     expect(block.expressions.length).toBe(1);
-    expect(block.expressions[0].callable).toBe(new gvr.robot.Robot().move);
+    expect(block.expressions[0].callable).toBe(new Robot().move);
     expect(block.expressions[0].line).toBe(0);
   });
 
@@ -25,11 +27,11 @@ describe('lang parser', function() {
     var block = getParser(['do 3:',
                   '  move']).parse();
     expect(block.expressions.length).toBe(1);
-    expect(block.expressions[0].callable).toBe(new gvr.robot.Robot()["do"]);
+    expect(block.expressions[0].callable).toBe(new Robot()["do"]);
     expect(block.expressions[0].line).toBe(0);
     expect(block.expressions[0].block.expressions.length).toBe(1);
     expect(block.expressions[0].count).toBe(3);
-    expect(block.expressions[0].block.expressions[0].callable).toBe(new gvr.robot.Robot().move);
+    expect(block.expressions[0].block.expressions[0].callable).toBe(new Robot().move);
   });
 
   it("testIf", function(){
@@ -37,10 +39,10 @@ describe('lang parser', function() {
                   '  move']).parse();
     expect(block.expressions.length).toBe(1);
     expect(block.expressions[0].name).toBe('if');
-    expect(block.expressions[0].callable).toBe(new gvr.robot.Robot().front_is_clear);
+    expect(block.expressions[0].callable).toBe(new Robot().front_is_clear);
     expect(block.expressions[0].line).toBe(0);
     expect(block.expressions[0].block.expressions.length).toBe(1);
-    expect(block.expressions[0].block.expressions[0].callable).toBe(new gvr.robot.Robot().move);
+    expect(block.expressions[0].block.expressions[0].callable).toBe(new Robot().move);
     expect(block.expressions[0].block.expressions[0].line).toBe(1);
   });
 
@@ -51,13 +53,13 @@ describe('lang parser', function() {
                   '  turnleft']).parse();
     expect(block.expressions.length).toBe(1);
     expect(block.expressions[0].name).toBe('if');
-    expect(block.expressions[0].callable).toBe(new gvr.robot.Robot().front_is_clear);
+    expect(block.expressions[0].callable).toBe(new Robot().front_is_clear);
     expect(block.expressions[0].line).toBe(0);
     expect(block.expressions[0].block.expressions.length).toBe(1);
-    expect(block.expressions[0].block.expressions[0].callable).toBe(new gvr.robot.Robot().move);
+    expect(block.expressions[0].block.expressions[0].callable).toBe(new Robot().move);
     expect(block.expressions[0].block.expressions[0].line).toBe(1);
     expect(block.expressions[0].elseBlock.expressions.length).toBe(1);
-    expect(block.expressions[0].elseBlock.expressions[0].callable).toBe(new gvr.robot.Robot().turnleft);
+    expect(block.expressions[0].elseBlock.expressions[0].callable).toBe(new Robot().turnleft);
     expect(block.expressions[0].elseBlock.expressions[0].line).toBe(3);
   });
 
@@ -72,9 +74,9 @@ describe('lang parser', function() {
                   '  turnleft']).parse();
     expect(block.expressions.length).toBe(1);
     expect(block.expressions[0].elifs.length).toBe(2);
-    expect(block.expressions[0].elifs[0].callable).toBe(new gvr.robot.Robot().facing_north);
+    expect(block.expressions[0].elifs[0].callable).toBe(new Robot().facing_north);
     expect(block.expressions[0].elifs[0].line).toBe(2);
-    expect(block.expressions[0].elifs[1].callable).toBe(new gvr.robot.Robot().facing_south);
+    expect(block.expressions[0].elifs[1].callable).toBe(new Robot().facing_south);
     expect(block.expressions[0].elifs[1].line).toBe(4);
   });
 
@@ -83,10 +85,10 @@ describe('lang parser', function() {
                   '  move']).parse();
     expect(block.expressions.length).toBe(1);
     expect(block.expressions[0].name).toBe('while');
-    expect(block.expressions[0].callable).toBe(new gvr.robot.Robot().front_is_clear);
+    expect(block.expressions[0].callable).toBe(new Robot().front_is_clear);
     expect(block.expressions[0].line).toBe(0);
     expect(block.expressions[0].block.expressions.length).toBe(1);
-    expect(block.expressions[0].block.expressions[0].callable).toBe(new gvr.robot.Robot().move);
+    expect(block.expressions[0].block.expressions[0].callable).toBe(new Robot().move);
     expect(block.expressions[0].block.expressions[0].line).toBe(1);
   });
 
@@ -100,7 +102,7 @@ describe('lang parser', function() {
     expect(block.expressions[0].block.expressions.length).toBe(1);
     expect(block.expressions[0].block.expressions[0].line).toBe(1);
     expect(block.expressions[0].block.expressions[0].count).toBe(3);
-    expect(block.expressions[0].block.expressions[0].block.expressions[0].callable).toBe(new gvr.robot.Robot().turnleft);
+    expect(block.expressions[0].block.expressions[0].block.expressions[0].callable).toBe(new Robot().turnleft);
   });
 
   it("testFunctionCall", function(){

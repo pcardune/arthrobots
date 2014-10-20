@@ -1,11 +1,12 @@
 jest.dontMock('../../core/Class');
-jest.dontMock('../../world/world');
-jest.dontMock('../robot');
+jest.dontMock('../../world/World');
+jest.dontMock('../Robot');
 
-describe('robot', function() {
+describe('Robot', function() {
 
   beforeEach(function(){
-    gvr = {robot:require('../robot'), world:require('../../world/world')};
+    Robot = require('../Robot');
+    World = require('../../world/World');
     window.alert = jest.genMockFunction();
     keysOf = function(obj){
       var keys = [];
@@ -18,7 +19,7 @@ describe('robot', function() {
   });
 
   it("testMove", function() {
-    var w = new gvr.world.World();
+    var w = new World();
     expect(w.robot.x).toBe(1);
     expect(w.robot.y).toBe(1);
     expect(w.robot.direction).toBe('NORTH');
@@ -28,7 +29,7 @@ describe('robot', function() {
   });
 
   it("testMoveFailure", function() {
-    var w = new gvr.world.World();
+    var w = new World();
     w.robot.front_is_blocked = function(){
       return true;
     };
@@ -40,7 +41,7 @@ describe('robot', function() {
   });
 
   it("testTurnLeft", function () {
-    var w = new gvr.world.World();
+    var w = new World();
     expect(w.robot.direction).toBe('NORTH');
     w.robot.turnleft();
     expect(w.robot.direction).toBe('WEST');
@@ -51,7 +52,7 @@ describe('robot', function() {
   });
 
   it("testPickBeeper", function (){
-    var w = new gvr.world.World();
+    var w = new World();
     w.setBeepers(1,1,2);
     expect(w.robot.beepers).toBe(0);
     w.robot.pickbeeper();
@@ -67,7 +68,7 @@ describe('robot', function() {
   });
 
   it("testPutBeeper", function (){
-    var w = new gvr.world.World();
+    var w = new World();
     w.robot.beepers = 2;
     expect(w.robot.beepers).toBe(2);
     expect(w.getBeepers(1,1)).toBe(0);
@@ -83,7 +84,7 @@ describe('robot', function() {
   });
 
   it("testTurnOff", function(){
-    var w = new gvr.world.World();
+    var w = new World();
     expect(w.robot.on).toBeTruthy();;
     w.robot.turnoff();
     expect(w.robot.on).toBeFalsy();
@@ -91,7 +92,7 @@ describe('robot', function() {
   });
 
   it("testDirectionConditionals", function(){
-    var w = new gvr.world.World();
+    var w = new World();
     expect(w.robot.not_facing_east()).toBeTruthy();
     expect(w.robot.facing_north()).toBeTruthy();
     w.robot.turnleft();
@@ -106,7 +107,7 @@ describe('robot', function() {
   });
 
   it("testBeeperConditions", function(){
-    var w = new gvr.world.World();
+    var w = new World();
     expect(w.robot.beepers).toBe(0);
     expect(w.robot.no_beepers_in_beeper_bag()).toBeTruthy();
     w.robot.beepers = 1;
@@ -117,7 +118,7 @@ describe('robot', function() {
   });
 
   it("testWallConditions", function(){
-    var w = new gvr.world.World();
+    var w = new World();
     // facing north
     expect(w.robot.front_is_clear()).toBeTruthy();
     w.setWall(1, 1, 'NORTH', 1);

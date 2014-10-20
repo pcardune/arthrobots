@@ -1,8 +1,3 @@
-/**
- * @name gvr.world.parser
- * @namespace namepsace for the world file parser.
- */
-
 var Class = require('../core/Class');
 var LangParser = require('../lang/parser');
 

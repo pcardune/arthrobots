@@ -1,16 +1,8 @@
-/**
- * @name gvr.world
- * @namespace namespace for everything having to do with representing the gvr world.
- */
-
 var Class = require('../core/Class');
-var gvr = {
-  world:{},
-  robot: require('../robot/robot')
-};
+var Robot = require('../robot/Robot');
 
-gvr.world.World = Class.extend(
-  /** @lends gvr.world.World# */
+var World = Class.extend(
+  /** @lends World# */
   {
     /**
      * @class Represents the state of the world that GvR lives in.
@@ -20,9 +12,9 @@ gvr.world.World = Class.extend(
       /**
        * The robot within the world. Currently only one robot at a time
        * is supported.
-       * @type gvr.robot.Robot
+       * @type Robot
        */
-      this.robot = new gvr.robot.Robot(this);
+      this.robot = new Robot(this);
 
       /**
        * The walls in the world.  This is represented as an object
@@ -76,11 +68,11 @@ gvr.world.World = Class.extend(
      * @returns Object of the form of {x:x, y:y, direction:direction}
      */
     getWallCoordinates: function(x, y, direction){
-      if (direction === gvr.robot.WEST){
-        direction = gvr.robot.EAST;
+      if (direction === Robot.WEST){
+        direction = Robot.EAST;
         x -= 1;
-      } else if (direction === gvr.robot.SOUTH){
-        direction = gvr.robot.NORTH;
+      } else if (direction === Robot.SOUTH){
+        direction = Robot.NORTH;
         y -= 1;
       }
       return {x:x, y:y, direction:direction};
@@ -114,7 +106,7 @@ gvr.world.World = Class.extend(
       }
       this.walls[key][coords.direction] = true;
       if (count !== null && count > 1){
-        var offset = gvr.robot.OFFSET[direction];
+        var offset = Robot.OFFSET[direction];
         this.setWall(x+offset.y, y+offset.x, direction, count-1);
       }
     },
@@ -132,10 +124,10 @@ gvr.world.World = Class.extend(
       var coords = this.getWallCoordinates(x, y, direction);
       var wall = this.walls[''+coords.x+','+coords.y];
       return (wall && wall[coords.direction]) ||
-        (coords.x === 0 && coords.direction === gvr.robot.EAST) ||
-        (coords.y === 0 && coords.direction === gvr.robot.NORTH) ||
+        (coords.x === 0 && coords.direction === Robot.EAST) ||
+        (coords.y === 0 && coords.direction === Robot.NORTH) ||
         false;
     }
   });
 
-module.exports = gvr.world;
+module.exports = World;

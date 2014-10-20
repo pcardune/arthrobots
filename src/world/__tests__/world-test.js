@@ -1,11 +1,11 @@
 jest.dontMock('../../core/Class');
-jest.dontMock('../../robot/robot');
-jest.dontMock('../world');
+jest.dontMock('../../robot/Robot');
+jest.dontMock('../World');
 
-describe('world', function() {
+describe('World', function() {
 
   beforeEach(function(){
-    gvr = {world:require('../world')};
+    World = require('../World');
     keysOf = function(obj){
       var keys = [];
       for (key in obj){
@@ -16,7 +16,7 @@ describe('world', function() {
   });
 
   it("should be constructed with some defaults", function() {
-    var w = new gvr.world.World();
+    var w = new World();
     expect(keysOf(w.walls).length, 0);
     expect(keysOf(w.beepers).length).toBe(0);
     expect(w.robot.x).toBe(1);
@@ -24,27 +24,27 @@ describe('world', function() {
   });
 
   it("should be able to set and get beepers", function() {
-    var w = new gvr.world.World();
+    var w = new World();
     expect(w.getBeepers(5,5)).toBe(0);
     w.setBeepers(5,5,10);
     expect(w.getBeepers(5,5)).toBe(10);
   });
 
   it("should be able to set and get walls", function(){
-    var w = new gvr.world.World();
+    var w = new World();
     expect(w.getWall(5,5, 'NORTH')).toBe(false);
     w.setWall(5, 5, 'NORTH');
     expect(w.getWall(5,5, 'NORTH')).toBe(true);
   });
 
   it("should have a world boundary", function() {
-    var w = new gvr.world.World();
+    var w = new World();
     expect(w.getWall(5,1, 'SOUTH')).toBe(true);
     expect(w.getWall(1,5, 'WEST')).toBe(true);
   });
 
   it("should have setWall work with multiple walls", function(){
-    var w = new gvr.world.World();
+    var w = new World();
     w.setWall(7, 7, 'NORTH', 3);
     expect(w.getWall(7,7, 'NORTH')).toBe(true);
     expect(w.getWall(8,7, 'NORTH')).toBe(true);
@@ -64,7 +64,7 @@ describe('world', function() {
   });
 
   it("should work with getting wall coordinates from north and south", function() {
-    var w = new gvr.world.World();
+    var w = new World();
     var coords = w.getWallCoordinates(2, 2, 'NORTH');
     expect(coords.x).toBe(2);
     expect(coords.y).toBe(2);
@@ -76,7 +76,7 @@ describe('world', function() {
   });
 
   it("should work with getting wall coordinates from east and west", function() {
-    var w = new gvr.world.World();
+    var w = new World();
     var coords = w.getWallCoordinates(2, 2, 'EAST');
     expect(coords.x).toBe(2);
     expect(coords.y).toBe(2);
