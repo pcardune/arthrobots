@@ -15,6 +15,7 @@ var Panel = ReactBootstrap.Panel;
 var Button = ReactBootstrap.Button;
 
 var LandingPage = require('./ui/LandingPage');
+var ArthrobotApp = require('./ui/ArthrobotApp');
 
 var ParseKeys = require('./ParseKeys');
 Parse.initialize(ParseKeys.APP_ID, ParseKeys.JS_KEY);
@@ -39,47 +40,9 @@ var ProgramPage = React.createClass({
   }
 });
 
-var Tab = React.createClass({
-
-  mixins: [ActiveState],
-
-  render: function() {
-    var isActive = this.isActive(this.props.to, this.props.params, this.props.query);
-    var className = isActive ? 'active' : '';
-    var link = Link(this.props);
-    return <li className={className}>{link}</li>;
-  }
-
-});
-
-require('./AnthrobotApp.css')
-var AnthrobotApp = React.createClass({
-
-  mixins: [ActiveState],
-
-  render: function() {
-    return (
-      <div className="container">
-        <h1 className="page-header">Arthrobots!</h1>
-        <ul className="nav nav-tabs">
-          <Tab to="landing">Home</Tab>
-          <Tab to="browse">Browse</Tab>
-          <Tab to="program">Program</Tab>
-        </ul>
-
-        <div className="row">
-          <div className="col-md-12 app-content">
-            {this.props.activeRouteHandler()}
-          </div>
-        </div>
-      </div>
-    );
-  }
-});
-
 var routes = (
   <Routes location="history">
-    <Route name="app" path="/" handler={AnthrobotApp}>
+    <Route name="app" path="/" handler={ArthrobotApp}>
       <Route name="browse" handler={BrowsePage} />
       <Route name="program" handler={ProgramPage} />
       <DefaultRoute name="landing" handler={LandingPage}/>
