@@ -1,4 +1,6 @@
 /** @jsx React.DOM */
+
+var Parse = require('parse').Parse;
 var React = require('react');
 var Router = require('react-router');
 var Route = Router.Route;
@@ -13,6 +15,9 @@ var Panel = ReactBootstrap.Panel;
 var Button = ReactBootstrap.Button;
 
 var LandingPage = require('./ui/LandingPage');
+
+var ParseKeys = require('./ParseKeys');
+Parse.initialize(ParseKeys.APP_ID, ParseKeys.JS_KEY);
 
 var BrowsePage = React.createClass({
   render: function() {

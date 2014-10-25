@@ -1,0 +1,6 @@
+
+var ParseKeys = {
+  APP_ID: 'YOUR-APP-ID-HERE',
+  JS_KEY: 'YOUR-JS-KEY-HERE'
+};
+module.exports = ParseKeys;
