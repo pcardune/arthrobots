@@ -1,3 +1,8 @@
+.btn:focus, .btn:active, .btn:active:focus,
+*:focus,*:active,*:active:focus {
+    outline: 0;
+}
+
 .app-content {
   padding: 20px;
 }
