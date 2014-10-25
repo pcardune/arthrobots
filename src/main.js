@@ -15,6 +15,9 @@ var Panel = ReactBootstrap.Panel;
 var Button = ReactBootstrap.Button;
 
 var LandingPage = require('./ui/LandingPage');
+var LoginPage = require('./ui/LoginPage');
+var LogoutPage = require('./ui/LogoutPage');
+var SignUpPage = require('./ui/SignUpPage');
 var ArthrobotApp = require('./ui/ArthrobotApp');
 
 var ParseKeys = require('./ParseKeys');
@@ -45,6 +48,9 @@ var routes = (
     <Route name="app" path="/" handler={ArthrobotApp}>
       <Route name="browse" handler={BrowsePage} />
       <Route name="program" handler={ProgramPage} />
+      <Route name="login" handler={LoginPage} />
+      <Route name="logout" handler={LogoutPage} />
+      <Route name="signup" handler={SignUpPage} />
       <DefaultRoute name="landing" handler={LandingPage}/>
     </Route>
   </Routes>
