@@ -5,7 +5,8 @@
   "repository": "pcardune/arthrobots",
   "dependencies": {
     "parse": "petehunt/parsesdk-isomorphic",
-    "react": "~0.11.2"
+    "react": "~0.11.2",
+    "react-bootstrap": "^0.12.0"
   },
   "devDependencies": {
     "css-loader": "^0.9.0",
