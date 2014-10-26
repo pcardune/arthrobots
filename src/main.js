@@ -18,20 +18,12 @@ var LandingPage = require('./ui/LandingPage');
 var LoginPage = require('./ui/LoginPage');
 var LogoutPage = require('./ui/LogoutPage');
 var SignUpPage = require('./ui/SignUpPage');
+var BrowseWorldPage = require('./ui/BrowseWorldPage');
+var WorldPage = require('./ui/WorldPage');
 var ArthrobotApp = require('./ui/ArthrobotApp');
 
 var ParseKeys = require('./ParseKeys');
 Parse.initialize(ParseKeys.APP_ID, ParseKeys.JS_KEY);
-
-var BrowsePage = React.createClass({
-  render: function() {
-    return (
-      <div>
-        doing some browsing
-      </div>
-    );
-  }
-});
 
 var ProgramPage = React.createClass({
   render: function() {
@@ -46,7 +38,8 @@ var ProgramPage = React.createClass({
 var routes = (
   <Routes location="history">
     <Route name="app" path="/" handler={ArthrobotApp}>
-      <Route name="browse" handler={BrowsePage} />
+      <Route name="worlds" handler={BrowseWorldPage} />
+      <Route name="world" path="/worlds/:worldId" handler={WorldPage} />
       <Route name="program" handler={ProgramPage} />
       <Route name="login" handler={LoginPage} />
       <Route name="logout" handler={LogoutPage} />

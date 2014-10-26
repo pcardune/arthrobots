@@ -24,12 +24,12 @@ var ArthrobotApp = React.createClass({
 
   render: function() {
     return (
-      <div className="container">
-        <Navbar brand="Arthrobots" fluid={true}>
+      <div className="container ArthrobotApp">
+        <Navbar brand="Arthrobots" fluid={true} className="navbar-inverse">
           <Nav>
             <Tab to="landing">Home</Tab>
-            <Tab to="browse">Browse</Tab>
-            <Tab to="program">Program</Tab>
+            <Tab to="worlds">Worlds</Tab>
+            <Tab to="program">Create</Tab>
           </Nav>
           <Nav className="navbar-right">
             {this.state.user ? null : <Tab to="signup"><strong>Sign Up</strong></Tab>}

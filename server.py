@@ -7,7 +7,6 @@ class MyHTTPServer(SimpleHTTPServer.SimpleHTTPRequestHandler):
     def do_GET(self):
         if "." not in self.path:
             self.path = "/"
-        print "path is ", self.path
         return SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
 
 httpd = SocketServer.TCPServer(("", PORT), MyHTTPServer)
