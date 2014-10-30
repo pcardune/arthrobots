@@ -1,0 +1,16 @@
+.WorldPage {
+}
+.WorldPage form {
+  background-color: #eee;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.WorldPage .worldDefinitionInput {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+  min-height: 200px;
+}
+
+.WorldPage .worldDescriptionInput {
+  min-height: 200px;
+}

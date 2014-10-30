@@ -4,6 +4,8 @@ var World = require('../core/World');
 var WorldParser = require('../core/WorldParser');
 var CanvasRenderer = require('../core/CanvasRenderer');
 
+require('./WorldCanvas.css')
+
 var WorldCanvas = React.createClass({
   getDefaultProps: function() {
     return {
@@ -21,7 +23,8 @@ var WorldCanvas = React.createClass({
   },
 
   renderWorld: function() {
-    console.log("rendering World");
+    this.world = new World();
+    this.renderer = new CanvasRenderer('worldCanvas', this.world);
     var parser = new WorldParser(this.props.worldDefinition.split('\n'), this.world);
     parser.parse();
     this.renderer.render();
@@ -31,7 +34,7 @@ var WorldCanvas = React.createClass({
     if (this.props.worldDefinition && this.renderer) {
       this.renderWorld();
     }
-    return <canvas id="worldCanvas" ref="canvas" width="500" height="500" />
+    return <canvas className="WorldCanvas" id="worldCanvas" ref="canvas" width="500" height="500" />
   }
 });
 

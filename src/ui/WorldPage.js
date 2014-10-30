@@ -6,18 +6,23 @@ var Navbar = require('react-bootstrap').Navbar;
 var Parse = require('parse').Parse;
 var React = require('react');
 
-var Tab = require('./Tab');
+var EditableInput = require('./EditableInput');
 
 var WorldModel = require('../models/WorldModel');
 var WorldCanvas = require('./WorldCanvas');
 
+require('./WorldPage.css');
 var WorldPage = React.createClass({
 
   mixins: [Navigation],
 
   getInitialState: function() {
     return {
-      worldModel: null
+      worldModel: null,
+      worldDefinition: '',
+      worldDescription: '',
+      worldName: '',
+      needsSave: false
     }
   },
 
@@ -26,7 +31,6 @@ var WorldPage = React.createClass({
   },
 
   loadWorld: function(worldId) {
-    console.log('loading', worldId);
     if (!worldId) {
       return;
     }
@@ -36,6 +40,8 @@ var WorldPage = React.createClass({
       success: function(worldModel) {
         this.setState({
           worldModel:worldModel,
+          worldName:worldModel.get('name'),
+          worldDescription:worldModel.get('description'),
           worldDefinition:worldModel.get('definition'),
           isLoading:false
         });
@@ -52,8 +58,23 @@ var WorldPage = React.createClass({
     }
   },
 
-  handleDefinitionChange: function() {
-    this.setState({worldDefinition:this.refs.definitionInput.getDOMNode().value})
+  handleChange: function() {
+    var name = this.refs.nameInput.getDOMNode().value;
+    var description = this.refs.descriptionInput.getDOMNode().value;
+    var definition = this.refs.definitionInput.getDOMNode().value;
+
+    var needsSave = (
+      name != this.state.worldModel.get('name') ||
+      definition != this.state.worldModel.get('definition') ||
+      description != this.state.worldModel.get('description')
+    );
+
+    this.setState({
+      worldName:name,
+      worldDescription:description,
+      worldDefinition:definition,
+      needsSave: needsSave
+    })
   },
 
   handleSave: function() {
@@ -73,30 +94,38 @@ var WorldPage = React.createClass({
       return <div>loading...</div>;
     }
     return (
-      <div className="row">
-        <div className="col-md-7">
-          <WorldCanvas worldDefinition={this.state.worldDefinition} />
-        </div>
-        <div className="col-md-5">
+      <div className="row WorldPage">
+        <div className="col-md-4">
           <form>
             {this.state.saving ? "Saving..." : null}
             <div className="form-group">
               <label>World Name</label>
-              <input ref="nameInput" type="text" className="form-control" placeholder="world name" defaultValue={this.state.worldModel.get('name')}/>
+              <input ref="nameInput" onChange={this.handleChange} type="text" className="form-control" placeholder="world name" defaultValue={this.state.worldName}/>
             </div>
             <div className="form-group">
               <label>Description/Instructions</label>
-              <textarea ref="descriptionInput" className="form-control" defaultValue={this.state.worldModel.get('description')}></textarea>
+              <textarea ref="descriptionInput" onChange={this.handleChange} className="form-control worldDescriptionInput" defaultValue={this.state.worldDescription}></textarea>
             </div>
             <div className="form-group">
               <label>World Definition</label>
               <textarea ref="definitionInput"
-                onChange={this.handleDefinitionChange}
-                className="form-control"
+                onChange={this.handleChange}
+                className="form-control worldDefinitionInput"
                 defaultValue={this.state.worldModel.get('definition')} />
             </div>
-            <Button onClick={this.handleSave}>Save</Button>
+            <Button onClick={this.handleSave} disabled={!this.state.needsSave} bsStyle={this.state.needsSave ? "primary" : "default"}>Save</Button>
           </form>
+        </div>
+        <div className="worldPane col-md-8">
+        <div className="row">
+          <div className="col-md-6">
+            <h3>{this.state.worldName}</h3>
+            <p>{this.state.worldDescription}</p>
+          </div>
+          <div className="col-md-6">
+            <WorldCanvas worldDefinition={this.state.worldDefinition} />
+          </div>
+        </div>
         </div>
       </div>
     );

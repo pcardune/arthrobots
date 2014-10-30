@@ -18,7 +18,7 @@ var LandingPage = require('./ui/LandingPage');
 var LoginPage = require('./ui/LoginPage');
 var LogoutPage = require('./ui/LogoutPage');
 var SignUpPage = require('./ui/SignUpPage');
-var BrowseWorldPage = require('./ui/BrowseWorldPage');
+var BrowseWorldsPage = require('./ui/BrowseWorldsPage');
 var WorldPage = require('./ui/WorldPage');
 var ArthrobotApp = require('./ui/ArthrobotApp');
 
@@ -35,11 +35,22 @@ var ProgramPage = React.createClass({
   }
 });
 
+var Empty = React.createClass({
+
+  mixins: [ActiveState],
+
+  render: function() {
+    return this.props.activeRouteHandler();
+  }
+});
+
 var routes = (
   <Routes location="history">
     <Route name="app" path="/" handler={ArthrobotApp}>
-      <Route name="worlds" handler={BrowseWorldPage} />
-      <Route name="world" path="/worlds/:worldId" handler={WorldPage} />
+      <Route name="worlds" path="/worlds" handler={Empty}>
+        <Route name="world" path="/worlds/:worldId" handler={WorldPage} />
+        <DefaultRoute name="browseworlds" handler={BrowseWorldsPage} />
+      </Route>
       <Route name="program" handler={ProgramPage} />
       <Route name="login" handler={LoginPage} />
       <Route name="logout" handler={LogoutPage} />
