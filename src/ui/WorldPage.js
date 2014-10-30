@@ -86,7 +86,7 @@ var WorldPage = React.createClass({
     this.setState({saving: true});
     this.state.worldModel.save(null, {
       success: function() {
-        this.setState({saving: false});
+        this.setState({saving: false, needsSave:false});
       }.bind(this)
     })
   },
@@ -139,9 +139,9 @@ var WorldPage = React.createClass({
                 className="form-control worldDefinitionInput"
                 defaultValue={this.state.worldModel.get('definition')} />
             </div>
-            <Button onClick={this.handleSave} disabled={!this.state.needsSave} bsStyle={this.state.needsSave ? "primary" : "default"}>Save</Button>
+            <Button onClick={this.handleSave} className="pull-right" disabled={!this.state.needsSave} bsStyle={this.state.needsSave ? "primary" : "default"}>Save</Button>
             <ModalTrigger modal={deleteConfirmationModal}>
-              <Button onClick={this.handleDelete} bsStyle="danger" className="pull-right">Delete</Button>
+              <Button onClick={this.handleDelete} bsStyle="danger">Delete</Button>
             </ModalTrigger>
           </form>
         </div>
