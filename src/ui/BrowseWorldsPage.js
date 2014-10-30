@@ -80,7 +80,6 @@ var BrowseWorldsPage = React.createClass({
             <input ref="worldNameInput" type="text" className="form-control" placeholder="World Name" />
           </div>
           <div className="modal-footer">
-            <Button>Cancel</Button>
             <Button onClick={this.handleCreateNewWorld} bsStyle="primary">Create World</Button>
           </div>
         </div>

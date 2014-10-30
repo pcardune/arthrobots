@@ -1,8 +1,10 @@
 /** @jsx React.DOM */
 var Button = require('react-bootstrap').Button;
-var Navigation = require('react-router').Navigation;
+var Modal = require('react-bootstrap').Modal;
+var ModalTrigger = require('react-bootstrap').ModalTrigger;
 var Nav = require('react-bootstrap').Nav;
 var Navbar = require('react-bootstrap').Navbar;
+var Navigation = require('react-router').Navigation;
 var Parse = require('parse').Parse;
 var React = require('react');
 
@@ -89,10 +91,34 @@ var WorldPage = React.createClass({
     })
   },
 
+  handleDeleteWorld: function() {
+    this.state.worldModel.destroy({
+      success: function(world) {
+        this.transitionTo('worlds');
+      }.bind(this),
+      error: function(world, error) {
+        alert("There was an error while deleting the world: "+error.code+" "+error.message);
+      }.bind(this)
+    })
+    this.goBack();
+  },
+
   render: function() {
     if (this.state.isLoading || !this.state.worldModel) {
       return <div>loading...</div>;
     }
+
+    var deleteConfirmationModal = (
+      <Modal title="Delete World?" animation={false}>
+        <div className="modal-body">
+          Are you sure you want to delete this world? This cannot be undone.
+        </div>
+        <div className="modal-footer">
+          <Button bsStyle="danger" onClick={this.handleDeleteWorld}>Delete World</Button>
+        </div>
+      </Modal>
+      );
+
     return (
       <div className="row WorldPage">
         <div className="col-md-4">
@@ -114,6 +140,9 @@ var WorldPage = React.createClass({
                 defaultValue={this.state.worldModel.get('definition')} />
             </div>
             <Button onClick={this.handleSave} disabled={!this.state.needsSave} bsStyle={this.state.needsSave ? "primary" : "default"}>Save</Button>
+            <ModalTrigger modal={deleteConfirmationModal}>
+              <Button onClick={this.handleDelete} bsStyle="danger" className="pull-right">Delete</Button>
+            </ModalTrigger>
           </form>
         </div>
         <div className="worldPane col-md-8">
