@@ -7,6 +7,7 @@ var ListGroupItem = require('react-bootstrap').ListGroupItem;
 var Modal = require('react-bootstrap').Modal;
 var ModalTrigger = require('react-bootstrap').ModalTrigger;
 var Nav = require('react-bootstrap').Nav;
+var NavItem = require('react-bootstrap').NavItem;
 var Navbar = require('react-bootstrap').Navbar;
 var Navigation = require('react-router').Navigation;
 var Parse = require('parse').Parse;
@@ -23,7 +24,8 @@ var BrowseWorldsPage = React.createClass({
   getInitialState: function() {
     return {
       worldModels:[],
-      isLoading: false
+      isLoading: true,
+      filter: "yours"
     };
   },
 
@@ -44,10 +46,13 @@ var BrowseWorldsPage = React.createClass({
     });
   },
 
-  loadWorldModels: function() {
-    this.setState({isLoading:true});
+  loadWorldModels: function(filter) {
     var query = new Parse.Query(WorldModel);
-    query.equalTo("owner", Parse.User.current());
+    if (filter == "yours") {
+      query.equalTo("owner", Parse.User.current());
+    }
+    query.descending("createdAt");
+    query.include("owner");
     query.find({
       success: function(worldModels) {
         this.setState({
@@ -58,15 +63,27 @@ var BrowseWorldsPage = React.createClass({
     });
   },
 
+  setFilter: function(filter) {
+    if (filter != this.state.filter) {
+      this.setState({filter: filter});
+    }
+  },
+
   componentDidMount: function() {
-    this.loadWorldModels();
+    this.loadWorldModels(this.state.filter);
+  },
+
+  componentWillUpdate: function(nextProps, nextState) {
+    if (this.state.filter != nextState.filter) {
+      this.loadWorldModels(nextState.filter);
+    }
   },
 
   render: function() {
     var worldLinks = this.state.worldModels.map(function(worldModel) {
       return (
         <Link className="list-group-item" to="world" params={{worldId:worldModel.id}}>
-          <h4>{worldModel.get('name')}</h4>
+          <h4>{worldModel.get('name')} by {worldModel.get('owner').get('username')}</h4>
           <p>{worldModel.get('description')}</p>
         </Link>
       );
@@ -91,8 +108,16 @@ var BrowseWorldsPage = React.createClass({
         <div className="col-md-12">
           <Navbar fluid={true}>
             <Nav>
-              <Tab to="landing">Your Worlds</Tab>
-              <Tab to="landing">All Worlds</Tab>
+              <NavItem
+                className={this.state.filter == "yours" ? "active" : null}
+                onClick={this.setFilter.bind(this, 'yours')}>
+                Your Worlds
+              </NavItem>
+              <NavItem
+                className={this.state.filter == "all" ? "active" : null}
+                onClick={this.setFilter.bind(this, 'all')}>
+                All Worlds
+              </NavItem>
             </Nav>
           </Navbar>
           {this.state.isLoading ? "Loading..." : null}

@@ -103,11 +103,45 @@ var WorldPage = React.createClass({
     this.goBack();
   },
 
+  isEditable: function() {
+    return this.state.worldModel.get('owner').id == Parse.User.current().id;
+  },
+
   render: function() {
     if (this.state.isLoading || !this.state.worldModel) {
       return <div>loading...</div>;
     }
 
+    var content;
+    if (this.isEditable()) {
+      content = this.renderEditableWorldPane();
+    } else {
+      content = this.renderWorldPane();
+    }
+
+    return (
+      <div className="WorldPage">
+        {content}
+      </div>
+    );
+  },
+
+  renderWorldPane: function() {
+    return (
+      <div className="row">
+        <div className="col-md-2"/>
+        <div className="col-md-4">
+          <h3>{this.state.worldName}</h3>
+          <p>{this.state.worldDescription}</p>
+        </div>
+        <div className="col-md-4">
+          <WorldCanvas worldDefinition={this.state.worldDefinition} />
+        </div>
+      </div>
+    );
+  },
+
+  renderEditableWorldPane: function() {
     var deleteConfirmationModal = (
       <Modal title="Delete World?" animation={false}>
         <div className="modal-body">
@@ -120,7 +154,7 @@ var WorldPage = React.createClass({
       );
 
     return (
-      <div className="row WorldPage">
+      <div className="row">
         <div className="col-md-4">
           <form>
             {this.state.saving ? "Saving..." : null}
@@ -146,15 +180,15 @@ var WorldPage = React.createClass({
           </form>
         </div>
         <div className="worldPane col-md-8">
-        <div className="row">
-          <div className="col-md-6">
-            <h3>{this.state.worldName}</h3>
-            <p>{this.state.worldDescription}</p>
+          <div className="row">
+            <div className="col-md-6">
+              <h3>{this.state.worldName}</h3>
+              <p>{this.state.worldDescription}</p>
+            </div>
+            <div className="col-md-6">
+              <WorldCanvas worldDefinition={this.state.worldDefinition} />
+            </div>
           </div>
-          <div className="col-md-6">
-            <WorldCanvas worldDefinition={this.state.worldDefinition} />
-          </div>
-        </div>
         </div>
       </div>
     );
