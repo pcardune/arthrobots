@@ -1,12 +1,14 @@
 /** @jsx React.DOM */
+var ActiveState = require('react-router').ActiveState;
 var Button = require('react-bootstrap').Button;
 var Link = require('react-router').Link;
 var ListGroup = require('react-bootstrap').ListGroup;
 var ListGroupItem = require('react-bootstrap').ListGroupItem;
+var Modal = require('react-bootstrap').Modal;
+var ModalTrigger = require('react-bootstrap').ModalTrigger;
 var Nav = require('react-bootstrap').Nav;
 var Navbar = require('react-bootstrap').Navbar;
 var Navigation = require('react-router').Navigation;
-var ActiveState = require('react-router').ActiveState;
 var Parse = require('parse').Parse;
 var React = require('react');
 
@@ -28,6 +30,7 @@ var BrowseWorldsPage = React.createClass({
   handleCreateNewWorld: function() {
     var world = new WorldModel();
     world.set('owner', Parse.User.current());
+    world.set('name', this.refs.worldNameInput.getDOMNode().value);
     world.save(null, {
       success: function(world) {
         // Execute any logic that should take place after the object is saved.
@@ -68,6 +71,22 @@ var BrowseWorldsPage = React.createClass({
         </Link>
       );
     });
+
+    var createWorldModal = (
+      <Modal title="Create World" animation={false}>
+        <div className="modal-body">
+          <div className="form-group">
+            <label>World Name</label>
+            <input ref="worldNameInput" type="text" className="form-control" placeholder="World Name" />
+          </div>
+          <div className="modal-footer">
+            <Button>Cancel</Button>
+            <Button onClick={this.handleCreateNewWorld} bsStyle="primary">Create World</Button>
+          </div>
+        </div>
+      </Modal>
+    );
+
     return (
       <div className="row loginPage">
         <div className="col-md-12">
@@ -81,7 +100,9 @@ var BrowseWorldsPage = React.createClass({
           <ListGroup>
             {worldLinks}
           </ListGroup>
-          <Button onClick={this.handleCreateNewWorld} bsStyle="primary">Create New World</Button>
+          <ModalTrigger modal={createWorldModal}>
+            <Button bsStyle="primary">Create New World</Button>
+          </ModalTrigger>
         </div>
       </div>
     );
