@@ -1,5 +1,6 @@
 /** @jsx React.DOM */
 var Button = require('react-bootstrap').Button;
+var Input = require('react-bootstrap').Input;
 var Modal = require('react-bootstrap').Modal;
 var ModalTrigger = require('react-bootstrap').ModalTrigger;
 var Nav = require('react-bootstrap').Nav;
@@ -24,6 +25,7 @@ var WorldPage = React.createClass({
       worldDefinition: '',
       worldDescription: '',
       worldName: '',
+      worldPublic: null,
       needsSave: false
     }
   },
@@ -45,6 +47,7 @@ var WorldPage = React.createClass({
           worldName:worldModel.get('name'),
           worldDescription:worldModel.get('description'),
           worldDefinition:worldModel.get('definition'),
+          worldPublic:worldModel.get('public'),
           isLoading:false
         });
       }.bind(this),
@@ -64,17 +67,20 @@ var WorldPage = React.createClass({
     var name = this.refs.nameInput.getDOMNode().value;
     var description = this.refs.descriptionInput.getDOMNode().value;
     var definition = this.refs.definitionInput.getDOMNode().value;
+    var isPublic = this.refs.publicCheckbox.getChecked();
 
     var needsSave = (
       name != this.state.worldModel.get('name') ||
       definition != this.state.worldModel.get('definition') ||
-      description != this.state.worldModel.get('description')
+      description != this.state.worldModel.get('description') ||
+      isPublic != this.state.worldModel.get('public')
     );
 
     this.setState({
       worldName:name,
       worldDescription:description,
       worldDefinition:definition,
+      worldPublic:isPublic,
       needsSave: needsSave
     })
   },
@@ -83,6 +89,7 @@ var WorldPage = React.createClass({
     this.state.worldModel.set('name', this.refs.nameInput.getDOMNode().value);
     this.state.worldModel.set('description', this.refs.descriptionInput.getDOMNode().value);
     this.state.worldModel.set('definition', this.refs.definitionInput.getDOMNode().value);
+    this.state.worldModel.set('public', this.refs.publicCheckbox.getChecked())
     this.setState({saving: true});
     this.state.worldModel.save(null, {
       success: function() {
@@ -173,6 +180,7 @@ var WorldPage = React.createClass({
                 className="form-control worldDefinitionInput"
                 defaultValue={this.state.worldModel.get('definition')} />
             </div>
+            <Input type="checkbox" ref="publicCheckbox" onClick={this.handleChange} defaultChecked={this.state.worldModel.get('public')} label="Public?"/>
             <Button onClick={this.handleSave} className="pull-right" disabled={!this.state.needsSave} bsStyle={this.state.needsSave ? "primary" : "default"}>Save</Button>
             <ModalTrigger modal={deleteConfirmationModal}>
               <Button onClick={this.handleDelete} bsStyle="danger">Delete</Button>

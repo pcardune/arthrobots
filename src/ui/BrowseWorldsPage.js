@@ -51,6 +51,9 @@ var BrowseWorldsPage = React.createClass({
     if (filter == "yours") {
       query.equalTo("owner", Parse.User.current());
     }
+    if (filter == "all") {
+      query.equalTo("public", true);
+    }
     query.descending("createdAt");
     query.include("owner");
     query.find({
