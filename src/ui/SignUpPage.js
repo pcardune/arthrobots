@@ -17,7 +17,7 @@ var SignUpPage = React.createClass({
   },
 
   handleContinue: function() {
-    this.goBack();
+    window.location = "/";
   },
 
   handleSignUp: function() {
