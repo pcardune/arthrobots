@@ -6,7 +6,8 @@
   "dependencies": {
     "parse": "petehunt/parsesdk-isomorphic",
     "react": "~0.11.2",
-    "react-bootstrap": "^0.12.0"
+    "react-bootstrap": "^0.12.0",
+    "showdown": "^0.3.1"
   },
   "devDependencies": {
     "css-loader": "^0.9.0",
@@ -14,7 +15,7 @@
     "jsx-loader": "^0.11.2",
     "style-loader": "^0.8.1",
     "url-loader": "^0.5.5",
-    "webpack": "^1.4.8"
+    "webpack": "^1.4.9"
   },
   "scripts": {
     "start": "webpack --colors --display-error-details --watch --debug src/main.js build/main.js",

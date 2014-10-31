@@ -8,5 +8,11 @@ module.exports = {
       { test: /\.js$/, loader: "jsx-loader" }
     ],
     noParse: /parse-latest.js/
+  },
+  resolve: {
+    alias:{
+      // this is to get showdown to load with webpack. See https://github.com/webpack/webpack/issues/411
+      fs: require.resolve('./false.js')
+    }
   }
 };

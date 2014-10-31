@@ -9,7 +9,7 @@ var Navigation = require('react-router').Navigation;
 var Parse = require('parse').Parse;
 var React = require('react');
 
-var EditableInput = require('./EditableInput');
+var Markdown = require('./Markdown');
 
 var WorldModel = require('../models/WorldModel');
 var WorldCanvas = require('./WorldCanvas');
@@ -139,7 +139,7 @@ var WorldPage = React.createClass({
         <div className="col-md-2"/>
         <div className="col-md-4">
           <h3>{this.state.worldName}</h3>
-          <p>{this.state.worldDescription}</p>
+          <Markdown>{this.state.worldDescription}</Markdown>
         </div>
         <div className="col-md-4">
           <WorldCanvas worldDefinition={this.state.worldDefinition} />
@@ -191,7 +191,7 @@ var WorldPage = React.createClass({
           <div className="row">
             <div className="col-md-6">
               <h3>{this.state.worldName}</h3>
-              <p>{this.state.worldDescription}</p>
+              <Markdown>{this.state.worldDescription}</Markdown>
             </div>
             <div className="col-md-6">
               <WorldCanvas worldDefinition={this.state.worldDefinition} />
