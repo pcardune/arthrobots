@@ -8,7 +8,7 @@ var CanvasRenderer = Class.extend(
     /**
      * @class Renderer for a world.
      * @constructs
-     * @param canvasEl The id of a <canvas> dom element
+     * @param canvasEl The <canvas> dom element
      *         which is used as the rendering context.
      * @param world See {@link gvr.renderer.Renderer#world}
      */
@@ -16,7 +16,7 @@ var CanvasRenderer = Class.extend(
       /**
        * The canvas dom element.
        */
-      this.canvas = document.getElementById(canvasEl);
+      this.canvas = canvasEl;
 
       /**
        * The drawing context which is obtained

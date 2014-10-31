@@ -50,7 +50,7 @@ var LandingPage = React.createClass({
     this.world = new World();
     var parser = new WorldParser(this.props.exampleWorld, this.world);
     parser.parse();
-    this.renderer = new CanvasRenderer('exampleCanvas', this.world);
+    this.renderer = new CanvasRenderer(this.refs.exampleCanvas.getDOMNode(), this.world);
     this.renderer.render();
   },
 
@@ -74,7 +74,7 @@ var LandingPage = React.createClass({
           <Button onClick={this.handleRun}>Run</Button>
         </div>
         <div className="col-md-6">
-          <canvas height="500" width="500" id="exampleCanvas"/>
+          <canvas height="500" width="500" ref="exampleCanvas"/>
         </div>
       </div>
     );

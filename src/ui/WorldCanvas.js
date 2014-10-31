@@ -18,21 +18,25 @@ var WorldCanvas = React.createClass({
   },
 
   componentDidMount: function() {
-    this.renderer = new CanvasRenderer('worldCanvas', this.world);
+    this.renderer = new CanvasRenderer(this.refs.canvas.getDOMNode(), this.world);
     this.renderWorld();
   },
 
   renderWorld: function() {
     this.world = new World();
-    this.renderer = new CanvasRenderer('worldCanvas', this.world);
+    this.renderer = new CanvasRenderer(this.refs.canvas.getDOMNode(), this.world);
     var parser = new WorldParser(this.props.worldDefinition.split('\n'), this.world);
     parser.parse();
+    console.log("rendering world with", this.props.worldDefinition, this.refs.canvas.getDOMNode(),
+      this.world.robot.x, this.world.robot.y);
     this.renderer.render();
   },
 
   render: function() {
     if (this.props.worldDefinition && this.renderer) {
       this.renderWorld();
+    } else {
+      console.log("not rendering world yet", this.props.worldDefinition);
     }
     return <canvas className="WorldCanvas" id="worldCanvas" ref="canvas" width="500" height="500" />
   }

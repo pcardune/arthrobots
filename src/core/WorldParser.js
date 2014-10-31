@@ -9,7 +9,7 @@ var LangParser = require('./parser');
  *   WALL 5 5 E 2 #2 walls eastern walls starting at 5,5 going north.
  * @constant
  */
-var SPEC = /^\s*(\w+)\s+(\d+)\s+(\d+)\s+([NESW])\s+(\d+)?\s*$/;
+var SPEC = /^\s*(\w+)\s+(\d+)\s+(\d+)\s+([NESW])(\s+\d+)?\s*$/;
 
 /**
  * regex for beepers.  Should match something like:
