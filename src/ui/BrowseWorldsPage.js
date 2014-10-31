@@ -87,7 +87,7 @@ var BrowseWorldsPage = React.createClass({
       return (
         <Link className="list-group-item" to="world" params={{worldId:worldModel.id}}>
           <h4>{worldModel.get('name')} by {worldModel.get('owner').get('username')}</h4>
-          <p>{worldModel.get('description')}</p>
+          <p>{worldModel.get('description').split('.')[0]}...</p>
         </Link>
       );
     });
