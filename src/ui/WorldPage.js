@@ -10,6 +10,7 @@ var Parse = require('parse').Parse;
 var React = require('react');
 
 var Markdown = require('./Markdown');
+var TrackDropdown = require('./TrackDropdown');
 
 var WorldModel = require('../models/WorldModel');
 var WorldCanvas = require('./WorldCanvas');
@@ -26,6 +27,7 @@ var WorldPage = React.createClass({
       worldDescription: '',
       worldName: '',
       worldPublic: null,
+      worldTrack: null,
       needsSave: false
     }
   },
@@ -48,6 +50,7 @@ var WorldPage = React.createClass({
           worldDescription:worldModel.get('description'),
           worldDefinition:worldModel.get('definition'),
           worldPublic:worldModel.get('public'),
+          worldTrack:worldModel.get('track'),
           isLoading:false
         });
       }.bind(this),
@@ -68,12 +71,14 @@ var WorldPage = React.createClass({
     var description = this.refs.descriptionInput.getDOMNode().value;
     var definition = this.refs.definitionInput.getDOMNode().value;
     var isPublic = this.refs.publicCheckbox.getChecked();
+    var track = this.refs.trackInput.getValue();
 
     var needsSave = (
       name != this.state.worldModel.get('name') ||
       definition != this.state.worldModel.get('definition') ||
       description != this.state.worldModel.get('description') ||
-      isPublic != this.state.worldModel.get('public')
+      isPublic != this.state.worldModel.get('public') ||
+      track.id != this.state.worldModel.get('track') && this.state.worldModel.get('track').id
     );
 
     this.setState({
@@ -81,6 +86,7 @@ var WorldPage = React.createClass({
       worldDescription:description,
       worldDefinition:definition,
       worldPublic:isPublic,
+      worldTrack:track,
       needsSave: needsSave
     })
   },
@@ -89,7 +95,8 @@ var WorldPage = React.createClass({
     this.state.worldModel.set('name', this.refs.nameInput.getDOMNode().value);
     this.state.worldModel.set('description', this.refs.descriptionInput.getDOMNode().value);
     this.state.worldModel.set('definition', this.refs.definitionInput.getDOMNode().value);
-    this.state.worldModel.set('public', this.refs.publicCheckbox.getChecked())
+    this.state.worldModel.set('public', this.refs.publicCheckbox.getChecked());
+    this.state.worldModel.set('track', this.refs.trackInput.getValue());
     this.setState({saving: true});
     this.state.worldModel.save(null, {
       success: function() {
@@ -168,6 +175,10 @@ var WorldPage = React.createClass({
             <div className="form-group">
               <label>World Name</label>
               <input ref="nameInput" onChange={this.handleChange} type="text" className="form-control" placeholder="world name" defaultValue={this.state.worldName}/>
+            </div>
+            <div className="form-group">
+              <label>Track</label>
+              <TrackDropdown ref="trackInput" onChange={this.handleChange} defaultValue={this.state.worldTrack}/>
             </div>
             <div className="form-group">
               <label>Description/Instructions</label>

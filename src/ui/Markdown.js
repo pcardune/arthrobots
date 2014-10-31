@@ -8,6 +8,9 @@ var converter = new showdown.converter();
 
 var Markdown = React.createClass({
   render: function() {
+  	if (!this.props.children) {
+  		return <div />
+  	}
     return (
       <div
         dangerouslySetInnerHTML={{

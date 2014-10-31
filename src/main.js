@@ -25,16 +25,6 @@ var ArthrobotApp = require('./ui/ArthrobotApp');
 var ParseKeys = require('./ParseKeys');
 Parse.initialize(ParseKeys.APP_ID, ParseKeys.JS_KEY);
 
-var ProgramPage = React.createClass({
-  render: function() {
-    return (
-      <div>
-        Doing some programming
-      </div>
-    );
-  }
-});
-
 var Empty = React.createClass({
 
   mixins: [ActiveState],
@@ -51,7 +41,6 @@ var routes = (
         <Route name="world" path="/worlds/:worldId" handler={WorldPage} />
         <DefaultRoute name="browseworlds" handler={BrowseWorldsPage} />
       </Route>
-      <Route name="program" handler={ProgramPage} />
       <Route name="login" handler={LoginPage} />
       <Route name="logout" handler={LogoutPage} />
       <Route name="signup" handler={SignUpPage} />

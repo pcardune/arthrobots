@@ -29,7 +29,6 @@ var ArthrobotApp = React.createClass({
           <Nav>
             <Tab to="landing">Home</Tab>
             <Tab to="worlds">Worlds</Tab>
-            <Tab to="program">Create</Tab>
           </Nav>
           <Nav className="navbar-right">
             {this.state.user ? null : <Tab to="signup"><strong>Sign Up</strong></Tab>}
