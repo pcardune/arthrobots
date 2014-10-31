@@ -20,6 +20,7 @@ var LogoutPage = require('./ui/LogoutPage');
 var SignUpPage = require('./ui/SignUpPage');
 var BrowseWorldsPage = require('./ui/BrowseWorldsPage');
 var WorldPage = require('./ui/WorldPage');
+var TrackPage = require('./ui/TrackPage');
 var ArthrobotApp = require('./ui/ArthrobotApp');
 
 var ParseKeys = require('./ParseKeys');
@@ -41,6 +42,7 @@ var routes = (
         <Route name="world" path="/worlds/:worldId" handler={WorldPage} />
         <DefaultRoute name="browseworlds" handler={BrowseWorldsPage} />
       </Route>
+      <Route name="track" path="/tracks/:trackId" handler={TrackPage} />
       <Route name="login" handler={LoginPage} />
       <Route name="logout" handler={LogoutPage} />
       <Route name="signup" handler={SignUpPage} />
