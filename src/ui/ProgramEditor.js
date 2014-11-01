@@ -70,16 +70,26 @@ var ProgramEditor = React.createClass({
     });
   },
 
-  componentDidMount: function() {
-    if (this.props.worldModel) {
-      this.props.worldModel.loadCurrentUserPrograms(function(programs){
+  loadProgram: function(worldModel) {
+    if (worldModel) {
+      worldModel.loadCurrentUserPrograms(function(programs){
         if (programs) {
           this.setState({
             programModel:programs[0],
-            programCode:programs[0].get('code')
+            programCode:programs[0] ? programs[0].get('code') : ''
           });
         }
-      }.bind(this));
+      }.bind(this))
+    }
+  },
+
+  componentDidMount: function() {
+    this.loadProgram(this.props.worldModel);
+  },
+
+  componentWillReceiveProps: function(nextProps) {
+    if (nextProps.worldModel != this.props.worldModel) {
+      this.loadProgram(nextProps.worldModel);
     }
   },
 
@@ -106,7 +116,6 @@ var ProgramEditor = React.createClass({
             value={this.state.programCode}/>
           <ButtonToolbar className="buttons">
             <Button onClick={this.handleRun} bsStyle="success" className="pull-right">Save + Run</Button>
-            <Button className="pull-right">Step</Button>
           </ButtonToolbar>
         </div>
         <div className="col-md-6">

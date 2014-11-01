@@ -65,13 +65,22 @@ var TrackPage = React.createClass({
     this.loadTrackAndWorlds();
   },
 
+  setCurrentWorld: function(world) {
+    this.setState({currentWorld:world});
+  },
+
   render: function() {
     if (this.state.isLoading) {
       return <div>loading...</div>;
     }
     var worldList = this.state.worldModels.map(function(world, index){
-      return <li key={world.id}><a>({index+1}) {world.get('name')}</a></li>;
-    });
+      return (
+        <li key={world.id} className={world.id == this.state.currentWorld.id ? "active":""}
+            onClick={this.setCurrentWorld.bind(this, world)}>
+          <a href="#">({index+1}) {world.get('name')}</a>
+        </li>
+      );
+    }.bind(this));
 
     return (
       <div>
