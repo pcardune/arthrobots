@@ -1,7 +1,11 @@
 /** @jsx React.DOM */
 var React = require('react');
+var Navigation = require('react-router').Navigation;
 var ReactBootstrap = require('react-bootstrap');
-var Button = ReactBootstrap.Button;
+var Jumbotron = require('react-bootstrap').Jumbotron;
+var Button = require('react-bootstrap').Button;
+var ButtonToolbar = require('react-bootstrap').ButtonToolbar;
+var Link = require('react-router').Link;
 
 var World = require('../core/World');
 var WorldParser = require('../core/WorldParser');
@@ -9,9 +13,13 @@ var parser = require('../core/parser');
 var Runner = require('../core/Runner');
 var CanvasRenderer = require('../core/CanvasRenderer');
 
+var WorldCanvas = require('./WorldCanvas');
+
 require('./LandingPage.css');
 
 var LandingPage = React.createClass({
+
+  mixins: [Navigation],
 
   getDefaultProps: function() {
     return {
@@ -29,52 +37,56 @@ var LandingPage = React.createClass({
         "    else:\n"+
         "        turnleft\n"+
         "\n"+
-        "while not_next_to_a_beeper:\n"+
+        "while any_beepers_in_beeper_bag:\n"+
         "    follow_right_wall\n"+
         "\n"+
-        "turnoff\n",
-      exampleWorld: [
-        'Robot 2 1 E 0',
-        'Beepers 1 1 1',
-        'Wall 9 1 E 2',
-        'Wall 2 3 E 2',
-        'Wall 9 5 E 3',
-        'Wall 1 7 N 9',
-        'Wall 3 2 N 7',
-        'Wall 3 4 N 7'
-      ]
+        "\n",
+      exampleWorld:
+        'Robot 2 1 E 1\n'+
+        'Wall 9 1 E 2\n'+
+        'Wall 2 3 E 2\n'+
+        'Wall 9 5 E 3\n'+
+        'Wall 1 7 N 9\n'+
+        'Wall 3 2 N 7\n'+
+        'Wall 3 4 N 7\n'
     }
   },
 
   componentDidMount: function() {
-    this.world = new World();
-    var parser = new WorldParser(this.props.exampleWorld, this.world);
-    parser.parse();
-    this.renderer = new CanvasRenderer(this.refs.exampleCanvas.getDOMNode(), this.world);
-    this.renderer.render();
+    this.handleRun();
   },
 
   handleRun: function() {
     var lines = this.props.exampleProgram.split('\n');
-    var program = parser.newParser(lines, this.world.robot).parse();
+    var program = parser.newParser(lines, this.refs.worldCanvas.world.robot).parse();
     //define a runner to run the program.
-    var runner = new Runner(program, this.renderer);
+    this.runner = new Runner(program, this.refs.worldCanvas.renderer);
     //run the program at a rate of 5 execution steps per second.
-    runner.run(200);
+    this.runner.run(100);
+  },
+
+  componentWillUnmount: function() {
+    this.runner.stop();
   },
 
   render: function() {
 
     return (
       <div className="row landingPage">
-        <div className="col-md-6">
-          <pre>
-            {this.props.exampleProgram}
-          </pre>
-          <Button onClick={this.handleRun}>Run</Button>
-        </div>
-        <div className="col-md-6">
-          <canvas height="500" width="500" ref="exampleCanvas"/>
+        <div className="col-md-12">
+          <Jumbotron>
+            <WorldCanvas className="pull-right" worldDefinition={this.props.exampleWorld} ref="worldCanvas"/>
+            <h1>Anthrobots</h1>
+            <p>Robots, exploring a world, completely at your command!</p>
+            <p>Choose your level:</p>
+            <p>
+              <ButtonToolbar>
+                <Link to="track" params={{trackId:'yh1vdAIkHs'}} className="btn btn-success">Beginner</Link>
+                <Link to="track" params={{trackId:'PwMVQiXwGC'}} className="btn btn-primary">Intermediate</Link>
+                <Link to="track" params={{trackId:'02eHrPIc55'}} className="btn btn-danger">Advanced</Link>
+              </ButtonToolbar>
+            </p>
+          </Jumbotron>
         </div>
       </div>
     );
