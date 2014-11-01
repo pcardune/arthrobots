@@ -5,7 +5,13 @@
   padding: 15px;
   border-radius: 5px;
 }
-
+.WorldPage form .glyphicon-remove {
+  cursor: pointer;
+}
+.WorldPage form .CodeEditor {
+  background-color: white;
+  min-height: inherit;
+}
 .WorldPage .worldDefinitionInput {
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
   min-height: 200px;

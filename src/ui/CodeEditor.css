@@ -1,4 +1,4 @@
-.CodeEditor.form-control {
+.CodeEditor {
   border: 1px solid #ccc;
   border-left: 3px solid #ccc;
   border-radius: 0px;
@@ -8,4 +8,5 @@
 }
 .CodeEditor.form-control:focus {
   box-shadow: inherit;
+  border-color: #ccc;
 }

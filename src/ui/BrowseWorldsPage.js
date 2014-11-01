@@ -56,6 +56,7 @@ var BrowseWorldsPage = React.createClass({
     }
     query.descending("createdAt");
     query.include("owner");
+    query.include("track");
     query.find({
       success: function(worldModels) {
         this.setState({
@@ -86,8 +87,10 @@ var BrowseWorldsPage = React.createClass({
     var worldLinks = this.state.worldModels.map(function(worldModel) {
       return (
         <Link className="list-group-item" to="world" params={{worldId:worldModel.id}}>
-          <h4>{worldModel.get('name')} by {worldModel.get('owner').get('username')}</h4>
-          <p>{worldModel.get('description').split('.')[0]}...</p>
+          <h4>
+            {worldModel.get('name')} by {worldModel.get('owner').get('username')} {worldModel.get('track') ? <span className="label label-success">{worldModel.get('track').get('name')}</span> : null}
+          </h4>
+          <p>{(worldModel.get('description') || '').slice(0,100)}...</p>
         </Link>
       );
     });

@@ -1,5 +1,6 @@
 /** @jsx React.DOM */
 var Button = require('react-bootstrap').Button;
+var Glyphicon = require('react-bootstrap').Glyphicon;
 var Input = require('react-bootstrap').Input;
 var Modal = require('react-bootstrap').Modal;
 var ModalTrigger = require('react-bootstrap').ModalTrigger;
@@ -10,6 +11,7 @@ var Parse = require('parse').Parse;
 var React = require('react');
 
 var Markdown = require('./Markdown');
+var CodeEditor = require('./CodeEditor');
 var TrackDropdown = require('./TrackDropdown');
 
 var WorldModel = require('../models/WorldModel');
@@ -28,7 +30,8 @@ var WorldPage = React.createClass({
       worldName: '',
       worldPublic: null,
       worldTrack: null,
-      needsSave: false
+      needsSave: false,
+      worldStepDefinitions: []
     }
   },
 
@@ -51,6 +54,7 @@ var WorldPage = React.createClass({
           worldDefinition:worldModel.get('definition'),
           worldPublic:worldModel.get('public'),
           worldTrack:worldModel.get('track'),
+          worldStepDefinitions:worldModel.get('steps') || [],
           isLoading:false
         });
       }.bind(this),
@@ -78,8 +82,22 @@ var WorldPage = React.createClass({
       definition != this.state.worldModel.get('definition') ||
       description != this.state.worldModel.get('description') ||
       isPublic != this.state.worldModel.get('public') ||
-      track.id != this.state.worldModel.get('track') && this.state.worldModel.get('track').id
+      (track && track.id) != this.state.worldModel.get('track') && this.state.worldModel.get('track').id
     );
+
+    if (!needsSave) {
+      var modelSteps = this.state.worldModel.get('steps');
+      needsSave = modelSteps.length !== this.state.worldStepDefinitions.length;
+      console.log("# steps", modelSteps.length, this.state.worldStepDefinitions.length)
+      if (!needsSave) {
+        this.state.worldStepDefinitions.forEach(function(stepDefinition, index) {
+          console.log("comparing", stepDefinition, "to", modelSteps[index]);
+          if (stepDefinition !== modelSteps[index]) {
+            needsSave = true;
+          }
+        });
+      }
+    }
 
     this.setState({
       worldName:name,
@@ -91,18 +109,44 @@ var WorldPage = React.createClass({
     })
   },
 
+  handleChangeStep: function(index, event) {
+    this.state.worldStepDefinitions[index] = event.target.value;
+    var modelSteps = this.state.worldModel.get('steps');
+    this.setState({worldStepDefinitions:this.state.worldStepDefinitions});
+    this.handleChange();
+  },
+
   handleSave: function() {
     this.state.worldModel.set('name', this.refs.nameInput.getDOMNode().value);
     this.state.worldModel.set('description', this.refs.descriptionInput.getDOMNode().value);
     this.state.worldModel.set('definition', this.refs.definitionInput.getDOMNode().value);
     this.state.worldModel.set('public', this.refs.publicCheckbox.getChecked());
     this.state.worldModel.set('track', this.refs.trackInput.getValue());
+    this.state.worldModel.set('steps', this.state.worldStepDefinitions);
     this.setState({saving: true});
     this.state.worldModel.save(null, {
       success: function() {
         this.setState({saving: false, needsSave:false});
       }.bind(this)
     })
+  },
+
+  handleAddStep: function() {
+    var worldStepDefinitions = this.state.worldStepDefinitions;
+    if (worldStepDefinitions.length == 0) {
+      worldStepDefinitions.push(this.state.worldDefinition);
+    } else {
+      worldStepDefinitions.push(worldStepDefinitions[worldStepDefinitions.length-1]);
+    }
+    this.setState({worldStepDefinitions:worldStepDefinitions});
+    this.handleChange();
+  },
+
+  handleRemoveStep: function(index) {
+    var worldStepDefinitions = this.state.worldStepDefinitions;
+    worldStepDefinitions.splice(index, 1);
+    this.setState({worldStepDefinitions:worldStepDefinitions});
+    this.handleChange();
   },
 
   handleDeleteWorld: function() {
@@ -143,9 +187,9 @@ var WorldPage = React.createClass({
   renderWorldPane: function() {
     return (
       <div className="row">
+        <h3>{this.state.worldName}</h3>
         <div className="col-md-2"/>
         <div className="col-md-4">
-          <h3>{this.state.worldName}</h3>
           <Markdown>{this.state.worldDescription}</Markdown>
         </div>
         <div className="col-md-4">
@@ -166,7 +210,20 @@ var WorldPage = React.createClass({
         </div>
       </Modal>
       );
-
+    var stepFields = this.state.worldStepDefinitions.map(function(step, index) {
+      return (
+        <div>
+          <h6>
+            Step {index+1}
+            <Glyphicon onClick={this.handleRemoveStep.bind(this, index)} className="pull-right" glyph="remove"/>
+          </h6>
+          <CodeEditor onChange={this.handleChangeStep.bind(this, index)} className="form-control" value={step}/>
+        </div>
+      );
+    }.bind(this));
+    var stepCanvases = this.state.worldStepDefinitions.map(function(step) {
+      return <WorldCanvas worldDefinition={step} />
+    });
     return (
       <div className="row">
         <div className="col-md-4">
@@ -191,7 +248,21 @@ var WorldPage = React.createClass({
                 className="form-control worldDefinitionInput"
                 defaultValue={this.state.worldModel.get('definition')} />
             </div>
-            <Input type="checkbox" ref="publicCheckbox" onClick={this.handleChange} defaultChecked={this.state.worldModel.get('public')} label="Public?"/>
+            <div className="form-group">
+              <label>Steps</label>
+              <br />
+              {stepFields}
+              <Button onClick={this.handleAddStep}>Add Step</Button>
+            </div>
+            <div className="form-group">
+              <label>Privacy</label>
+              <Input
+                type="checkbox"
+                ref="publicCheckbox"
+                onClick={this.handleChange}
+                defaultChecked={this.state.worldModel.get('public')}
+                label="Visible to anyone"/>
+            </div>
             <Button onClick={this.handleSave} className="pull-right" disabled={!this.state.needsSave} bsStyle={this.state.needsSave ? "primary" : "default"}>Save</Button>
             <ModalTrigger modal={deleteConfirmationModal}>
               <Button onClick={this.handleDelete} bsStyle="danger">Delete</Button>
@@ -200,12 +271,13 @@ var WorldPage = React.createClass({
         </div>
         <div className="worldPane col-md-8">
           <div className="row">
+            <h3>{this.state.worldName}</h3>
             <div className="col-md-6">
-              <h3>{this.state.worldName}</h3>
               <Markdown>{this.state.worldDescription}</Markdown>
             </div>
             <div className="col-md-6">
               <WorldCanvas worldDefinition={this.state.worldDefinition} />
+              {stepCanvases}
             </div>
           </div>
         </div>
