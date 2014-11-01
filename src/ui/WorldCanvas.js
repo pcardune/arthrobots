@@ -25,13 +25,19 @@ var WorldCanvas = React.createClass({
   renderWorld: function() {
     this.world = new World();
     this.renderer = new CanvasRenderer(this.refs.canvas.getDOMNode(), this.world);
-    var parser = new WorldParser(this.props.worldDefinition.split('\n'), this.world);
-    parser.parse();
+    this.parser = new WorldParser(this.props.worldDefinition.split('\n'), this.world);
+    this.parser.parse();
     this.renderer.render();
   },
 
+  componentWillReceiveProps: function(nextProps) {
+    if (this.props.worldDefinition != nextProps.worldDefinition) {
+      this.renderWorld();
+    }
+  },
+
   render: function() {
-    if (this.props.worldDefinition && this.renderer) {
+    if (this.props.worldDefinition && this.renderer && !this.parser) {
       this.renderWorld();
     } else {
       console.log("not rendering world yet", this.props.worldDefinition);

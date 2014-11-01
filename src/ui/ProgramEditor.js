@@ -37,7 +37,7 @@ var ProgramEditor = React.createClass({
 
   getInitialState: function() {
     return {
-      isRunning: false,
+      runState: "",
       programModel: null,
       programCode: ''
     }
@@ -96,9 +96,32 @@ var ProgramEditor = React.createClass({
   handleRun: function() {
     this.handleSave();
     var lines = this.refs.codeEditor.getDOMNode().value.split('\n');
-    var program = parser.newParser(lines, this.refs.worldCanvas.world.robot).parse();
-    var runner = new Runner(program, this.refs.worldCanvas.renderer);
-    runner.run(200);
+    this.refs.worldCanvas.renderWorld();
+    this.program = parser.newParser(lines, this.refs.worldCanvas.world.robot).parse();
+    this.runner = new Runner(this.program, this.refs.worldCanvas.renderer);
+    this.handleContinue();
+  },
+
+  handleStop: function() {
+    this.runner && this.runner.stop();
+    this.setState({runState: "stopped"});
+  },
+
+  handleContinue: function() {
+    this.setState({runState: "running"});
+    this.runner.run(200, function() {
+      this.setState({runState: ""});
+    }.bind(this));
+  },
+
+  handleStep: function() {
+    if (!this.runner) {
+      this.program = parser.newParser(lines, this.refs.worldCanvas.world.robot).parse();
+      this.runner = new Runner(this.program, this.refs.worldCanvas.renderer);
+    }
+    this.runner.step(function() {
+      this.setState({runState: ""});
+    }.bind(this));
   },
 
   handleProgramChange: function (event) {
@@ -106,6 +129,21 @@ var ProgramEditor = React.createClass({
   },
 
   render: function() {
+    var buttons;
+    if (this.state.runState == "running") {
+      buttons = [
+        <Button onClick={this.handleStop} className="pull-right" bsStyle="danger">Stop</Button>
+      ];
+    } else if (this.state.runState == "stopped") {
+      buttons = [
+        <Button onClick={this.handleContinue} className="pull-right" bsStyle="primary">Continue</Button>,
+        <Button onClick={this.handleStep} className="pull-right">Step</Button>
+      ];
+    } else {
+      buttons = [
+        <Button onClick={this.handleRun} bsStyle="primary" className="pull-right">Save + Run</Button>,
+      ];
+    }
     return (
       <div className="ProgramEditor row">
         <div className="col-md-6">
@@ -115,7 +153,7 @@ var ProgramEditor = React.createClass({
             onChange={this.handleProgramChange}
             value={this.state.programCode}/>
           <ButtonToolbar className="buttons">
-            <Button onClick={this.handleRun} bsStyle="success" className="pull-right">Save + Run</Button>
+            {buttons}
           </ButtonToolbar>
         </div>
         <div className="col-md-6">
