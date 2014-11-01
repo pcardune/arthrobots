@@ -127,6 +127,36 @@ var World = Class.extend(
         (coords.x === 0 && coords.direction === Robot.EAST) ||
         (coords.y === 0 && coords.direction === Robot.NORTH) ||
         false;
+    },
+
+    /**
+     * Return whether or not this world looks the same as another world. Right now it only checks
+     * robot and beepers.
+     */
+    isEqualTo: function(world) {
+      var robotsEqual = (
+        world.robot.x == this.robot.x &&
+        world.robot.y == this.robot.y &&
+        world.robot.direction == this.robot.direction &&
+        world.robot.beepers == this.robot.beepers
+      );
+      if (!robotsEqual) {
+        console.log("robots dont match", this.robot.toString(), "VS", world.robot.toString());
+        return false;
+      }
+      for (var key in this.beepers) {
+        if (!world.beepers[key] == this.beepers[key]) {
+          console.log("beepers at", key,"don't match");
+          return false;
+        }
+      }
+      for (var key in world.beepers) {
+        if (!world.beepers[key] == this.beepers[key]) {
+          console.log("beepers at", key,"don't match");
+          return false;
+        }
+      }
+      return true;
     }
   });
 

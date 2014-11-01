@@ -30,8 +30,13 @@ var TrackPage = React.createClass({
       trackModel: null,
       worldModels: [],
       currentWorld: null,
+      currentWorldIndex: 0,
       isLoading: true,
     };
+  },
+
+  getCurrentWorld: function() {
+    return this.state.worldModels[this.state.currentWorldIndex];
   },
 
   loadTrackAndWorlds: function() {
@@ -50,7 +55,7 @@ var TrackPage = React.createClass({
             this.setState({
               worldModels: worldModels,
               isLoading: false,
-              currentWorld: worldModels[0]
+              currentWorldIndex: 0
             });
           }.bind(this)
         })
@@ -65,8 +70,8 @@ var TrackPage = React.createClass({
     this.loadTrackAndWorlds();
   },
 
-  setCurrentWorld: function(world) {
-    this.setState({currentWorld:world});
+  setCurrentWorld: function(index) {
+    this.setState({currentWorldIndex:index});
   },
 
   render: function() {
@@ -75,8 +80,8 @@ var TrackPage = React.createClass({
     }
     var worldList = this.state.worldModels.map(function(world, index){
       return (
-        <li key={world.id} className={world.id == this.state.currentWorld.id ? "active":""}
-            onClick={this.setCurrentWorld.bind(this, world)}>
+        <li key={world.id} className={world.id == this.getCurrentWorld().id ? "active":""}
+            onClick={this.setCurrentWorld.bind(this, index)}>
           <a href="#">({index+1}) {world.get('name')}</a>
         </li>
       );
@@ -90,13 +95,16 @@ var TrackPage = React.createClass({
             {worldList}
           </ul>
         </nav>
-        <h3>{this.state.currentWorld.get('name')}</h3>
+        <h3>{this.getCurrentWorld().get('name')}</h3>
         <div className="row">
-          <div className="col-md-4">
-            <Markdown>{this.state.currentWorld.get('description')}</Markdown>
+          <div className="col-md-5">
+            <Markdown>{this.getCurrentWorld().get('description')}</Markdown>
           </div>
-          <div className="col-md-8">
-            <ProgramEditor worldModel={this.state.currentWorld} />
+          <div className="col-md-7">
+            <ProgramEditor
+              worldModel={this.getCurrentWorld()}
+              onContinue={this.setCurrentWorld.bind(this, this.state.currentWorldIndex+1)}
+            />
           </div>
         </div>
       </div>

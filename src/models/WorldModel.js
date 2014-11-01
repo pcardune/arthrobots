@@ -1,6 +1,8 @@
 var Parse = require('parse').Parse;
 
 var ProgramModel = require('./ProgramModel');
+var World = require('../core/World');
+var WorldParser = require('../core/WorldParser');
 
 var WorldModel = Parse.Object.extend("WorldModel", {
   loadCurrentUserPrograms: function(success) {
@@ -13,6 +15,18 @@ var WorldModel = Parse.Object.extend("WorldModel", {
         alert("there was an error loading programs:"+error.code+" "+error.message);
       }
     });
+  },
+  getNewWorld: function() {
+    var world = new World();
+    var parser = new WorldParser(this.get('definition').split('\n'), world);
+    parser.parse();
+    return world;
+  },
+  getNewWorldAtStep: function(index) {
+    var world = new World();
+    var parser = new WorldParser(this.get('steps')[index].split('\n'), world);
+    parser.parse();
+    return world;
   }
 });
 

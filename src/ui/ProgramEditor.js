@@ -24,7 +24,8 @@ var TrackModel = require('../models/TrackModel');
 var ProgramModel = require('../models/ProgramModel');
 var parser = require('../core/parser');
 var Runner = require('../core/Runner');
-
+var WorldParser = require('../core/WorldParser');
+var World = require('../core/World');
 
 require('./ProgramEditor.css')
 var ProgramEditor = React.createClass({
@@ -39,7 +40,9 @@ var ProgramEditor = React.createClass({
     return {
       runState: "",
       programModel: null,
-      programCode: ''
+      programCode: '',
+      completedSteps: 0,
+      isFinished: false
     }
   },
 
@@ -90,6 +93,7 @@ var ProgramEditor = React.createClass({
   componentWillReceiveProps: function(nextProps) {
     if (nextProps.worldModel != this.props.worldModel) {
       this.loadProgram(nextProps.worldModel);
+      this.setState({isFinished: false, completedSteps: 0});
     }
   },
 
@@ -109,9 +113,25 @@ var ProgramEditor = React.createClass({
 
   handleContinue: function() {
     this.setState({runState: "running"});
-    this.runner.run(200, function() {
-      this.setState({runState: ""});
-    }.bind(this));
+    this.runner.run(
+      200,
+      this.setState.bind(this, {runState: ""}),
+      this.runnerDidStep
+    );
+  },
+
+  runnerDidStep: function(runner) {
+    var worldSteps = this.props.worldModel.get('steps');
+    if (worldSteps && worldSteps.length > this.state.completedSteps) {
+      var nextStepWorld = this.props.worldModel.getNewWorldAtStep(this.state.completedSteps);
+      if (this.refs.worldCanvas.world.isEqualTo(nextStepWorld)) {
+        var isFinished = worldSteps.length <= this.state.completedSteps + 1;
+        this.setState({
+          completedSteps: this.state.completedSteps + 1,
+          isFinished: isFinished
+        });
+      }
+    }
   },
 
   handleStep: function() {
@@ -119,9 +139,10 @@ var ProgramEditor = React.createClass({
       this.program = parser.newParser(lines, this.refs.worldCanvas.world.robot).parse();
       this.runner = new Runner(this.program, this.refs.worldCanvas.renderer);
     }
-    this.runner.step(function() {
-      this.setState({runState: ""});
-    }.bind(this));
+    this.runner.step(
+      this.setState.bind(this, {runState: ""}),
+      this.runnerDidStep
+    );
   },
 
   handleProgramChange: function (event) {
@@ -144,6 +165,13 @@ var ProgramEditor = React.createClass({
         <Button onClick={this.handleRun} bsStyle="primary" className="pull-right">Save + Run</Button>,
       ];
     }
+    if (this.props.worldModel && this.props.worldModel.get('steps')) {
+      var completedSteps = [];
+      for (var i = 0; i < this.props.worldModel.get('steps').length; i++) {
+        completedSteps.push(<span className={"badge "+(i<this.state.completedSteps ? "active" : "")}>{i+1}</span>);
+      }
+    }
+
     return (
       <div className="ProgramEditor row">
         <div className="col-md-6">
@@ -158,6 +186,10 @@ var ProgramEditor = React.createClass({
         </div>
         <div className="col-md-6">
           <WorldCanvas ref="worldCanvas" worldDefinition={this.props.worldModel.get('definition')} />
+          <div className="pull-right">
+            {completedSteps}<br />
+            {this.state.isFinished ? <Button onClick={this.props.onContinue} bsStyle="success" className="pull-right">Continue!</Button>: null}
+          </div>
         </div>
       </div>
     );

@@ -1,3 +1,11 @@
 .ProgramEditor .buttons {
   padding-top: 5px;
 }
+
+.ProgramEditor .badge {
+  margin: 5px;
+}
+
+.ProgramEditor .badge.active {
+  background-color: #428bca;
+}

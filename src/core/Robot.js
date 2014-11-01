@@ -50,6 +50,13 @@ var Robot = Class.extend(
     },
 
     /**
+     * Get a string representation of the robot.
+     */
+    toString: function() {
+      return "Robot "+this.x+" "+this.y+" "+this.direction+" "+this.beepers;
+    },
+
+    /**
      * move the robot one coordinate point in the direction the robot is facing.
      * If a wall is in front of the robot, this method throws an error.
      */
@@ -105,7 +112,7 @@ var Robot = Class.extend(
      */
     turnoff: function turnoff(){
       this.on = false;
-      alert("Robot turned off");
+      //alert("Robot turned off");
     },
 
     /**

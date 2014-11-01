@@ -8,7 +8,6 @@ var Runner = Class.extend(
      * @constructs
      * @param program See {@link gvr.runner.Runner#program}
      * @param renderer See {@link gvr.runner.Runner#renderer}
-     * @param notify See {@link gvr.runner.Runner#notify}
      */
     init: function(program, renderer, notify){
       /**
@@ -42,16 +41,12 @@ var Runner = Class.extend(
       this.timeout = null;
 
       /**
-       * currently unused
-       * @type {function()}
-       */
-      this.notify = notify || function(item){};
-
-      /**
        * Keeps track of whether or not the runner is currently running.
        * @type {boolean}
        */
       this.running = false;
+
+      this.notify = notify || function() {};
     },
 
     /**
@@ -71,8 +66,8 @@ var Runner = Class.extend(
      * Perform the next execution step.
      * @param Same as the callback parameter for {@link gvr.runner.Runner#run}
      */
-    step: function(callback){
-      this.run(0, callback, true);
+    step: function(callback, notify){
+      this.run(0, callback, notify, true);
     },
 
     /**
@@ -93,7 +88,7 @@ var Runner = Class.extend(
      *       If false, execution will continue to happen
      *       until there is an error or the program finishes.
      */
-    run: function(speed, callback, step){
+    run: function(speed, callback, notify, step){
       this.running = true;
       var instant = speed === -1;
       speed = speed || 200;
@@ -112,18 +107,19 @@ var Runner = Class.extend(
         if (!instant){
           this.renderer.render();
         }
+        notify && notify(this);
 
         if (next.length > 0){
-          var that = this;
           if (instant){
-            this.run(speed, callback, step);
+            this.run(speed, callback, notify, step);
           } else if (!step){
             this.timeout = window.setTimeout(
-              function(){that.run(speed, callback, step);},
-              speed);
+              function(){this.run(speed, callback, notify, step);}.bind(this),
+              speed
+            );
           }
         } else {
-          this.run(speed, callback, step);
+          this.run(speed, callback, notify, step);
         }
 
       } else {
