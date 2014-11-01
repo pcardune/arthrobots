@@ -1,0 +1,11 @@
+.CodeEditor.form-control {
+  border: 1px solid #ccc;
+  border-left: 3px solid #ccc;
+  border-radius: 0px;
+  background-color: #eee;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+  min-height: 200px;
+}
+.CodeEditor.form-control:focus {
+  box-shadow: inherit;
+}

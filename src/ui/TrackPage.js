@@ -16,6 +16,7 @@ var React = require('react');
 var Tab = require('./Tab');
 var Markdown = require('./Markdown');
 var WorldCanvas = require('./WorldCanvas');
+var ProgramEditor = require('./ProgramEditor');
 
 var WorldModel = require('../models/WorldModel');
 var TrackModel = require('../models/TrackModel');
@@ -85,13 +86,8 @@ var TrackPage = React.createClass({
           <div className="col-md-4">
             <Markdown>{this.state.currentWorld.get('description')}</Markdown>
           </div>
-          <div className="col-md-4">
-            <textarea className="form-control">
-            </textarea>
-            <Button bsStyle="success" className="pull-right">Run</Button>
-          </div>
-          <div className="col-md-4">
-            <WorldCanvas worldDefinition={this.state.currentWorld.get('definition')} />
+          <div className="col-md-8">
+            <ProgramEditor worldModel={this.state.currentWorld} />
           </div>
         </div>
       </div>
