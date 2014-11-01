@@ -27,8 +27,6 @@ var WorldCanvas = React.createClass({
     this.renderer = new CanvasRenderer(this.refs.canvas.getDOMNode(), this.world);
     var parser = new WorldParser(this.props.worldDefinition.split('\n'), this.world);
     parser.parse();
-    console.log("rendering world with", this.props.worldDefinition, this.refs.canvas.getDOMNode(),
-      this.world.robot.x, this.world.robot.y);
     this.renderer.render();
   },
 

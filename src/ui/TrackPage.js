@@ -70,7 +70,7 @@ var TrackPage = React.createClass({
       return <div>loading...</div>;
     }
     var worldList = this.state.worldModels.map(function(world, index){
-      return <li><a>({index+1}) {world.get('name')}</a></li>;
+      return <li key={world.id}><a>({index+1}) {world.get('name')}</a></li>;
     });
 
     return (
