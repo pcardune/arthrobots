@@ -221,8 +221,11 @@ var WorldPage = React.createClass({
         </div>
       );
     }.bind(this));
-    var stepCanvases = this.state.worldStepDefinitions.map(function(step) {
-      return <WorldCanvas worldDefinition={step} />
+    var stepCanvases = this.state.worldStepDefinitions.map(function(step, index) {
+      return <div>
+        <h6>Step {index+1}</h6>
+        <WorldCanvas worldDefinition={step} />
+      </div>
     });
     return (
       <div className="row">
@@ -243,9 +246,8 @@ var WorldPage = React.createClass({
             </div>
             <div className="form-group">
               <label>World Definition</label>
-              <textarea ref="definitionInput"
+              <CodeEditor ref="definitionInput"
                 onChange={this.handleChange}
-                className="form-control worldDefinitionInput"
                 defaultValue={this.state.worldModel.get('definition')} />
             </div>
             <div className="form-group">
