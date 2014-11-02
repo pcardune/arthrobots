@@ -2,9 +2,11 @@
 var ActiveState = require('react-router').ActiveState;
 var Button = require('react-bootstrap').Button;
 var ButtonToolbar = require('react-bootstrap').ButtonToolbar;
+var DropdownButton = require('react-bootstrap').DropdownButton;
 var Link = require('react-router').Link;
 var ListGroup = require('react-bootstrap').ListGroup;
 var ListGroupItem = require('react-bootstrap').ListGroupItem;
+var MenuItem = require('react-bootstrap').MenuItem;
 var Modal = require('react-bootstrap').Modal;
 var ModalTrigger = require('react-bootstrap').ModalTrigger;
 var Nav = require('react-bootstrap').Nav;
@@ -43,7 +45,8 @@ var ProgramEditor = React.createClass({
       programModel: null,
       programCode: '',
       completedSteps: 0,
-      isFinished: false
+      isFinished: false,
+      speed: 'Medium'
     }
   },
 
@@ -114,8 +117,9 @@ var ProgramEditor = React.createClass({
 
   handleContinue: function() {
     this.setState({runState: "running"});
+    var ms = {"Slow":500,"Medium":200,"Fast":50};
     this.runner.run(
-      200,
+      ms[this.state.speed],
       this.setState.bind(this, {runState: ""}),
       this.runnerDidStep
     );
@@ -159,6 +163,10 @@ var ProgramEditor = React.createClass({
     this.setState({programCode:event.target.value});
   },
 
+  handleSpeedClick: function(speed) {
+    this.setState({speed:speed});
+  },
+
   render: function() {
     var buttons;
     if (this.state.runState == "running") {
@@ -172,6 +180,11 @@ var ProgramEditor = React.createClass({
       ];
     } else {
       buttons = [
+        <DropdownButton title={"Speed: "+this.state.speed}>
+          <MenuItem key="1" onClick={this.handleSpeedClick.bind(this, 'Slow')}>Slow</MenuItem>
+          <MenuItem key="2" onClick={this.handleSpeedClick.bind(this, 'Medium')}>Medium</MenuItem>
+          <MenuItem key="3" onClick={this.handleSpeedClick.bind(this, 'Fast')}>Fast</MenuItem>
+        </DropdownButton>,
         <Button onClick={this.handleRun} bsStyle="primary" className="pull-right">Save + Run</Button>,
       ];
     }
