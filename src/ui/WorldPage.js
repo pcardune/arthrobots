@@ -27,6 +27,7 @@ var WorldPage = React.createClass({
       worldModel: null,
       worldDefinition: '',
       worldDescription: '',
+      worldOrder: 0,
       worldName: '',
       worldPublic: null,
       worldTrack: null,
@@ -54,6 +55,7 @@ var WorldPage = React.createClass({
           worldDefinition:worldModel.get('definition'),
           worldPublic:worldModel.get('public'),
           worldTrack:worldModel.get('track'),
+          worldOrder:worldModel.get('order'),
           worldStepDefinitions:worldModel.get('steps') || [],
           isLoading:false
         });
@@ -76,12 +78,14 @@ var WorldPage = React.createClass({
     var definition = this.refs.definitionInput.getDOMNode().value;
     var isPublic = this.refs.publicCheckbox.getChecked();
     var track = this.refs.trackInput.getValue();
+    var order = parseInt(this.refs.orderInput.getDOMNode().value);
 
     var needsSave = (
       name != this.state.worldModel.get('name') ||
       definition != this.state.worldModel.get('definition') ||
       description != this.state.worldModel.get('description') ||
       isPublic != this.state.worldModel.get('public') ||
+      order != this.state.worldModel.get('order') ||
       (track && track.id) != this.state.worldModel.get('track') && this.state.worldModel.get('track').id
     );
 
@@ -105,6 +109,7 @@ var WorldPage = React.createClass({
       worldDefinition:definition,
       worldPublic:isPublic,
       worldTrack:track,
+      worldOrder:order,
       needsSave: needsSave
     })
   },
@@ -122,6 +127,7 @@ var WorldPage = React.createClass({
     this.state.worldModel.set('definition', this.refs.definitionInput.getDOMNode().value);
     this.state.worldModel.set('public', this.refs.publicCheckbox.getChecked());
     this.state.worldModel.set('track', this.refs.trackInput.getValue());
+    this.state.worldModel.set('order', parseInt(this.refs.orderInput.getDOMNode().value));
     this.state.worldModel.set('steps', this.state.worldStepDefinitions);
     this.setState({saving: true});
     this.state.worldModel.save(null, {
@@ -239,6 +245,10 @@ var WorldPage = React.createClass({
             <div className="form-group">
               <label>Track</label>
               <TrackDropdown ref="trackInput" onChange={this.handleChange} defaultValue={this.state.worldTrack}/>
+            </div>
+            <div className="form-group">
+              <label>Order in Track</label>
+              <input ref="orderInput" onChange={this.handleChange} type="text" className="form-control" defaultValue={this.state.worldOrder}/>
             </div>
             <div className="form-group">
               <label>Description/Instructions</label>

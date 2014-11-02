@@ -54,6 +54,7 @@ var TrackPage = React.createClass({
         var query = new Parse.Query(WorldModel);
         query.equalTo('track', trackModel);
         query.equalTo('public', true);
+        query.ascending('order');
         query.find({
           success: function(worldModels) {
             this.setState({
