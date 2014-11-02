@@ -1,11 +1,11 @@
 /** @jsx React.DOM */
-var React = require('react');
-var Navigation = require('react-router').Navigation;
-var ReactBootstrap = require('react-bootstrap');
-var Jumbotron = require('react-bootstrap').Jumbotron;
 var Button = require('react-bootstrap').Button;
 var ButtonToolbar = require('react-bootstrap').ButtonToolbar;
+var Jumbotron = require('react-bootstrap').Jumbotron;
 var Link = require('react-router').Link;
+var Navigation = require('react-router').Navigation;
+var Parse = require('parse').Parse;
+var React = require('react');
 
 var World = require('../core/World');
 var WorldParser = require('../core/WorldParser');
@@ -70,7 +70,24 @@ var LandingPage = React.createClass({
   },
 
   render: function() {
-
+    var buttonToolbar;
+    if (Parse.User.current()) {
+      buttonToolbar = (
+        <ButtonToolbar>
+          <Link to="track" params={{trackId:'yh1vdAIkHs'}} className="btn btn-success">Beginner</Link>
+          <Link to="track" params={{trackId:'PwMVQiXwGC'}} className="btn btn-primary">Intermediate</Link>
+          <Link to="track" params={{trackId:'02eHrPIc55'}} className="btn btn-danger">Advanced</Link>
+        </ButtonToolbar>
+      );
+    } else {
+      buttonToolbar = (
+        <ButtonToolbar>
+          <Link to="login" className="btn btn-success">Beginner</Link>
+          <Link to="login" className="btn btn-primary">Intermediate</Link>
+          <Link to="login" className="btn btn-danger">Advanced</Link>
+        </ButtonToolbar>
+      );
+    }
     return (
       <div className="row landingPage">
         <div className="col-md-12">
@@ -80,11 +97,7 @@ var LandingPage = React.createClass({
             <p>Robots, exploring a world, completely at your command!</p>
             <p>Choose your level:</p>
             <p>
-              <ButtonToolbar>
-                <Link to="track" params={{trackId:'yh1vdAIkHs'}} className="btn btn-success">Beginner</Link>
-                <Link to="track" params={{trackId:'PwMVQiXwGC'}} className="btn btn-primary">Intermediate</Link>
-                <Link to="track" params={{trackId:'02eHrPIc55'}} className="btn btn-danger">Advanced</Link>
-              </ButtonToolbar>
+              {buttonToolbar}
             </p>
           </Jumbotron>
         </div>

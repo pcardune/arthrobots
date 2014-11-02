@@ -28,7 +28,7 @@ var ArthrobotApp = React.createClass({
         <Navbar brand="Arthrobots" fluid={true} className="navbar-inverse">
           <Nav>
             <Tab to="landing">Home</Tab>
-            <Tab to="worlds">Worlds</Tab>
+            {Parse.User.current() ? <Tab to="worlds">Worlds</Tab> : null}
           </Nav>
           <Nav className="navbar-right">
             {this.state.user ? null : <Tab to="signup"><strong>Sign Up</strong></Tab>}
