@@ -171,27 +171,27 @@ var ProgramEditor = React.createClass({
     var buttons;
     if (this.state.runState == "running") {
       buttons = [
-        <Button onClick={this.handleStop} className="pull-right" bsStyle="danger">Stop</Button>
+        <Button key="1" onClick={this.handleStop} className="pull-right" bsStyle="danger">Stop</Button>
       ];
     } else if (this.state.runState == "stopped") {
       buttons = [
-        <Button onClick={this.handleContinue} className="pull-right" bsStyle="primary">Continue</Button>,
-        <Button onClick={this.handleStep} className="pull-right">Step</Button>
+        <Button key="2" onClick={this.handleContinue} className="pull-right" bsStyle="primary">Continue</Button>,
+        <Button key="3" onClick={this.handleStep} className="pull-right">Step</Button>
       ];
     } else {
       buttons = [
-        <DropdownButton title={"Speed: "+this.state.speed}>
+        <DropdownButton key="4" title={"Speed: "+this.state.speed}>
           <MenuItem key="1" onClick={this.handleSpeedClick.bind(this, 'Slow')}>Slow</MenuItem>
           <MenuItem key="2" onClick={this.handleSpeedClick.bind(this, 'Medium')}>Medium</MenuItem>
           <MenuItem key="3" onClick={this.handleSpeedClick.bind(this, 'Fast')}>Fast</MenuItem>
         </DropdownButton>,
-        <Button onClick={this.handleRun} bsStyle="primary" className="pull-right">Save + Run</Button>,
+        <Button key="5" onClick={this.handleRun} bsStyle="primary" className="pull-right">Save + Run</Button>,
       ];
     }
     if (this.props.worldModel && this.props.worldModel.get('steps')) {
       var completedSteps = [];
       for (var i = 0; i < this.props.worldModel.get('steps').length; i++) {
-        completedSteps.push(<span className={"badge "+(i<this.state.completedSteps ? "active" : "")}>{i+1}</span>);
+        completedSteps.push(<span key={i} className={"badge "+(i<this.state.completedSteps ? "active" : "")}>{i+1}</span>);
       }
     }
 
