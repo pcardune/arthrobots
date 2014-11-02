@@ -136,6 +136,7 @@ var ProgramEditor = React.createClass({
           this.state.programModel.save({
             success: function(program) {
               this.setState({programModel:program});
+              this.props.onFinished(program);
             }.bind(this)
           })
         }

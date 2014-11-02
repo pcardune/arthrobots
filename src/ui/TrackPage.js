@@ -90,6 +90,16 @@ var TrackPage = React.createClass({
     this.setState({currentWorldIndex:index});
   },
 
+  handleFinished: function(world, program) {
+    this.setState({programModels:this.state.programModels.map(function(programModel){
+      // swap out the old program for the new program
+      if (programModel.id == program.id) {
+        return program;
+      }
+      return programModel;
+    })});
+  },
+
   render: function() {
     if (this.state.isLoading) {
       return <div>loading...</div>;
@@ -132,6 +142,7 @@ var TrackPage = React.createClass({
             <ProgramEditor
               worldModel={this.getCurrentWorld()}
               onContinue={this.setCurrentWorld.bind(this, this.state.currentWorldIndex+1)}
+              onFinished={this.handleFinished.bind(this, this.getCurrentWorld())}
             />
           </div>
         </div>
