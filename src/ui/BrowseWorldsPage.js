@@ -14,6 +14,7 @@ var Parse = require('parse').Parse;
 var React = require('react');
 
 var Tab = require('./Tab');
+var TrackBadge = require('./TrackBadge');
 
 var WorldModel = require('../models/WorldModel');
 
@@ -54,7 +55,7 @@ var BrowseWorldsPage = React.createClass({
     if (filter == "all") {
       query.equalTo("public", true);
     }
-    query.descending("createdAt");
+    query.descending("order");
     query.include("owner");
     query.include("track");
     query.find({
@@ -88,7 +89,7 @@ var BrowseWorldsPage = React.createClass({
       return (
         <Link className="list-group-item" to="world" params={{worldId:worldModel.id}}>
           <h4>
-            {worldModel.get('track') ? <span className="label label-success">{worldModel.get('track').get('name')}</span> : null} {worldModel.get('name')} by {worldModel.get('owner').get('username')}
+            {worldModel.get('track') ? <TrackBadge track={worldModel.get('track')} /> : null} {worldModel.get('name')} by {worldModel.get('owner').get('username')}
           </h4>
           <p>{(worldModel.get('description') || '').slice(0,100)}...</p>
         </Link>
