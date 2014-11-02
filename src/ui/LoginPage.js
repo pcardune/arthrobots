@@ -1,5 +1,6 @@
 /** @jsx React.DOM */
 var Button = require('react-bootstrap').Button;
+var Link = require('react-router').Link;
 var Parse = require('parse').Parse;
 var React = require('react');
 
@@ -49,7 +50,7 @@ var LoginPage = React.createClass({
         <div className="col-md-3"/>
         <div className="col-md-6">
           <div className="jumbotron">
-            <h1>Login!</h1>
+            <h1>Log In!</h1>
             {alert}
             <form>
               <div className="form-group">
@@ -60,7 +61,7 @@ var LoginPage = React.createClass({
                 <label>Password:</label>
                 <input ref="password" type="password" className="form-control" placeholder="Password" />
               </div>
-              <Button onClick={this.handleLogin}>Login</Button>
+              <Button onClick={this.handleLogin}>Log In</Button> or <Link to="signup">Sign Up</Link>
             </form>
           </div>
         </div>

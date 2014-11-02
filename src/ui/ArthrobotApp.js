@@ -32,7 +32,7 @@ var ArthrobotApp = React.createClass({
           </Nav>
           <Nav className="navbar-right">
             {this.state.user ? null : <Tab to="signup"><strong>Sign Up</strong></Tab>}
-            {this.state.user ? <Tab to="logout">Logout</Tab> : <Tab to="login">Login</Tab>}
+            {this.state.user ? <Tab to="logout">Logout</Tab> : <Tab to="login">Log In</Tab>}
           </Nav>
         </Navbar>
 

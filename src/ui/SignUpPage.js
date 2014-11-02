@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 
 var Button = require('react-bootstrap').Button;
+var Link = require('react-router').Link;
 var Navigation = require('react-router').Navigation;
 var Parse = require('parse').Parse;
 var React = require('react');
@@ -85,7 +86,7 @@ var SignUpPage = React.createClass({
             <label>Confirm Password:</label>
             <input type="password" ref="passwordConfirm" className="form-control" placeholder="Confirm password" />
           </div>
-          <Button onClick={this.handleSignUp} className="pull-right" bsStyle="primary">Sign Up</Button>
+          <Button onClick={this.handleSignUp} bsStyle="primary">Sign Up</Button> or <Link to="login">Log In</Link>
         </form>
       );
     }
