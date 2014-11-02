@@ -61,7 +61,9 @@ var LoginPage = React.createClass({
                 <label>Password:</label>
                 <input ref="password" type="password" className="form-control" placeholder="Password" />
               </div>
-              <Button onClick={this.handleLogin}>Log In</Button> or <Link to="signup">Sign Up</Link>
+              <Button onClick={this.handleLogin}>
+                Log In
+              </Button> or <Link to="signup">Sign Up</Link> or <Link to="login-anonymously">Continue Anonymously</Link>
             </form>
           </div>
         </div>
