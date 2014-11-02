@@ -1,15 +1,16 @@
 /** @jsx React.DOM */
 var ActiveState = require('react-router').ActiveState;
 var Button = require('react-bootstrap').Button;
+var Glyphicon = require('react-bootstrap').Glyphicon;
 var Link = require('react-router').Link;
 var ListGroup = require('react-bootstrap').ListGroup;
 var ListGroupItem = require('react-bootstrap').ListGroupItem;
 var Modal = require('react-bootstrap').Modal;
 var ModalTrigger = require('react-bootstrap').ModalTrigger;
 var Nav = require('react-bootstrap').Nav;
-var NavItem = require('react-bootstrap').NavItem;
 var Navbar = require('react-bootstrap').Navbar;
 var Navigation = require('react-router').Navigation;
+var NavItem = require('react-bootstrap').NavItem;
 var Parse = require('parse').Parse;
 var React = require('react');
 
@@ -20,6 +21,7 @@ var ProgramEditor = require('./ProgramEditor');
 
 var WorldModel = require('../models/WorldModel');
 var TrackModel = require('../models/TrackModel');
+var ProgramModel = require('../models/ProgramModel');
 
 var TrackPage = React.createClass({
 
@@ -29,6 +31,7 @@ var TrackPage = React.createClass({
     return {
       trackModel: null,
       worldModels: [],
+      programModels: [],
       currentWorld: null,
       currentWorldIndex: 0,
       isLoading: true,
@@ -47,6 +50,7 @@ var TrackPage = React.createClass({
         this.setState({
           trackModel:trackModel
         });
+
         var query = new Parse.Query(WorldModel);
         query.equalTo('track', trackModel);
         query.equalTo('public', true);
@@ -58,7 +62,18 @@ var TrackPage = React.createClass({
               currentWorldIndex: 0
             });
           }.bind(this)
-        })
+        });
+        var programQuery = new Parse.Query(ProgramModel);
+        programQuery.equalTo('owner', Parse.User.current());
+        programQuery.matchesQuery('world', query);
+        programQuery.find({
+          success: function(programs) {
+            this.setState({
+              programModels: programs
+            });
+          }.bind(this)
+        });
+
       }.bind(this),
       error: function() {
         alert("failed to fetch track:"+error.code+" "+error.message);
@@ -79,10 +94,22 @@ var TrackPage = React.createClass({
       return <div>loading...</div>;
     }
     var worldList = this.state.worldModels.map(function(world, index){
+      var isActive = world.id == this.getCurrentWorld().id;
+      var isFinished = false;
+      this.state.programModels.forEach(function(program) {
+        if (program.get('world').id == world.id && program.get('finished')) {
+          isFinished = true;
+        }
+      }.bind(this));
       return (
-        <li key={world.id} className={world.id == this.getCurrentWorld().id ? "active":""}
-            onClick={this.setCurrentWorld.bind(this, index)}>
-          <a href="#">({index+1}) {world.get('name')}</a>
+        <li
+          key={world.id}
+          className={isActive ? "active":""}
+          onClick={this.setCurrentWorld.bind(this, index)}>
+          <a href="#">
+            {isFinished ? <Glyphicon glyph="ok"/> : null}
+            ({index+1}) {world.get('name')}
+          </a>
         </li>
       );
     }.bind(this));

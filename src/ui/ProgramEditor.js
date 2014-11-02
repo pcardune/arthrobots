@@ -33,6 +33,7 @@ var ProgramEditor = React.createClass({
   getDefaultProps: function() {
     return {
       worldModel: null,
+      onFinished: function(){}
     };
   },
 
@@ -130,6 +131,14 @@ var ProgramEditor = React.createClass({
           completedSteps: this.state.completedSteps + 1,
           isFinished: isFinished
         });
+        if (isFinished) {
+          this.state.programModel.set('finished', true);
+          this.state.programModel.save({
+            success: function(program) {
+              this.setState({programModel:program});
+            }.bind(this)
+          })
+        }
       }
     }
   },

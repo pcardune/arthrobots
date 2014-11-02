@@ -40,8 +40,6 @@ var WorldCanvas = React.createClass({
   render: function() {
     if (this.props.worldDefinition && this.renderer && !this.parser) {
       this.renderWorld();
-    } else {
-      console.log("not rendering world yet", this.props.worldDefinition, this.renderer, this.parser);
     }
     return <canvas className={"WorldCanvas "+this.props.className} id="worldCanvas" ref="canvas" width="500" height="500" />
   }

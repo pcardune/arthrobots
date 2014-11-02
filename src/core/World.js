@@ -137,8 +137,7 @@ var World = Class.extend(
       var robotsEqual = (
         world.robot.x == this.robot.x &&
         world.robot.y == this.robot.y &&
-        world.robot.direction == this.robot.direction &&
-        world.robot.beepers == this.robot.beepers
+        world.robot.direction == this.robot.direction
       );
       if (!robotsEqual) {
         console.log("robots dont match", this.robot.toString(), "VS", world.robot.toString());
