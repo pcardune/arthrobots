@@ -18,6 +18,7 @@ var Tab = require('./Tab');
 var Markdown = require('./Markdown');
 var WorldCanvas = require('./WorldCanvas');
 var ProgramEditor = require('./ProgramEditor');
+var TrackBadge = require('./TrackBadge');
 
 var WorldModel = require('../models/WorldModel');
 var TrackModel = require('../models/TrackModel');
@@ -157,13 +158,12 @@ var TrackPage = React.createClass({
 
     return (
       <div className="TrackPage">
-        <h6 className="pull-right">{this.state.trackModel.get('name')}</h6>
         <nav>
           <ul className="pagination">
             {worldList}
           </ul>
         </nav>
-        <h3>{this.getCurrentWorld().get('name')}</h3>
+        <h3>{this.getCurrentWorld().get('name')} <TrackBadge track={this.state.trackModel}/></h3>
         <div className="row">
           <div className="col-md-5">
             <Markdown>{this.getCurrentWorld().get('description')}</Markdown>
