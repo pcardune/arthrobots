@@ -1,0 +1,10 @@
+.TrackPage .pagination li.finished a {
+  background-color: #ccc;
+  color: #333;
+  border-color: #aaa;
+}
+.TrackPage .pagination li.finished.active a {
+  background-color: #333;
+  color: #999;
+  border-color: #000;
+}

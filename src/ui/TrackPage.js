@@ -23,6 +23,7 @@ var WorldModel = require('../models/WorldModel');
 var TrackModel = require('../models/TrackModel');
 var ProgramModel = require('../models/ProgramModel');
 
+require('./TrackPage.css');
 var TrackPage = React.createClass({
 
   mixins: [Navigation, ActiveState],
@@ -72,6 +73,21 @@ var TrackPage = React.createClass({
             this.setState({
               programModels: programs
             });
+            this.state.worldModels.every(function(world, worldIndex) {
+              var worldIsFinished = false;
+              programs.every(function(program) {
+                if (program.get('world').id == world.id && program.get('finished')) {
+                  worldIsFinished = true;
+                  return false;
+                }
+                return true;
+              }.bind(this));
+              if (!worldIsFinished) {
+                this.setState({currentWorldIndex:worldIndex});
+                return false;
+              }
+              return true;
+            }.bind(this));
           }.bind(this)
         });
 
@@ -103,6 +119,8 @@ var TrackPage = React.createClass({
   render: function() {
     if (this.state.isLoading) {
       return <div>loading...</div>;
+    } else if (this.state.worldModels.length == 0) {
+      return <div>There are no worlds here yet</div>;
     }
     var worldList = this.state.worldModels.map(function(world, index){
       var isActive = world.id == this.getCurrentWorld().id;
@@ -115,18 +133,17 @@ var TrackPage = React.createClass({
       return (
         <li
           key={world.id}
-          className={isActive ? "active":""}
+          className={(isActive ? "active":"") + (isFinished ? " finished" : "")}
           onClick={this.setCurrentWorld.bind(this, index)}>
           <a href="#">
-            {isFinished ? <Glyphicon glyph="ok"/> : null}
-            ({index+1}) {world.get('name')}
+            {isFinished ? <Glyphicon glyph="ok"/> : null} {world.get('name')}
           </a>
         </li>
       );
     }.bind(this));
 
     return (
-      <div>
+      <div className="TrackPage">
         <h6 className="pull-right">{this.state.trackModel.get('name')}</h6>
         <nav>
           <ul className="pagination">
