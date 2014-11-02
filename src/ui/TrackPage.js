@@ -33,14 +33,20 @@ var TrackPage = React.createClass({
       trackModel: null,
       worldModels: [],
       programModels: [],
-      currentWorld: null,
-      currentWorldIndex: 0,
       isLoading: true,
     };
   },
 
   getCurrentWorld: function() {
-    return this.state.worldModels[this.state.currentWorldIndex];
+    var currentWorld = null;
+    this.state.worldModels.every(function(world) {
+      if (this.props.query.worldId == world.id) {
+        currentWorld = world;
+        return false;
+      }
+      return true;
+    }.bind(this));
+    return currentWorld;
   },
 
   loadTrackAndWorlds: function() {
@@ -60,8 +66,7 @@ var TrackPage = React.createClass({
           success: function(worldModels) {
             this.setState({
               worldModels: worldModels,
-              isLoading: false,
-              currentWorldIndex: 0
+              isLoading: false
             });
           }.bind(this)
         });
@@ -82,8 +87,8 @@ var TrackPage = React.createClass({
                 }
                 return true;
               }.bind(this));
-              if (!worldIsFinished) {
-                this.setState({currentWorldIndex:worldIndex});
+              if (!worldIsFinished && !this.props.query.worldId) {
+                this.transitionTo('track', {trackId:this.props.params.trackId}, {worldId:world.id})
                 return false;
               }
               return true;
@@ -102,8 +107,17 @@ var TrackPage = React.createClass({
     this.loadTrackAndWorlds();
   },
 
-  setCurrentWorld: function(index) {
-    this.setState({currentWorldIndex:index});
+  handleContinue: function(index) {
+    var currentWorldIndex = null;
+    this.state.worldModels.every(function(world, index) {
+      if (this.props.query.worldId == world.id) {
+        currentWorldIndex = index;
+        return false;
+      }
+      return true;
+    }.bind(this));
+    var nextWorld = this.state.worldModels[currentWorldIndex + 1];
+    this.transitionTo('track', {trackId:this.props.params.trackId}, {worldId:nextWorld.id});
   },
 
   handleFinished: function(world, program) {
@@ -117,7 +131,7 @@ var TrackPage = React.createClass({
   },
 
   render: function() {
-    if (this.state.isLoading) {
+    if (this.state.isLoading || !this.getCurrentWorld()) {
       return <div>loading...</div>;
     } else if (this.state.worldModels.length == 0) {
       return <div>There are no worlds here yet</div>;
@@ -133,11 +147,10 @@ var TrackPage = React.createClass({
       return (
         <li
           key={world.id}
-          className={(isActive ? "active":"") + (isFinished ? " finished" : "")}
-          onClick={this.setCurrentWorld.bind(this, index)}>
-          <a href="#">
+          className={(isActive ? "active":"") + (isFinished ? " finished" : "")}>
+          <Link to="track" params={{trackId:this.props.params.trackId}} query={{worldId:world.id}}>
             {isFinished ? <Glyphicon glyph="ok"/> : null} {world.get('name')}
-          </a>
+          </Link>
         </li>
       );
     }.bind(this));
@@ -158,7 +171,7 @@ var TrackPage = React.createClass({
           <div className="col-md-7">
             <ProgramEditor
               worldModel={this.getCurrentWorld()}
-              onContinue={this.setCurrentWorld.bind(this, this.state.currentWorldIndex+1)}
+              onContinue={this.handleContinue}
               onFinished={this.handleFinished.bind(this, this.getCurrentWorld())}
             />
           </div>
