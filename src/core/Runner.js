@@ -126,7 +126,7 @@ var Runner = Class.extend(
         this.stop();
         if (this.renderer.world.robot.on){
           this.stop();
-          alert("Robot ran out of instructions.");
+          console.error("Robot ran out of instructions.");
         }
         if (typeof callback === "function"){
           callback();
