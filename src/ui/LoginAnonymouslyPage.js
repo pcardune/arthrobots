@@ -20,6 +20,26 @@ var LoginAnonymouslyPage = React.createClass({
       messageType:"info"
     });
 
+    if (localStorage.getItem('username') && localStorage.getItem('password')) {
+      Parse.User.logIn(
+        localStorage.getItem('username'),
+        localStorage.getItem('password'),
+        {
+          success: function() {
+            window.location = "/";
+          },
+          error: function(user, error) {
+            // Show the error message somewhere and let the user try again.
+            this.setState({
+              message:"There was an error while signing you up: "+error.code+" "+error.message,
+              messageType:"danger"
+            });
+          }.bind(this)
+        }
+      );
+      return;
+    }
+
     var user = new Parse.User();
     var username = ''+Math.floor(Math.random()*1000000000);
     var password = ''+Math.floor(Math.random()*1000000000);
@@ -32,7 +52,7 @@ var LoginAnonymouslyPage = React.createClass({
       success: function(user) {
         // Hooray! Let them use the app now.
         window.location = "/";
-      }.bind(this),
+      },
       error: function(user, error) {
         // Show the error message somewhere and let the user try again.
         this.setState({
