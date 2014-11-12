@@ -11,6 +11,8 @@ var Nav = require('react-bootstrap').Nav;
 var Navbar = require('react-bootstrap').Navbar;
 var Navigation = require('react-router').Navigation;
 var NavItem = require('react-bootstrap').NavItem;
+var OverlayTrigger = require('react-bootstrap').OverlayTrigger;
+var Tooltip = require('react-bootstrap').Tooltip;
 var Parse = require('parse').Parse;
 var React = require('react');
 
@@ -79,6 +81,7 @@ var TrackPage = React.createClass({
             this.setState({
               programModels: programs
             });
+            var transitionedToWorld = false;
             this.state.worldModels.every(function(world, worldIndex) {
               var worldIsFinished = false;
               programs.every(function(program) {
@@ -89,11 +92,16 @@ var TrackPage = React.createClass({
                 return true;
               }.bind(this));
               if (!worldIsFinished && !this.props.query.worldId) {
+                console.log("transitioning to", world.id);
                 this.transitionTo('track', {trackId:this.props.params.trackId}, {worldId:world.id})
+                transitionedToWorld = true;
                 return false;
               }
               return true;
             }.bind(this));
+            if (!transitionedToWorld) {
+              this.transitionTo('track', {trackId:this.props.params.trackId}, {worldId:worldModels[0].id});
+            }
           }.bind(this)
         });
 
@@ -149,9 +157,11 @@ var TrackPage = React.createClass({
         <li
           key={world.id}
           className={(isActive ? "active":"") + (isFinished ? " finished" : "")}>
-          <Link to="track" params={{trackId:this.props.params.trackId}} query={{worldId:world.id}}>
-            {isFinished ? <Glyphicon glyph="ok"/> : null} {world.get('name')}
-          </Link>
+          <OverlayTrigger placement="bottom" overlay={<Tooltip>{world.get('name')}</Tooltip>}>
+            <Link to="track" params={{trackId:this.props.params.trackId}} query={{worldId:world.id}}>
+              {isFinished ? <Glyphicon glyph="star"/> : <Glyphicon glyph="star-empty"/>}
+            </Link>
+          </OverlayTrigger>
         </li>
       );
     }.bind(this));
