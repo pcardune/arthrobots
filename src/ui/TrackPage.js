@@ -21,6 +21,7 @@ var Markdown = require('./Markdown');
 var WorldCanvas = require('./WorldCanvas');
 var ProgramEditor = require('./ProgramEditor');
 var TrackBadge = require('./TrackBadge');
+var LoadingBlock = require('./LoadingBlock');
 
 var WorldModel = require('../models/WorldModel');
 var TrackModel = require('../models/TrackModel');
@@ -141,7 +142,7 @@ var TrackPage = React.createClass({
 
   render: function() {
     if (this.state.isLoading || !this.getCurrentWorld()) {
-      return <div>loading...</div>;
+      return <LoadingBlock/>;
     } else if (this.state.worldModels.length == 0) {
       return <div>There are no worlds here yet</div>;
     }
