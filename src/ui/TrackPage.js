@@ -72,40 +72,40 @@ var TrackPage = React.createClass({
               worldModels: worldModels,
               isLoading: false
             });
-          }.bind(this)
-        });
-        var programQuery = new Parse.Query(ProgramModel);
-        programQuery.equalTo('owner', Parse.User.current());
-        programQuery.matchesQuery('world', query);
-        programQuery.find({
-          success: function(programs) {
-            this.setState({
-              programModels: programs
-            });
-            var transitionedToWorld = false;
-            this.state.worldModels.every(function(world, worldIndex) {
-              var worldIsFinished = false;
-              programs.every(function(program) {
-                if (program.get('world').id == world.id && program.get('finished')) {
-                  worldIsFinished = true;
-                  return false;
-                }
-                return true;
-              }.bind(this));
-              if (!worldIsFinished && !this.props.query.worldId) {
-                console.log("transitioning to", world.id);
-                this.transitionTo('track', {trackId:this.props.params.trackId}, {worldId:world.id})
-                transitionedToWorld = true;
-                return false;
-              }
-              return true;
-            }.bind(this));
-            if (!transitionedToWorld) {
-              this.transitionTo('track', {trackId:this.props.params.trackId}, {worldId:worldModels[0].id});
-            }
-          }.bind(this)
-        });
 
+            var programQuery = new Parse.Query(ProgramModel);
+            programQuery.equalTo('owner', Parse.User.current());
+            programQuery.matchesQuery('world', query);
+            programQuery.find({
+              success: function(programs) {
+                this.setState({
+                  programModels: programs
+                });
+                var transitionedToWorld = false;
+                this.state.worldModels.every(function(world, worldIndex) {
+                  var worldIsFinished = false;
+                  programs.every(function(program) {
+                    if (program.get('world').id == world.id && program.get('finished')) {
+                      worldIsFinished = true;
+                      return false;
+                    }
+                    return true;
+                  }.bind(this));
+                  if (!worldIsFinished && !this.props.query.worldId) {
+                    this.transitionTo('track', {trackId:this.props.params.trackId}, {worldId:world.id})
+                    transitionedToWorld = true;
+                    return false;
+                  }
+                  return true;
+                }.bind(this));
+                if (!transitionedToWorld && !this.props.query.worldId) {
+                  this.transitionTo('track', {trackId:this.props.params.trackId}, {worldId:this.state.worldModels[0].id});
+                }
+              }.bind(this)
+            });
+
+          }.bind(this)
+        });
       }.bind(this),
       error: function() {
         alert("failed to fetch track:"+error.code+" "+error.message);
