@@ -53,4 +53,4 @@ var routes = (
   </Routes>
 );
 
-React.renderComponent(routes, document.body);
+React.render(routes, document.body);
