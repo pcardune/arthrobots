@@ -17,10 +17,10 @@
     "webpack": "^1.4.9"
   },
   "devDependencies": {
-    "jest-cli": "~0.1.18",
+    "jest-cli": "~0.1.18"
   },
   "scripts": {
-    "prestart": "webpack src/main.js build/main.js",
+    "postinstall": "webpack src/main.js build/main.js",
     "start": "node server.js",
     "build": "webpack --colors --display-error-details --watch --debug src/main.js build/main.js",
     "test": "jest"
