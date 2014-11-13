@@ -4,14 +4,14 @@
   "description": "A robot programming game",
   "repository": "pcardune/arthrobots",
   "dependencies": {
-    "express": "^4.10.2",
-    "parse": "petehunt/parsesdk-isomorphic",
-    "react": "~0.11.2",
-    "react-bootstrap": "^0.12.0",
-    "showdown": "^0.3.1",
-
     "css-loader": "^0.9.0",
+    "express": "^4.10.2",
     "jsx-loader": "^0.11.2",
+    "parse": "petehunt/parsesdk-isomorphic",
+    "react": "^0.12.0",
+    "react-bootstrap": "^0.12.0",
+    "react-router": "^0.10.2",
+    "showdown": "^0.3.1",
     "style-loader": "^0.8.1",
     "url-loader": "^0.5.5",
     "webpack": "^1.4.9"
