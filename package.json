@@ -4,6 +4,7 @@
   "description": "A robot programming game",
   "repository": "pcardune/arthrobots",
   "dependencies": {
+    "express": "^4.10.2",
     "parse": "petehunt/parsesdk-isomorphic",
     "react": "~0.11.2",
     "react-bootstrap": "^0.12.0",
@@ -18,7 +19,9 @@
     "webpack": "^1.4.9"
   },
   "scripts": {
-    "start": "webpack --colors --display-error-details --watch --debug src/main.js build/main.js",
+    "prestart": "webpack src/main.js build/main.js",
+    "start": "node server.js",
+    "build": "webpack --colors --display-error-details --watch --debug src/main.js build/main.js",
     "test": "jest"
   },
   "author": "Paul Carduner",
