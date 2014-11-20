@@ -196,7 +196,7 @@ var ProgramEditor = React.createClass({
     }
 
     return (
-      <div className="ProgramEditor row">
+      <div className={"ProgramEditor row"}>
         <div className="col-md-6">
           <CodeEditor
             ref="codeEditor"

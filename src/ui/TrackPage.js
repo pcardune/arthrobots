@@ -117,6 +117,18 @@ var TrackPage = React.createClass({
     this.loadTrackAndWorlds();
   },
 
+  componentDidUpdate: function() {
+    if (this.refs.programEditor) {
+      // debugger;
+      $(this.refs.programEditor.getDOMNode()).affix({
+        offset: {
+          top: $(this.refs.programEditor.getDOMNode()).offset().top - 10,
+          bottom: 0
+        }
+      });
+    }
+  },
+
   handleContinue: function(index) {
     var currentWorldIndex = null;
     this.state.worldModels.every(function(world, index) {
@@ -181,6 +193,7 @@ var TrackPage = React.createClass({
           </div>
           <div className="col-md-7">
             <ProgramEditor
+              ref="programEditor"
               worldModel={this.getCurrentWorld()}
               onContinue={this.handleContinue}
               onFinished={this.handleFinished.bind(this, this.getCurrentWorld())}
