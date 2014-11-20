@@ -28,23 +28,6 @@ describe('lang Expression', function() {
     });
 
   /**
-   * In the event that calling the function passed to the
-   * expression causes an error to be thrown, the error will be caught
-   * and an alert presented to the user.
-   */
-  it('should catch exceptions thrown in expression functions and throw an alert', function() {
-    var lang = require('../lang')
-    window.alert = jest.genMockFunction();
-    function func(){
-      throw new Error("some error");
-    }
-    var expression = gvr.lang.newExpression(1, func, {});
-    var next = expression.step();
-    expect(next).toBe(null);
-    expect(window.alert.mock.calls[0][0]).toBe("some error");
-  });
-
-  /**
    * The next level up after expressions are blocks. These are
    * essentially just a grouping of expression objects.
    */

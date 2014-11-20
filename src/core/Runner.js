@@ -114,7 +114,9 @@ var Runner = Class.extend(
             this.run(speed, callback, notify, step);
           } else if (!step){
             this.timeout = window.setTimeout(
-              function(){this.run(speed, callback, notify, step);}.bind(this),
+              function(){
+                this.run(speed, callback, notify, step);
+              }.bind(this),
               speed
             );
           }

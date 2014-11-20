@@ -82,13 +82,8 @@ gvr.lang.Expression = gvr.lang.BaseExpression.extend(
      */
     step: function(globals){
       gvr.lang.getRunner(globals).notify(this);
-      try{
-        this.callable.call(this.scope);
-        return [];
-      } catch (e){
-        alert(e.message);
-      }
-      return null;
+      this.callable.call(this.scope);
+      return [];
     }
   });
 

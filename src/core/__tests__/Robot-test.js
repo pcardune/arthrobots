@@ -88,7 +88,6 @@ describe('Robot', function() {
     expect(w.robot.on).toBeTruthy();;
     w.robot.turnoff();
     expect(w.robot.on).toBeFalsy();
-    expect(window.alert.mock.calls[0][0]).toBe("Robot turned off");
   });
 
   it("testDirectionConditionals", function(){
