@@ -15,6 +15,7 @@ var Navbar = require('react-bootstrap').Navbar;
 var Navigation = require('react-router').Navigation;
 var Parse = require('parse').Parse;
 var React = require('react');
+var Glyphicon = require('react-bootstrap').Glyphicon;
 
 var Tab = require('./Tab');
 var Markdown = require('./Markdown');
@@ -195,9 +196,64 @@ var ProgramEditor = React.createClass({
       }
     }
 
+    var helpModal = (
+      <Modal title="Quick Reference">
+        <div className="modal-body">
+          <h4>Instructions</h4>
+          <pre>
+            move{'\n'}
+            turnleft{'\n'}
+            pickbeeper{'\n'}
+            putbeeper{'\n'}
+            turnoff{'\n'}
+          </pre>
+          <h4>Conditions</h4>
+          <pre>
+            front_is_clear{'\n'}
+            front_is_blocked{'\n'}
+            left_is_clear{'\n'}
+            left_is_blocked{'\n'}
+            right_is_clear{'\n'}
+            right_is_blocked{'\n'}
+            {'\n'}
+            next_to_a_beeper{'\n'}
+            not_next_to_a_beeper{'\n'}
+            any_beepers_in_beeper_bag{'\n'}
+            no_beepers_in_beeper_bag{'\n'}
+            {'\n'}
+            facing_north{'\n'}
+            not_facing_north{'\n'}
+            facing_south{'\n'}
+            not_facing_south{'\n'}
+            facing_east{'\n'}
+            not_facing_east{'\n'}
+            facing_west{'\n'}
+            not_facing_west{'\n'}
+          </pre>
+          <h4>Iteration</h4>
+          <pre>
+            {'do <positive_number>:\n'}
+            {'    <block>'}
+          </pre>
+          <pre>
+            {'while <test>:\n'}
+            {'    <block>'}
+          </pre>
+          <h4>Defining new instructions</h4>
+          <pre>
+            {'define <new_name>:\n'}
+            {'    <block>'}
+          </pre>
+        </div>
+      </Modal>
+    );
+
     return (
       <div className={"ProgramEditor row"}>
         <div className="col-md-6">
+          <ModalTrigger modal={helpModal}>
+            <Glyphicon glyph="question-sign" className="helpButton"/>
+          </ModalTrigger>
           <CodeEditor
             ref="codeEditor"
             style={{minHeight:"300px"}}

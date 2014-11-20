@@ -9,3 +9,13 @@
 .ProgramEditor .badge.active {
   background-color: #428bca;
 }
+
+.ProgramEditor .helpButton {
+  position: relative;
+  top: 5px;
+  right: 5px;
+  display: block;
+  text-align: right;
+  height: 0px;
+  cursor: pointer;
+}
