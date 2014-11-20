@@ -44,8 +44,8 @@ var TrackDropdown = React.createClass({
   },
 
   render: function() {
-    return this.transferPropsTo(
-      <Input type="select" ref="input" value={this.props.defaultValue && this.props.defaultValue.id}>
+    return (
+      <Input {...this.props} type="select" ref="input" value={this.props.defaultValue && this.props.defaultValue.id}>
         <option value=""></option>
         {this.state.trackModels.map(function(track) {return <option key={track.id} value={track.id}>{track.get('name')}</option>;})}
       </Input>

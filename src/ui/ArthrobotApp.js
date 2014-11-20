@@ -38,7 +38,7 @@ var ArthrobotApp = React.createClass({
 
         <div className="row">
           <div className="col-md-12 app-content">
-            {this.props.activeRouteHandler()}
+            <this.props.activeRouteHandler/>
           </div>
         </div>
       </div>
