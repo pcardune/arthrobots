@@ -75,7 +75,6 @@ var LandingPage = React.createClass({
       buttonToolbar = (
         <ButtonToolbar>
           <Link to="track" params={{trackId:'yh1vdAIkHs'}} className="btn btn-success">Beginner</Link>
-          <Link to="track" params={{trackId:'PwMVQiXwGC'}} className="btn btn-primary">Intermediate</Link>
           <Link to="track" params={{trackId:'02eHrPIc55'}} className="btn btn-danger">Advanced</Link>
         </ButtonToolbar>
       );
@@ -83,7 +82,6 @@ var LandingPage = React.createClass({
       buttonToolbar = (
         <ButtonToolbar>
           <Link to="login" className="btn btn-success">Beginner</Link>
-          <Link to="login" className="btn btn-primary">Intermediate</Link>
           <Link to="login" className="btn btn-danger">Advanced</Link>
         </ButtonToolbar>
       );
