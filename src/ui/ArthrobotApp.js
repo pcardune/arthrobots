@@ -3,6 +3,7 @@
 var ActiveState = require('react-router').ActiveState;
 var Parse = require('parse').Parse;
 var React = require('react');
+var gravatar = require('gravatar');
 
 var Navbar = require('react-bootstrap').Navbar;
 var Nav = require('react-bootstrap').Nav;
@@ -23,6 +24,19 @@ var ArthrobotApp = React.createClass({
   },
 
   render: function() {
+    var navbar = [];
+    if (this.state.user) {
+      navbar = [
+        <img className="gravatar" src={gravatar.url(this.state.user.get('email'))} />,
+        <Tab to="logout">Logout</Tab>
+      ];
+    } else {
+      navbar = [
+        <Tab to="signup"><strong>Sign Up</strong></Tab>,
+        <Tab to="login">Log In</Tab>
+      ];
+    }
+
     return (
       <div className="container ArthrobotApp">
         <Navbar brand="Arthrobots" fluid={true} className="navbar-inverse">
@@ -31,8 +45,7 @@ var ArthrobotApp = React.createClass({
             {Parse.User.current() ? <Tab to="worlds">Worlds</Tab> : null}
           </Nav>
           <Nav className="navbar-right">
-            {this.state.user ? null : <Tab to="signup"><strong>Sign Up</strong></Tab>}
-            {this.state.user ? <Tab to="logout">Logout</Tab> : <Tab to="login">Log In</Tab>}
+            {navbar}
           </Nav>
         </Navbar>
 

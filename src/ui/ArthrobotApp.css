@@ -1,5 +1,5 @@
 body {
-	font-family: "Arvo","Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-family: "Arvo","Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
 .btn:focus, .btn:active, .btn:active:focus,
@@ -11,4 +11,11 @@ body {
   margin-top: 15px;
 }
 .ArthrobotApp .app-content {
+}
+
+.ArthrobotApp .gravatar {
+  width: 35px;
+  border: 2px solid #eee;
+  border-radius: 3px;
+  margin: 7px;
 }
