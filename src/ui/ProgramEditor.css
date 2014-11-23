@@ -19,3 +19,19 @@
   height: 0px;
   cursor: pointer;
 }
+
+.ProgramEditor .errorList {
+  position: relative;
+  top: 122px;
+  text-align: center;
+  height: 0;
+}
+
+.ProgramEditor .errorList div {
+  color: white;
+  background-color: red;
+  padding: 10px;
+  opacity: .75;
+  width: 75%;
+  margin: auto;
+}

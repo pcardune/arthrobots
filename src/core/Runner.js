@@ -66,8 +66,8 @@ var Runner = Class.extend(
      * Perform the next execution step.
      * @param Same as the callback parameter for {@link gvr.runner.Runner#run}
      */
-    step: function(callback, notify){
-      this.run(0, callback, notify, true);
+    step: function(callback, notify, onError){
+      this.run(0, callback, notify, onError, true);
     },
 
     /**
@@ -88,7 +88,7 @@ var Runner = Class.extend(
      *       If false, execution will continue to happen
      *       until there is an error or the program finishes.
      */
-    run: function(speed, callback, notify, step){
+    run: function(speed, callback, notify, onError, step){
       this.running = true;
       var instant = speed === -1;
       speed = speed || 200;
@@ -99,7 +99,7 @@ var Runner = Class.extend(
         try {
           var next = last.step(this.globals);
         } catch (e){
-          alert(e.message);
+          onError && onError(e);
           return;
         }
         this.stack = this.stack.concat(next);
@@ -111,23 +111,22 @@ var Runner = Class.extend(
 
         if (next.length > 0){
           if (instant){
-            this.run(speed, callback, notify, step);
+            this.run(speed, callback, notify, onError, step);
           } else if (!step){
             this.timeout = window.setTimeout(
               function(){
-                this.run(speed, callback, notify, step);
+                this.run(speed, callback, notify, onError, step);
               }.bind(this),
               speed
             );
           }
         } else {
-          this.run(speed, callback, notify, step);
+          this.run(speed, callback, notify, onError, step);
         }
 
       } else {
         this.stop();
         if (this.renderer.world.robot.on){
-          this.stop();
           console.error("Robot ran out of instructions.");
         }
         if (typeof callback === "function"){

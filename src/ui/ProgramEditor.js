@@ -47,7 +47,8 @@ var ProgramEditor = React.createClass({
       programCode: '',
       completedSteps: 0,
       isFinished: false,
-      speed: 'Medium'
+      speed: 'Medium',
+      errors: []
     }
   },
 
@@ -102,10 +103,15 @@ var ProgramEditor = React.createClass({
     }
   },
 
+  handleReset: function() {
+    this.refs.worldCanvas.renderWorld();
+    this.setState({runState:"",errors:[]});
+  },
+
   handleRun: function() {
     this.handleSave();
+    this.handleReset();
     var lines = this.refs.codeEditor.getDOMNode().value.split('\n');
-    this.refs.worldCanvas.renderWorld();
     this.program = parser.newParser(lines, this.refs.worldCanvas.world.robot).parse();
     this.runner = new Runner(this.program, this.refs.worldCanvas.renderer);
     this.handleContinue();
@@ -121,9 +127,17 @@ var ProgramEditor = React.createClass({
     var ms = {"Slow":500,"Medium":200,"Fast":50};
     this.runner.run(
       ms[this.state.speed],
-      this.setState.bind(this, {runState: ""}),
-      this.runnerDidStep
+      this.handleRunnerStopped,
+      this.runnerDidStep,
+      this.runnerDidError
     );
+  },
+
+  runnerDidError: function(error) {
+    this.setState({
+      errors:[error],
+      runState:"stopped"
+    });
   },
 
   runnerDidStep: function(runner) {
@@ -155,9 +169,15 @@ var ProgramEditor = React.createClass({
       this.runner = new Runner(this.program, this.refs.worldCanvas.renderer);
     }
     this.runner.step(
-      this.setState.bind(this, {runState: ""}),
-      this.runnerDidStep
+      this.handleRunnerStopped,
+      this.runnerDidStep,
+      this.runnerDidError
     );
+  },
+
+  handleRunnerStopped: function() {
+    console.log("runner stopped");
+    this.setState({runState: "finished"});
   },
 
   handleProgramChange: function (event) {
@@ -178,6 +198,10 @@ var ProgramEditor = React.createClass({
       buttons = [
         <Button key="2" onClick={this.handleContinue} className="pull-right" bsStyle="primary">Continue</Button>,
         <Button key="3" onClick={this.handleStep} className="pull-right">Step</Button>
+      ];
+    } else if (this.state.runState == "finished") {
+      buttons = [
+        <Button key="1" onClick={this.handleReset} bsStyle="primary" className="pull-right">Reset</Button>
       ];
     } else {
       buttons = [
@@ -264,6 +288,11 @@ var ProgramEditor = React.createClass({
           </ButtonToolbar>
         </div>
         <div className="col-md-6">
+          <div className="errorList">
+            {this.state.errors.map(function(e) {
+              return <div>{e.message}</div>
+            })}
+          </div>
           <WorldCanvas ref="worldCanvas" worldDefinition={this.props.worldModel.get('definition')} />
           <div className="pull-right">
             {completedSteps}<br />
