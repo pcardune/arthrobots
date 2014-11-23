@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 
 var ActiveState = require('react-router').ActiveState;
+var Link = require('react-router').Link;
 var Parse = require('parse').Parse;
 var React = require('react');
 var gravatar = require('gravatar');
@@ -17,17 +18,12 @@ var ArthrobotApp = React.createClass({
 
   mixins: [ActiveState],
 
-  getInitialState: function() {
-    return {
-      user: Parse.User.current()
-    };
-  },
-
   render: function() {
     var navbar = [];
-    if (this.state.user) {
+    var user = Parse.User.current();
+    if (user) {
       navbar = [
-        <img className="gravatar" src={gravatar.url(this.state.user.get('email'))} />,
+        <Link to="profile" params={{username:user.get('username')}}><img className="gravatar" src={gravatar.url(user.get('email'))} /></Link>,
         <Tab to="logout">Logout</Tab>
       ];
     } else {
@@ -42,7 +38,7 @@ var ArthrobotApp = React.createClass({
         <Navbar brand="Arthrobots" fluid={true} className="navbar-inverse">
           <Nav>
             <Tab to="landing">Home</Tab>
-            {Parse.User.current() ? <Tab to="worlds">Worlds</Tab> : null}
+            {user ? <Tab to="worlds">Worlds</Tab> : null}
           </Nav>
           <Nav className="navbar-right">
             {navbar}

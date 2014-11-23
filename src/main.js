@@ -23,6 +23,7 @@ var WorldPage = require('./ui/WorldPage');
 var TrackPage = require('./ui/TrackPage');
 var ArthrobotApp = require('./ui/ArthrobotApp');
 var LoginAnonymouslyPage = require('./ui/LoginAnonymouslyPage');
+var ProfilePage = require('./ui/ProfilePage');
 
 var ParseKeys = require('./ParseKeys');
 Parse.initialize(ParseKeys.APP_ID, ParseKeys.JS_KEY);
@@ -43,6 +44,7 @@ var routes = (
         <Route name="world" path="/worlds/:worldId" handler={WorldPage} />
         <DefaultRoute name="browseworlds" handler={BrowseWorldsPage} />
       </Route>
+      <Route name="profile" path="/profile/:username" handler={ProfilePage} />
       <Route name="track" path="/tracks/:trackId" handler={TrackPage} />
       <Route name="login" handler={LoginPage} />
       <Route name="login-anonymously" handler={LoginAnonymouslyPage} />

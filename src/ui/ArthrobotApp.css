@@ -13,7 +13,7 @@ body {
 .ArthrobotApp .app-content {
 }
 
-.ArthrobotApp .gravatar {
+.ArthrobotApp nav .gravatar {
   width: 35px;
   border: 2px solid #eee;
   border-radius: 3px;
