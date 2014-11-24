@@ -220,14 +220,11 @@ var CanvasRenderer = Class.extend(
               this.context.fill();
             } else {
               this.context.save();
-              var width = this.context.mozMeasureText(
-                ""+beepers);
-              this.mozTextStyle = "10px sans-serif";
-              this.context.translate(
-                coords.x+this.scale/2-width/2,
-                coords.y+this.scale/2-6);
+              var width = this.context.measureText(""+beepers).width;
+              this.context.translate(coords.x+this.scale/2-width/2, coords.y+this.scale/2-6);
               this.context.scale(1,-1);
-              this.context.mozDrawText(""+beepers);
+              console.log("width is", width);
+              this.context.fillText(""+beepers, 0, 0);
               this.context.restore();
             }
           }
