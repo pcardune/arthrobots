@@ -112,7 +112,12 @@ var ProgramEditor = React.createClass({
     this.handleSave();
     this.handleReset();
     var lines = this.refs.codeEditor.getDOMNode().value.split('\n');
-    this.program = parser.newParser(lines, this.refs.worldCanvas.world.robot).parse();
+    try {
+      this.program = parser.newParser(lines, this.refs.worldCanvas.world.robot).parse();
+    } catch (e) {
+      this.setState({runState:"", errors:[e]});
+      return
+    }
     this.runner = new Runner(this.program, this.refs.worldCanvas.renderer);
     this.handleContinue();
   },
@@ -176,7 +181,6 @@ var ProgramEditor = React.createClass({
   },
 
   handleRunnerStopped: function() {
-    console.log("runner stopped");
     this.setState({runState: "finished"});
   },
 
