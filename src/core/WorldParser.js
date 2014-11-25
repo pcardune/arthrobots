@@ -68,7 +68,7 @@ var WorldParser = Class.extend(
           var direction = {N:"NORTH",S:"SOUTH",E:"EAST",W:"WEST"}[specMatch[4]];
           count = parseInt(specMatch[5],10);
           if (count == NaN) {
-            count = 1;
+            count = 0;
           }
           if (name === "ROBOT"){
             this.world.robot.x = xCoord;
