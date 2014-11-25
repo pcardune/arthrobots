@@ -73,7 +73,6 @@ var WorldParser = Class.extend(
           if (name === "ROBOT"){
             this.world.robot.x = xCoord;
             this.world.robot.y = yCoord;
-            console.log("Robot has count", count);
             this.world.robot.beepers = count;
             this.world.robot.direction = direction;
           }
