@@ -165,7 +165,6 @@ var CanvasRenderer = Class.extend(
           var width = this.context.measureText(""+beepers).width;
           this.context.translate(-width/2, -6);
           this.context.scale(1,-1);
-          console.log("width is", width);
           this.context.fillText(""+beepers, 0, 0);
           this.context.restore();
         }
@@ -252,7 +251,6 @@ var CanvasRenderer = Class.extend(
               var width = this.context.measureText(""+beepers).width;
               this.context.translate(coords.x+this.scale/2-width/2, coords.y+this.scale/2-6);
               this.context.scale(1,-1);
-              console.log("width is", width);
               this.context.fillText(""+beepers, 0, 0);
               this.context.restore();
             }

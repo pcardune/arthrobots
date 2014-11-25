@@ -200,21 +200,22 @@ var ProgramEditor = React.createClass({
       ];
     } else if (this.state.runState == "stopped") {
       buttons = [
-        <Button key="2" onClick={this.handleContinue} className="pull-right" bsStyle="primary">Continue</Button>,
-        <Button key="3" onClick={this.handleStep} className="pull-right">Step</Button>
+        <Button key="1" onClick={this.handleContinue} className="pull-right" bsStyle="primary">Continue</Button>,
+        <Button key="2" onClick={this.handleStep} className="pull-right">Step</Button>,
+        <Button key="3" onClick={this.handleReset} className="pull-right">Reset</Button>
       ];
     } else if (this.state.runState == "finished") {
       buttons = [
-        <Button key="1" onClick={this.handleReset} bsStyle="primary" className="pull-right">Reset</Button>
+        <Button key="4" onClick={this.handleReset} bsStyle="primary" className="pull-right">Reset</Button>
       ];
     } else {
       buttons = [
-        <DropdownButton key="4" title={"Speed: "+this.state.speed}>
+        <DropdownButton key="5" title={"Speed: "+this.state.speed}>
           <MenuItem key="1" onClick={this.handleSpeedClick.bind(this, 'Slow')}>Slow</MenuItem>
           <MenuItem key="2" onClick={this.handleSpeedClick.bind(this, 'Medium')}>Medium</MenuItem>
           <MenuItem key="3" onClick={this.handleSpeedClick.bind(this, 'Fast')}>Fast</MenuItem>
         </DropdownButton>,
-        <Button key="5" onClick={this.handleRun} bsStyle="primary" className="pull-right">Save + Run</Button>,
+        <Button key="6" onClick={this.handleRun} bsStyle="primary" className="pull-right">Save + Run</Button>,
       ];
     }
     if (this.props.worldModel && this.props.worldModel.get('steps')) {

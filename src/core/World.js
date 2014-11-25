@@ -140,18 +140,15 @@ var World = Class.extend(
         world.robot.direction == this.robot.direction
       );
       if (!robotsEqual) {
-        console.log("robots dont match", this.robot.toString(), "VS", world.robot.toString());
         return false;
       }
       for (var key in this.beepers) {
         if (!world.beepers[key] == this.beepers[key]) {
-          console.log("beepers at", key,"don't match");
           return false;
         }
       }
       for (var key in world.beepers) {
         if (!world.beepers[key] == this.beepers[key]) {
-          console.log("beepers at", key,"don't match");
           return false;
         }
       }
