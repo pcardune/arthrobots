@@ -66,10 +66,14 @@ var WorldParser = Class.extend(
           xCoord = parseInt(specMatch[2],10);
           yCoord = parseInt(specMatch[3],10);
           var direction = {N:"NORTH",S:"SOUTH",E:"EAST",W:"WEST"}[specMatch[4]];
-          count = parseInt(specMatch[5],10) || 1;
+          count = parseInt(specMatch[5],10);
+          if (count == NaN) {
+            count = 1;
+          }
           if (name === "ROBOT"){
             this.world.robot.x = xCoord;
             this.world.robot.y = yCoord;
+            console.log("Robot has count", count);
             this.world.robot.beepers = count;
             this.world.robot.direction = direction;
           }

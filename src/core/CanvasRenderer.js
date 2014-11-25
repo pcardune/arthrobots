@@ -141,6 +141,35 @@ var CanvasRenderer = Class.extend(
       this.context.closePath();
       this.context.stroke();
       this.context.fill();
+
+      this.context.fillStyle = 'red';
+      this.context.strokeStyle = 'red';
+      this.context.lineWidth = 1;
+      var padding = this.scale*0.2;
+      var beepers = this.world.robot.beepers;
+      if (beepers > 0){
+        this.context.beginPath();
+        this.context.arc(
+          0, -3,
+          this.scale/2-padding-4, 0, Math.PI*2, false);
+        this.context.stroke();
+        if (beepers < 2){
+          this.context.beginPath();
+          this.context.arc(
+            0, -3,
+            this.scale/2-padding-4-3, 0, Math.PI*2, false);
+          this.context.fill();
+        } else {
+          this.context.save();
+          this.context.font = "10px Arial";
+          var width = this.context.measureText(""+beepers).width;
+          this.context.translate(-width/2, -6);
+          this.context.scale(1,-1);
+          console.log("width is", width);
+          this.context.fillText(""+beepers, 0, 0);
+          this.context.restore();
+        }
+      }
       this.context.restore();
     },
 
