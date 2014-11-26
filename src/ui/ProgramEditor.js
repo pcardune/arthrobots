@@ -129,7 +129,7 @@ var ProgramEditor = React.createClass({
 
   handleContinue: function() {
     this.setState({runState: "running"});
-    var ms = {"Slow":500,"Medium":200,"Fast":50};
+    var ms = {"Slow":500,"Medium":200,"Fast":50, "Very Fast":1};
     this.runner.run(
       ms[this.state.speed],
       this.handleRunnerStopped,
@@ -214,6 +214,7 @@ var ProgramEditor = React.createClass({
           <MenuItem key="1" onClick={this.handleSpeedClick.bind(this, 'Slow')}>Slow</MenuItem>
           <MenuItem key="2" onClick={this.handleSpeedClick.bind(this, 'Medium')}>Medium</MenuItem>
           <MenuItem key="3" onClick={this.handleSpeedClick.bind(this, 'Fast')}>Fast</MenuItem>
+          <MenuItem key="4" onClick={this.handleSpeedClick.bind(this, 'Very Fast')}>Very Fast</MenuItem>
         </DropdownButton>,
         <Button key="6" onClick={this.handleRun} bsStyle="primary" className="pull-right">Save + Run</Button>,
       ];
