@@ -123,7 +123,7 @@ var CanvasRenderer = Class.extend(
       this.context.fillStyle = 'white';
       this.context.lineWidth = 5;
       var coords = this.getCanvasCoords(
-        this.world.robot.x,this.world.robot.y);
+        this.robotX, this.robotY);
       this.context.translate(
         coords.x+this.scale/2, coords.y+this.scale/2);
       var radians = {
@@ -285,7 +285,7 @@ var CanvasRenderer = Class.extend(
       this.endY += jumpY;
     },
 
-    render: function(){
+    _renderFrame: function() {
       this.followRobot();
       this.context.save();
       this.context.clearRect(0,0,this.canvas.width, this.canvas.height);
@@ -304,6 +304,38 @@ var CanvasRenderer = Class.extend(
       this.context.restore();
 
       this.context.restore();
+    },
+
+    _renderFrameWithTimeout: function(frames) {
+      if (frames) {
+        this.robotX = this.robotX + (this.world.robot.x - this.robotX)/frames;
+        this.robotY = this.robotY + (this.world.robot.y - this.robotY)/frames;
+      } else {
+        this.robotX = this.world.robot.x;
+        this.robotY = this.world.robot.y;
+      }
+      this._renderFrame();
+      if (this._renderTimeout) {
+        window.clearTimeout(this._renderTimeout)
+      }
+      if (frames <= 0) {
+        return
+      }
+      this._renderTimeout = window.setTimeout(
+        this._renderFrameWithTimeout.bind(this, frames-1),
+        1000/60
+      );
+    },
+
+    render: function(speed){
+      speed = speed || 200;
+      if (this.robotX == undefined) {
+        this.robotX = this.world.robot.x;
+        this.robotY = this.world.robot.y;
+      }
+      var framerate = 1000/60;
+      var frames = Math.floor(speed/framerate);
+      this._renderFrameWithTimeout(frames);
     }
 
   });

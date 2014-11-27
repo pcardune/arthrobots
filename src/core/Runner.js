@@ -105,7 +105,7 @@ var Runner = Class.extend(
         this.stack = this.stack.concat(next);
         // rendering and loopback
         if (!instant){
-          this.renderer.render();
+          this.renderer.render(speed);
         }
         notify && notify(this);
 
