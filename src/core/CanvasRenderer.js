@@ -123,10 +123,10 @@ var CanvasRenderer = Class.extend(
       this.context.fillStyle = 'white';
       this.context.lineWidth = 5;
       var coords = this.getCanvasCoords(
-        this.robotX, this.robotY);
+        this.robot.x, this.robot.y);
       this.context.translate(
         coords.x+this.scale/2, coords.y+this.scale/2);
-      this.context.rotate(this.robotRadians);
+      this.context.rotate(this.robot.radians);
       var padding = this.scale*0.2;
       this.context.beginPath();
       this.context.moveTo(-this.scale/2+padding, -this.scale/2+padding);
@@ -300,58 +300,54 @@ var CanvasRenderer = Class.extend(
       this.context.restore();
     },
 
-    _renderFrameWithTimeout: function(frames) {
-      var radians = {
-        NORTH:0,
-        WEST:Math.PI/2,
-        SOUTH:Math.PI,
-        EAST:3*Math.PI/2
-      }[this.world.robot.direction];
-      if (frames) {
-        this.robotX += (this.world.robot.x - this.robotX)/frames;
-        this.robotY += (this.world.robot.y - this.robotY)/frames;
-        if (radians - this.robotRadians < 0) {
-          while (radians - this.robotRadians < 0){
-            radians += 2*Math.PI;
-          }
-          // console.log("radians=", radians, "robotRadians=",this.robotRadians, "radian delta=",(radians - this.robotRadians)/frames);
-          this.robotRadians += (radians - this.robotRadians)/frames;
-        } else {
-          this.robotRadians += (radians - this.robotRadians)/frames;
+    _renderFrameWithTimeout: function(speed) {
+      var start = null;
+      var step = function(timestamp) {
+        if (!start) {
+          start = timestamp;
         }
-      } else {
-        this.robotX = this.world.robot.x;
-        this.robotY = this.world.robot.y;
-        this.robotRadians = radians;
-      }
-      this._renderFrame();
-      if (this._renderTimeout) {
-        window.clearTimeout(this._renderTimeout)
-      }
-      if (frames <= 0) {
-        return
-      }
-      this._renderTimeout = window.setTimeout(
-        this._renderFrameWithTimeout.bind(this, frames-1),
-        1000/60
-      );
-    },
-
-    render: function(speed){
-      speed = speed || 200;
-      if (this.robotX == undefined) {
-        this.robotX = this.world.robot.x;
-        this.robotY = this.world.robot.y;
-        this.robotRadians = {
+        var progress = timestamp - start;
+        this.robot.x = this.robotStart.x + (this.world.robot.x - this.robotStart.x)/speed*progress;
+        this.robot.y = this.robotStart.y + (this.world.robot.y - this.robotStart.y)/speed*progress;
+        var radians = {
           NORTH:0,
           WEST:Math.PI/2,
           SOUTH:Math.PI,
           EAST:3*Math.PI/2
         }[this.world.robot.direction];
+        while (radians - this.robotStart.radians < 0) {
+          radians += Math.PI*2;
+        }
+        this.robot.radians = this.robotStart.radians + (radians - this.robotStart.radians)/speed*progress;
+        this.robot.radians = this.robot.radians % (2*Math.PI);
+        this._renderFrame();
+        if (progress < speed) {
+          window.requestAnimationFrame(step);
+        }
+      }.bind(this);
+      window.requestAnimationFrame(step);
+    },
+
+    render: function(speed){
+      speed = speed || 200;
+      if (this.robot == undefined) {
+        this.robot = {
+          x: this.world.robot.x,
+          y: this.world.robot.y,
+          radians:{
+            NORTH:0,
+            WEST:Math.PI/2,
+            SOUTH:Math.PI,
+            EAST:3*Math.PI/2
+          }[this.world.robot.direction]
+        };
       }
-      var framerate = 1000/60;
-      var frames = Math.floor(speed/framerate);
-      this._renderFrameWithTimeout(frames);
+      this.robotStart = {
+        x: this.robot.x,
+        y: this.robot.y,
+        radians: this.robot.radians
+      };
+      this._renderFrameWithTimeout(speed);
     }
 
   });
