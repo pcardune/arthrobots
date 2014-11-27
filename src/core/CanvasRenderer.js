@@ -126,13 +126,7 @@ var CanvasRenderer = Class.extend(
         this.robotX, this.robotY);
       this.context.translate(
         coords.x+this.scale/2, coords.y+this.scale/2);
-      var radians = {
-        NORTH:0,
-        WEST:Math.PI/2,
-        SOUTH:Math.PI,
-        EAST:-Math.PI/2
-      }[this.world.robot.direction];
-      this.context.rotate(radians);
+      this.context.rotate(this.robotRadians);
       var padding = this.scale*0.2;
       this.context.beginPath();
       this.context.moveTo(-this.scale/2+padding, -this.scale/2+padding);
@@ -307,12 +301,28 @@ var CanvasRenderer = Class.extend(
     },
 
     _renderFrameWithTimeout: function(frames) {
+      var radians = {
+        NORTH:0,
+        WEST:Math.PI/2,
+        SOUTH:Math.PI,
+        EAST:3*Math.PI/2
+      }[this.world.robot.direction];
       if (frames) {
-        this.robotX = this.robotX + (this.world.robot.x - this.robotX)/frames;
-        this.robotY = this.robotY + (this.world.robot.y - this.robotY)/frames;
+        this.robotX += (this.world.robot.x - this.robotX)/frames;
+        this.robotY += (this.world.robot.y - this.robotY)/frames;
+        if (radians - this.robotRadians < 0) {
+          while (radians - this.robotRadians < 0){
+            radians += 2*Math.PI;
+          }
+          // console.log("radians=", radians, "robotRadians=",this.robotRadians, "radian delta=",(radians - this.robotRadians)/frames);
+          this.robotRadians += (radians - this.robotRadians)/frames;
+        } else {
+          this.robotRadians += (radians - this.robotRadians)/frames;
+        }
       } else {
         this.robotX = this.world.robot.x;
         this.robotY = this.world.robot.y;
+        this.robotRadians = radians;
       }
       this._renderFrame();
       if (this._renderTimeout) {
@@ -332,6 +342,12 @@ var CanvasRenderer = Class.extend(
       if (this.robotX == undefined) {
         this.robotX = this.world.robot.x;
         this.robotY = this.world.robot.y;
+        this.robotRadians = {
+          NORTH:0,
+          WEST:Math.PI/2,
+          SOUTH:Math.PI,
+          EAST:3*Math.PI/2
+        }[this.world.robot.direction];
       }
       var framerate = 1000/60;
       var frames = Math.floor(speed/framerate);
