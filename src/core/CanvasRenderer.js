@@ -306,20 +306,26 @@ var CanvasRenderer = Class.extend(
         if (!start) {
           start = timestamp;
         }
-        var progress = timestamp - start;
-        this.robot.x = this.robotStart.x + (this.world.robot.x - this.robotStart.x)/speed*progress;
-        this.robot.y = this.robotStart.y + (this.world.robot.y - this.robotStart.y)/speed*progress;
         var radians = {
           NORTH:0,
           WEST:Math.PI/2,
           SOUTH:Math.PI,
           EAST:3*Math.PI/2
         }[this.world.robot.direction];
-        while (radians - this.robotStart.radians < 0) {
-          radians += Math.PI*2;
+        var progress = timestamp - start;
+        if (progress < speed) {
+          this.robot.x = this.robotStart.x + progress*(this.world.robot.x - this.robotStart.x)/speed;
+          this.robot.y = this.robotStart.y + progress*(this.world.robot.y - this.robotStart.y)/speed;
+          while (radians - this.robotStart.radians < 0) {
+            radians += Math.PI*2;
+          }
+          this.robot.radians = this.robotStart.radians + progress*(radians - this.robotStart.radians)/speed;
+          this.robot.radians = this.robot.radians % (2*Math.PI);
+        } else {
+          this.robot.x = this.world.robot.x;
+          this.robot.y = this.world.robot.y;
+          this.robot.radians = radians;
         }
-        this.robot.radians = this.robotStart.radians + (radians - this.robotStart.radians)/speed*progress;
-        this.robot.radians = this.robot.radians % (2*Math.PI);
         this._renderFrame();
         if (progress < speed) {
           window.requestAnimationFrame(step);
