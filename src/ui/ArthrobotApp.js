@@ -32,10 +32,10 @@ var ArthrobotApp = React.createClass({
         <Tab to="login">Log In</Tab>
       ];
     }
-
+    var brand = <Link to="landing">Arthrobots</Link>;
     return (
       <div className="container ArthrobotApp">
-        <Navbar brand="Arthrobots" fluid={true} className="navbar-inverse">
+        <Navbar brand={brand} fluid={true} className="navbar-inverse">
           <Nav>
             <Tab to="landing">Home</Tab>
             {user ? <Tab to="worlds">Worlds</Tab> : null}
