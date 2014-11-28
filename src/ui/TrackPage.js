@@ -129,11 +129,18 @@ var TrackPage = React.createClass({
     }
   },
 
-  handleContinue: function(index) {
+  handleContinue: function(programModel) {
     var currentWorldIndex = null;
     this.state.worldModels.every(function(world, index) {
       if (this.props.query.worldId == world.id) {
         currentWorldIndex = index;
+        this.state.programModels.some(function(program, index) {
+          if (program.id == programModel.id) {
+            this.state.programModels[index] = program;
+            this.setState({programModels:this.state.programModels});
+            return true;
+          }
+        }.bind(this));
         return false;
       }
       return true;

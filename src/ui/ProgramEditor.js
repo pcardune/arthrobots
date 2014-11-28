@@ -302,7 +302,14 @@ var ProgramEditor = React.createClass({
           <WorldCanvas ref="worldCanvas" worldDefinition={this.props.worldModel.get('definition')} />
           <div className="pull-right">
             {completedSteps}<br />
-            {this.state.isFinished ? <Button onClick={this.props.onContinue} bsStyle="success" className="pull-right">Continue!</Button>: null}
+            {this.state.isFinished ?
+              <Button
+                onClick={this.props.onContinue.bind(this,this.state.programModel)}
+                bsStyle="success"
+                className="pull-right">
+                Continue!
+              </Button> :
+              null}
           </div>
         </div>
       </div>
