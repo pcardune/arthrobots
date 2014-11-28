@@ -99,7 +99,7 @@ var ProgramEditor = React.createClass({
   componentWillReceiveProps: function(nextProps) {
     if (nextProps.worldModel != this.props.worldModel) {
       this.loadProgram(nextProps.worldModel);
-      this.setState({isFinished: false, completedSteps: 0});
+      this.setState({isFinished: false, completedSteps: 0, runState:''});
     }
   },
 
