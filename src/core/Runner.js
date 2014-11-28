@@ -107,7 +107,7 @@ var Runner = Class.extend(
         if (!instant){
           this.renderer.render(speed);
         }
-        notify && notify(this);
+        notify && notify(this, last);
 
         if (next.length > 0){
           if (instant){

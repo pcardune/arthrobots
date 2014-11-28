@@ -47,7 +47,8 @@ var ProgramEditor = React.createClass({
       completedSteps: 0,
       isFinished: false,
       speed: 'Medium',
-      errors: []
+      errors: [],
+      lastExecutedLine: null
     }
   },
 
@@ -105,11 +106,13 @@ var ProgramEditor = React.createClass({
   handleReset: function() {
     this.refs.worldCanvas.renderWorld();
     this.setState({runState:"",errors:[]});
+    this.refs.codeEditor.setState({editing:true});
   },
 
   handleRun: function() {
     this.handleSave();
     this.handleReset();
+    this.refs.codeEditor.setState({editing:false});
     var lines = this.refs.codeEditor.getDOMNode().value.split('\n');
     try {
       this.program = parser.newParser(lines, this.refs.worldCanvas.world.robot).parse();
@@ -142,9 +145,13 @@ var ProgramEditor = React.createClass({
       errors:[error],
       runState:"stopped"
     });
+    this.refs.codeEditor.setState({editing:true});
   },
 
-  runnerDidStep: function(runner) {
+  runnerDidStep: function(runner, lastExpression) {
+    if (lastExpression.lastExecutedLine) {
+      this.setState({lastExecutedLine: lastExpression.lastExecutedLine});
+    }
     var worldSteps = this.props.worldModel.get('steps');
     if (worldSteps && worldSteps.length > this.state.completedSteps) {
       var nextStepWorld = this.props.worldModel.getNewWorldAtStep(this.state.completedSteps);
@@ -181,10 +188,12 @@ var ProgramEditor = React.createClass({
 
   handleRunnerStopped: function() {
     this.setState({runState: "finished"});
+    this.refs.codeEditor.setState({editing:true});
   },
 
   handleProgramChange: function (event) {
     this.setState({programCode:event.target.value});
+    this.refs.codeEditor.setState({editing:true});
   },
 
   handleSpeedClick: function(speed) {
@@ -285,13 +294,14 @@ var ProgramEditor = React.createClass({
           <ModalTrigger modal={helpModal}>
             <Glyphicon glyph="question-sign" className="helpButton"/>
           </ModalTrigger>
-          <CodeEditor
-            ref="codeEditor"
-            onChange={this.handleProgramChange}
-            value={this.state.programCode}/>
           <ButtonToolbar className="buttons">
             {buttons}
           </ButtonToolbar>
+          <CodeEditor
+            ref="codeEditor"
+            selectedLine={this.state.lastExecutedLine}
+            onChange={this.handleProgramChange}
+            value={this.state.programCode}/>
         </div>
         <div className="col-md-6">
           <div className="worldOverlay error">

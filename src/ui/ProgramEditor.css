@@ -1,5 +1,5 @@
 .ProgramEditor .buttons {
-  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .ProgramEditor .badge {
@@ -13,7 +13,7 @@
 
 .ProgramEditor .helpButton {
   position: relative;
-  top: 5px;
+  top: 45px;
   right: 5px;
   display: block;
   text-align: right;

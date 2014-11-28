@@ -5,8 +5,15 @@
   background-color: #eee;
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
   min-height: 200px;
+  height: auto;
 }
 .CodeEditor.form-control:focus {
   box-shadow: inherit;
   border-color: #ccc;
+}
+.CodeEditor.notEditing {
+  white-space: pre;
+}
+.CodeEditor.notEditing div.selected {
+  background-color: yellow;
 }

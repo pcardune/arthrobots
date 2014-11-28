@@ -33,6 +33,11 @@ gvr.lang.BaseExpression = Class.extend(
      */
     line: null,
     /**
+     * The line that was last executed. Useful for expressions
+     * with complex execution patterns
+     */
+    lastExecutedLine: null,
+    /**
      * the name of this expression. (mostly for debugging)
      */
     name: null,
@@ -44,7 +49,7 @@ gvr.lang.BaseExpression = Class.extend(
      * @param name the name of this expression. (mostly for debugging)
      */
     init: function(line, name){
-      this.line = line;
+      this.line = this.lastExecutedLine = line;
       this.name = name;
     }
   }
@@ -129,10 +134,12 @@ gvr.lang.Block = Class.extend(
       if (this.currentStep < this.expressions.length){
         stack.push(this);
         var next = this.expressions[this.currentStep].step(globals);
+        this.lastExecutedLine = this.expressions[this.currentStep].lastExecutedLine;
         this.currentStep++;
         stack = stack.concat(next);
       } else {
         this.currentStep = 0;
+        this.lastExecutedLine = this.expressions[this.currentStep].lastExecutedLine;
       }
       return stack;
     }
@@ -199,11 +206,13 @@ gvr.lang.If = gvr.lang.BaseExpression.extend(
       var stack = [];
       if (this.callable.call(this.scope)){
         stack = this.block.step(globals);
+        this.lastExecutedLine = this.block.lastExecutedLine;
         conditionMatched = true;
       } else if (this.elifs.length > 0){
         for (var i=0; i < this.elifs.length; i++){
           var stackLength = stack.length;
           stack = this.elifs[i].step(globals);
+          this.lastExecutedLine = this.elifs[i].lastExecutedLine;
           if (stackLength != stack.length){
             //Stack was changed so we shouldn't fall through anymore.
             conditionMatched = true;
@@ -213,6 +222,7 @@ gvr.lang.If = gvr.lang.BaseExpression.extend(
       }
       if (!conditionMatched && this.elseBlock.expressions.length > 0){
         stack = this.elseBlock.step(globals);
+        this.lastExecutedLine = this.elseBlock.lastExecutedLine;
       }
       return stack;
     }
@@ -261,6 +271,7 @@ gvr.lang.While = gvr.lang.BaseExpression.extend(
       if (this.callable.call(this.scope)){
         stack.push(this);
         stack = stack.concat(this.block.step(globals));
+        this.lastExecutedLine = this.block.lastExecutedLine;
       }
       return stack;
     }
@@ -322,6 +333,7 @@ gvr.lang.Do = gvr.lang.BaseExpression.extend(
         stack.push(this);
         this.currentStep++;
         stack = stack.concat(this.block.step(globals));
+        this.lastExecutedLine = this.block.lastExecutedLine;
       } else {
         this.currentStep = 0;
       }
