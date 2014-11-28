@@ -29,7 +29,7 @@ var ProfilePage = React.createClass({
   loadUser: function() {
     var query = new Parse.Query(Parse.User);
     this.setState({isLoading: true});
-    query.equalTo('username', this.props.params.username);
+    query.equalTo('username', this.getParams().username);
     query.find({
       success: function(users) {
         if (users.length) {

@@ -1,5 +1,4 @@
 /** @jsx React.DOM */
-var ActiveState = require('react-router').ActiveState;
 var Button = require('react-bootstrap').Button;
 var ButtonToolbar = require('react-bootstrap').ButtonToolbar;
 var DropdownButton = require('react-bootstrap').DropdownButton;

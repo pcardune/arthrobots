@@ -1,5 +1,5 @@
 /** @jsx React.DOM */
-var ActiveState = require('react-router').ActiveState;
+var State = require('react-router').State;
 var Button = require('react-bootstrap').Button;
 var Link = require('react-router').Link;
 var ListGroup = require('react-bootstrap').ListGroup;
@@ -20,7 +20,7 @@ var WorldModel = require('../models/WorldModel');
 
 var BrowseWorldsPage = React.createClass({
 
-  mixins: [Navigation, ActiveState],
+  mixins: [Navigation, State],
 
   getInitialState: function() {
     return {

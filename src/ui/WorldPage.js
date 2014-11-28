@@ -7,6 +7,7 @@ var ModalTrigger = require('react-bootstrap').ModalTrigger;
 var Nav = require('react-bootstrap').Nav;
 var Navbar = require('react-bootstrap').Navbar;
 var Navigation = require('react-router').Navigation;
+var State = require('react-router').State;
 var Parse = require('parse').Parse;
 var React = require('react');
 
@@ -20,7 +21,7 @@ var WorldCanvas = require('./WorldCanvas');
 require('./WorldPage.css');
 var WorldPage = React.createClass({
 
-  mixins: [Navigation],
+  mixins: [Navigation, State],
 
   getInitialState: function() {
     return {
@@ -37,7 +38,7 @@ var WorldPage = React.createClass({
   },
 
   componentDidMount: function() {
-    this.loadWorld(this.props.params.worldId);
+    this.loadWorld(this.getParams().worldId);
   },
 
   loadWorld: function(worldId) {
@@ -67,7 +68,7 @@ var WorldPage = React.createClass({
   },
 
   componentWillReceiveProps: function(nextProps) {
-    if (nextProps.params.worldId != this.props.params.worldId) {
+    if (nextProps.params.worldId != this.getParams().worldId) {
       this.loadWorld(nextProps.params.worldId);
     }
   },

@@ -4,8 +4,8 @@ var Parse = require('parse').Parse;
 var React = require('react');
 var Router = require('react-router');
 var Route = Router.Route;
-var Routes = Router.Routes;
-var ActiveState = Router.ActiveState;
+var RouteHandler = Router.RouteHandler;
+var State = Router.State;
 var NotFoundRoute = Router.NotFoundRoute;
 var DefaultRoute = Router.DefaultRoute;
 var Link = Router.Link;
@@ -30,29 +30,29 @@ Parse.initialize(ParseKeys.APP_ID, ParseKeys.JS_KEY);
 
 var Empty = React.createClass({
 
-  mixins: [ActiveState],
+  mixins: [State],
 
   render: function() {
-    return this.props.activeRouteHandler();
+    return <RouteHandler/>;
   }
 });
 
 var routes = (
-  <Routes location="history">
-    <Route name="app" path="/" handler={ArthrobotApp}>
-      <Route name="worlds" path="/worlds" handler={Empty}>
-        <Route name="world" path="/worlds/:worldId" handler={WorldPage} />
-        <DefaultRoute name="browseworlds" handler={BrowseWorldsPage} />
-      </Route>
-      <Route name="profile" path="/profile/:username" handler={ProfilePage} />
-      <Route name="track" path="/tracks/:trackId" handler={TrackPage} />
-      <Route name="login" handler={LoginPage} />
-      <Route name="login-anonymously" handler={LoginAnonymouslyPage} />
-      <Route name="logout" handler={LogoutPage} />
-      <Route name="signup" handler={SignUpPage} />
-      <DefaultRoute name="landing" handler={LandingPage}/>
+  <Route name="app" path="/" handler={ArthrobotApp}>
+    <Route name="worlds" path="/worlds" handler={Empty}>
+      <Route name="world" path="/worlds/:worldId" handler={WorldPage} />
+      <DefaultRoute name="browseworlds" handler={BrowseWorldsPage} />
     </Route>
-  </Routes>
+    <Route name="profile" path="/profile/:username" handler={ProfilePage} />
+    <Route name="track" path="/tracks/:trackId" handler={TrackPage} />
+    <Route name="login" handler={LoginPage} />
+    <Route name="login-anonymously" handler={LoginAnonymouslyPage} />
+    <Route name="logout" handler={LogoutPage} />
+    <Route name="signup" handler={SignUpPage} />
+    <DefaultRoute name="landing" handler={LandingPage}/>
+  </Route>
 );
 
-React.render(routes, document.body);
+Router.run(routes, Router.HistoryLocation, function (Handler) {
+  React.render(<Handler/>, document.body);
+});

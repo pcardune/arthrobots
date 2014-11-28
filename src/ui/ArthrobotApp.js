@@ -1,7 +1,7 @@
 /** @jsx React.DOM */
 
-var ActiveState = require('react-router').ActiveState;
 var Link = require('react-router').Link;
+var RouteHandler = require('react-router').RouteHandler;
 var Parse = require('parse').Parse;
 var React = require('react');
 var gravatar = require('gravatar');
@@ -15,8 +15,6 @@ var Tab = require('./Tab');
 require('./ArthrobotApp.css')
 
 var ArthrobotApp = React.createClass({
-
-  mixins: [ActiveState],
 
   render: function() {
     var navbar = [];
@@ -47,7 +45,7 @@ var ArthrobotApp = React.createClass({
 
         <div className="row">
           <div className="col-md-12 app-content">
-            <this.props.activeRouteHandler/>
+            <RouteHandler/>
           </div>
         </div>
       </div>
