@@ -4,6 +4,7 @@
 
 .ProgramEditor .badge {
   margin: 5px;
+  background-color: #ccc;
 }
 
 .ProgramEditor .badge.active {
@@ -20,18 +21,33 @@
   cursor: pointer;
 }
 
-.ProgramEditor .errorList {
+.ProgramEditor .CodeEditor {
+  min-height: 350px;
+}
+
+.ProgramEditor .worldOverlay {
   position: relative;
-  top: 122px;
   text-align: center;
   height: 0;
 }
 
-.ProgramEditor .errorList div {
+.ProgramEditor .worldOverlay div {
   color: white;
-  background-color: red;
   padding: 10px;
-  opacity: .75;
   width: 75%;
   margin: auto;
+  border: 2px solid black;
+  border-radius: 5px;
+}
+.ProgramEditor .worldOverlay.error div {
+  background-color: red;
+}
+.ProgramEditor .worldOverlay.success div {
+  background-color: #4c4;
+  border-color: #0a0;
+}
+
+.ProgramEditor .WorldCanvas {
+  width: 350px;
+  height: 350px;
 }

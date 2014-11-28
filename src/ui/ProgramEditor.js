@@ -221,7 +221,9 @@ var ProgramEditor = React.createClass({
     if (this.props.worldModel && this.props.worldModel.get('steps')) {
       var completedSteps = [];
       for (var i = 0; i < this.props.worldModel.get('steps').length; i++) {
-        completedSteps.push(<span key={i} className={"badge "+(i<this.state.completedSteps ? "active" : "")}>{i+1}</span>);
+        completedSteps.push(
+          <div key={i} className={"badge "+(i<this.state.completedSteps ? "active" : "")}>{i+1}</div>
+        );
       }
     }
 
@@ -285,7 +287,6 @@ var ProgramEditor = React.createClass({
           </ModalTrigger>
           <CodeEditor
             ref="codeEditor"
-            style={{minHeight:"300px"}}
             onChange={this.handleProgramChange}
             value={this.state.programCode}/>
           <ButtonToolbar className="buttons">
@@ -293,23 +294,26 @@ var ProgramEditor = React.createClass({
           </ButtonToolbar>
         </div>
         <div className="col-md-6">
-          <div className="errorList">
+          <div className="worldOverlay error">
             {this.state.errors.map(function(e) {
               return <div>{e.message}</div>
             })}
           </div>
+          {this.state.isFinished ?
+            <div className="worldOverlay success">
+              <div>
+                Great Success!
+                &nbsp;
+                <Button
+                  onClick={function(){this.props.onContinue(this.state.programModel)}.bind(this)}
+                  bsStyle="success">
+                  Next Level
+                </Button>
+              </div>
+            </div>
+           : null}
           <WorldCanvas ref="worldCanvas" worldDefinition={this.props.worldModel.get('definition')} />
-          <div className="pull-right">
-            {completedSteps}<br />
-            {this.state.isFinished ?
-              <Button
-                onClick={function(){this.props.onContinue(this.state.programModel)}.bind(this)}
-                bsStyle="success"
-                className="pull-right">
-                Continue!
-              </Button> :
-              null}
-          </div>
+          <div>checkpoints:{completedSteps}</div>
         </div>
       </div>
     );
