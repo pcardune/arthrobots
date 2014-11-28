@@ -304,7 +304,7 @@ var ProgramEditor = React.createClass({
             {completedSteps}<br />
             {this.state.isFinished ?
               <Button
-                onClick={this.props.onContinue.bind(this,this.state.programModel)}
+                onClick={function(){this.props.onContinue(this.state.programModel)}.bind(this)}
                 bsStyle="success"
                 className="pull-right">
                 Continue!

@@ -23,13 +23,13 @@ var ArthrobotApp = React.createClass({
     var user = Parse.User.current();
     if (user) {
       navbar = [
-        <Link to="profile" params={{username:user.get('username')}}><img className="gravatar" src={gravatar.url(user.get('email'))} /></Link>,
-        <Tab to="logout">Logout</Tab>
+        <Link key="1" to="profile" params={{username:user.get('username')}}><img className="gravatar" src={gravatar.url(user.get('email'))} /></Link>,
+        <Tab key="2" to="logout">Logout</Tab>
       ];
     } else {
       navbar = [
-        <Tab to="signup"><strong>Sign Up</strong></Tab>,
-        <Tab to="login">Log In</Tab>
+        <Tab key="1" to="signup"><strong>Sign Up</strong></Tab>,
+        <Tab key="2" to="login">Log In</Tab>
       ];
     }
     var brand = <Link to="landing">Arthrobots</Link>;
