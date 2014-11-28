@@ -193,12 +193,12 @@ var TrackPage = React.createClass({
             {worldList}
           </ul>
         </nav>
-        <h3>{this.getCurrentWorld().get('name')} <TrackBadge track={this.state.trackModel}/></h3>
         <div className="row">
-          <div className="col-md-5">
+          <div className="col-md-4">
+            <h3 className="worldTitle">{this.getCurrentWorld().get('name')} <TrackBadge track={this.state.trackModel}/></h3>
             <Markdown>{this.getCurrentWorld().get('description')}</Markdown>
           </div>
-          <div className="col-md-7">
+          <div className="col-md-8">
             <ProgramEditor
               ref="programEditor"
               worldModel={this.getCurrentWorld()}

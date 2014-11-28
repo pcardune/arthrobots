@@ -1,4 +1,12 @@
 .TrackPage .ProgramEditor.affix {
   top: 10px;
-  width: 682px;
+  width: 780px;
+}
+
+.TrackPage > nav > ul {
+  margin-top: 0;
+}
+
+.TrackPage h3.worldTitle {
+  margin-top: 0;
 }
