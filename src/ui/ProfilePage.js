@@ -6,6 +6,7 @@ var ListGroup = require('react-bootstrap').ListGroup;
 var ListGroupItem = require('react-bootstrap').ListGroupItem;
 var Link = require('react-router').Link;
 var Navigation = require('react-router').Navigation;
+var State = require('react-router').State;
 var Parse = require('parse').Parse;
 var React = require('react');
 var gravatar = require('gravatar');
@@ -16,7 +17,7 @@ var TrackBadge = require('./TrackBadge');
 require('./ProfilePage.css');
 var ProfilePage = React.createClass({
 
-  mixins: [Navigation],
+  mixins: [Navigation, State],
 
   getInitialState: function() {
     return {
@@ -52,6 +53,17 @@ var ProfilePage = React.createClass({
     this.loadUser();
   },
 
+  handleConnectToFacebook: function() {
+    Parse.FacebookUtils.link(Parse.User.current(), null, {
+      success: function(user) {
+        console.log("Woohoo, user logged in with Facebook!");
+      },
+      error: function(user, error) {
+        console.warn("User cancelled the Facebook login or did not fully authorize:", error);
+      }
+    });
+  },
+
   render: function() {
     if (this.state.isLoading) {
       return (<div>Loading...</div>);
@@ -73,11 +85,18 @@ var ProfilePage = React.createClass({
         </ListGroupItem>
       );
     });
+    var  connectToFB = null;
+    if (Parse.User.current() &&
+        Parse.User.current().id == this.state.user.id &&
+        !Parse.FacebookUtils.isLinked(Parse.User.current())) {
+      connectToFB = <Button bsStyle="primary" onClick={this.handleConnectToFacebook}>Connect to Facebook</Button>;
+    }
     return (
       <div className="row ProfilePage">
         <div className="col-md-2">
           <img className="gravatar" src={gravatar.url(this.state.user.get('email'), {s:170})}/>
           <p>{this.state.user.get('username')}</p>
+          {connectToFB}
         </div>
         <div className="col-md-5">
           <div className="panel panel-default">

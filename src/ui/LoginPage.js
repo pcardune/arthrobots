@@ -40,6 +40,10 @@ var LoginPage = React.createClass({
     );
   },
 
+  componentDidMount: function() {
+    this.refs.username.getDOMNode().focus();
+  },
+
   render: function() {
     var alert = null;
     if (this.state.message) {

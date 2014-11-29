@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
 
-var Parse = require('parse').Parse;
+Parse = require('parse').Parse;
 var React = require('react');
 var Router = require('react-router');
 var Route = Router.Route;
@@ -53,6 +53,24 @@ var routes = (
   </Route>
 );
 
-Router.run(routes, Router.HistoryLocation, function (Handler) {
+
+window.fbAsyncInit = function() {
+  Parse.FacebookUtils.init({
+    appId      : '366410923540952',
+    xfbml      : false,
+    status     : true,
+    cookie     : true,
+    version    : 'v2.1'
+  });
+  Router.run(routes, Router.HistoryLocation, function (Handler) {
   React.render(<Handler/>, document.body);
-});
+  });
+};
+
+(function(d, s, id){
+   var js, fjs = d.getElementsByTagName(s)[0];
+   if (d.getElementById(id)) {return;}
+   js = d.createElement(s); js.id = id;
+   js.src = "//connect.facebook.net/en_US/sdk.js";
+   fjs.parentNode.insertBefore(js, fjs);
+ }(document, 'script', 'facebook-jssdk'));
