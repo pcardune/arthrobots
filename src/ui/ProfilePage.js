@@ -73,7 +73,7 @@ var ProfilePage = React.createClass({
     this.state.programs.forEach(function(program) {
       var list = program.get('finished') ? completedWorlds : inProgressWorlds;
       list.push(
-        <ListGroupItem>
+        <ListGroupItem key={program.id}>
           <TrackBadge key={program.id} track={program.get('world').get('track')} />
           &nbsp;
           <Link

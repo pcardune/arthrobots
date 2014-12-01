@@ -58,7 +58,6 @@ window.fbAsyncInit = function() {
   Parse.FacebookUtils.init({
     appId      : '366410923540952',
     xfbml      : false,
-    status     : true,
     cookie     : true,
     version    : 'v2.1'
   });
