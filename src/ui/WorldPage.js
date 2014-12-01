@@ -67,12 +67,6 @@ var WorldPage = React.createClass({
     });
   },
 
-  componentWillReceiveProps: function(nextProps) {
-    if (nextProps.params.worldId != this.getParams().worldId) {
-      this.loadWorld(nextProps.params.worldId);
-    }
-  },
-
   handleChange: function() {
     var name = this.refs.nameInput.getDOMNode().value;
     var description = this.refs.descriptionInput.getDOMNode().value;
@@ -219,7 +213,7 @@ var WorldPage = React.createClass({
       );
     var stepFields = this.state.worldStepDefinitions.map(function(step, index) {
       return (
-        <div>
+        <div key={index}>
           <h6>
             Step {index+1}
             <Glyphicon onClick={this.handleRemoveStep.bind(this, index)} className="pull-right" glyph="remove"/>
@@ -229,7 +223,7 @@ var WorldPage = React.createClass({
       );
     }.bind(this));
     var stepCanvases = this.state.worldStepDefinitions.map(function(step, index) {
-      return <div>
+      return <div key={index}>
         <h6>Step {index+1}</h6>
         <WorldCanvas worldDefinition={step} />
       </div>

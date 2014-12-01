@@ -87,7 +87,7 @@ var BrowseWorldsPage = React.createClass({
   render: function() {
     var worldLinks = this.state.worldModels.map(function(worldModel) {
       return (
-        <Link className="list-group-item" to="world" params={{worldId:worldModel.id}}>
+        <Link key={worldModel.id} className="list-group-item" to="world" params={{worldId:worldModel.id}}>
           <h4>
             {worldModel.get('track') ? <TrackBadge track={worldModel.get('track')} /> : null} {worldModel.get('name')} by {worldModel.get('owner').get('username')}
           </h4>
