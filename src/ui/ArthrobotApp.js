@@ -16,6 +16,40 @@ require('./ArthrobotApp.css')
 
 var ArthrobotApp = React.createClass({
 
+  getInitialState: function() {
+    return {
+      isAdministrator: false
+    }
+  },
+
+  loadIsAdministrator: function() {
+    if (!Parse.User.current()) {
+      return;
+    }
+    var roleQuery = new Parse.Query(Parse.Role);
+    roleQuery.equalTo('name', 'Administrator');
+    roleQuery.find({
+      success: function(roles) {
+        if (roles.length > 0) {
+          roles[0].getUsers().query().find({
+            success: function(users) {
+              for (var i = 0; i < users.length; i++) {
+                if (users[i].id == Parse.User.current().id) {
+                  this.setState({isAdministrator:true});
+                  break;
+                }
+              }
+            }.bind(this)
+          });
+        }
+      }.bind(this)
+    });
+  },
+
+  componentDidMount: function() {
+    this.loadIsAdministrator();
+  },
+
   render: function() {
     var navbar = [];
     var user = Parse.User.current();
@@ -36,7 +70,7 @@ var ArthrobotApp = React.createClass({
         <Navbar brand={brand} fluid={true} className="navbar-inverse">
           <Nav>
             <Tab to="landing">Home</Tab>
-            {user ? <Tab to="worlds">Worlds</Tab> : null}
+            {this.state.isAdministrator ? <Tab to="worlds">Worlds</Tab> : null}
           </Nav>
           <Nav className="navbar-right">
             {navbar}
