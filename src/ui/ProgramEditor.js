@@ -58,6 +58,10 @@ var ProgramEditor = React.createClass({
       program = new ProgramModel();
       program.set('owner', Parse.User.current());
       program.set('world', this.props.worldModel);
+      var acl = new Parse.ACL();
+      acl.setPublicReadAccess(true);
+      acl.setWriteAccess(Parse.User.current().id, true);
+      program.setACL(acl);
     }
     var code = this.refs.codeEditor.getDOMNode().value;
     if (program.get('code') == code) {

@@ -38,6 +38,7 @@ var SignUpPage = React.createClass({
     user.set("username", this.refs.username.getDOMNode().value);
     user.set("password", this.refs.password.getDOMNode().value);
     user.set("email", this.refs.email.getDOMNode().value);
+    user.setACL(new Parse.ACL(user));
 
     user.signUp(null, {
       success: function(user) {
