@@ -48,7 +48,8 @@ var ProgramEditor = React.createClass({
       isFinished: false,
       speed: 'Medium',
       errors: [],
-      lastExecutedLine: null
+      lastExecutedLine: null,
+      showCheckpointAtIndex: null
     }
   },
 
@@ -204,6 +205,16 @@ var ProgramEditor = React.createClass({
     this.setState({speed:speed});
   },
 
+  handleMouseoverStep: function(index) {
+    if (this.state.runState == '') {
+      this.setState({showCheckpointAtIndex:index});
+    }
+  },
+
+  handleMouseoutStep: function(index) {
+    this.setState({showCheckpointAtIndex:null});
+  },
+
   render: function() {
     var buttons;
     if (this.state.runState == "running") {
@@ -235,7 +246,13 @@ var ProgramEditor = React.createClass({
       var completedSteps = [];
       for (var i = 0; i < this.props.worldModel.get('steps').length; i++) {
         completedSteps.push(
-          <div key={i} className={"badge "+(i<this.state.completedSteps ? "active" : "")}>{i+1}</div>
+          <div
+            key={i}
+            onMouseOver={this.handleMouseoverStep.bind(this, i)}
+            onMouseOut={this.handleMouseoutStep.bind(this, i)}
+            className={"badge "+(i<this.state.completedSteps ? "active" : "")}>
+            {i+1}
+          </div>
         );
       }
     }
@@ -292,6 +309,11 @@ var ProgramEditor = React.createClass({
       </Modal>
     );
 
+    var worldCanvas = <WorldCanvas ref="worldCanvas" worldDefinition={this.props.worldModel.get('definition')} />;
+    if (this.state.showCheckpointAtIndex != null) {
+      worldCanvas = <WorldCanvas ref="stepCanvas" worldDefinition={this.props.worldModel.get('steps')[this.state.showCheckpointAtIndex]} />;
+    }
+
     return (
       <div className={"ProgramEditor row"}>
         <div className="col-md-6">
@@ -326,7 +348,7 @@ var ProgramEditor = React.createClass({
               </div>
             </div>
            : null}
-          <WorldCanvas ref="worldCanvas" worldDefinition={this.props.worldModel.get('definition')} />
+          {worldCanvas}
           <div>checkpoints:{completedSteps}</div>
         </div>
       </div>
