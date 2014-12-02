@@ -32,6 +32,7 @@ var WorldPage = React.createClass({
       worldName: '',
       worldPublic: null,
       worldTrack: null,
+      worldSolution: '',
       needsSave: false,
       worldStepDefinitions: []
     }
@@ -58,6 +59,7 @@ var WorldPage = React.createClass({
           worldTrack:worldModel.get('track'),
           worldOrder:worldModel.get('order'),
           worldStepDefinitions:worldModel.get('steps') || [],
+          worldSolution:worldModel.get('worldSolution'),
           isLoading:false
         });
       }.bind(this),
@@ -70,6 +72,7 @@ var WorldPage = React.createClass({
   handleChange: function() {
     var name = this.refs.nameInput.getDOMNode().value;
     var description = this.refs.descriptionInput.getDOMNode().value;
+    var solution = this.refs.solutionInput.getDOMNode().value;
     var definition = this.refs.definitionInput.getDOMNode().value;
     var isPublic = this.refs.publicCheckbox.getChecked();
     var track = this.refs.trackInput.getValue();
@@ -79,6 +82,7 @@ var WorldPage = React.createClass({
       name != this.state.worldModel.get('name') ||
       definition != this.state.worldModel.get('definition') ||
       description != this.state.worldModel.get('description') ||
+      solution != this.state.worldModel.get('solution') ||
       isPublic != this.state.worldModel.get('public') ||
       order != this.state.worldModel.get('order') ||
       (track && track.id) != this.state.worldModel.get('track') && this.state.worldModel.get('track').id
@@ -87,10 +91,8 @@ var WorldPage = React.createClass({
     if (!needsSave) {
       var modelSteps = this.state.worldModel.get('steps');
       needsSave = modelSteps.length !== this.state.worldStepDefinitions.length;
-      console.log("# steps", modelSteps.length, this.state.worldStepDefinitions.length)
       if (!needsSave) {
         this.state.worldStepDefinitions.forEach(function(stepDefinition, index) {
-          console.log("comparing", stepDefinition, "to", modelSteps[index]);
           if (stepDefinition !== modelSteps[index]) {
             needsSave = true;
           }
@@ -101,6 +103,7 @@ var WorldPage = React.createClass({
     this.setState({
       worldName:name,
       worldDescription:description,
+      worldSolution:solution,
       worldDefinition:definition,
       worldPublic:isPublic,
       worldTrack:track,
@@ -119,6 +122,7 @@ var WorldPage = React.createClass({
   handleSave: function() {
     this.state.worldModel.set('name', this.refs.nameInput.getDOMNode().value);
     this.state.worldModel.set('description', this.refs.descriptionInput.getDOMNode().value);
+    this.state.worldModel.set('solution', this.refs.solutionInput.getDOMNode().value);
     this.state.worldModel.set('definition', this.refs.definitionInput.getDOMNode().value);
     this.state.worldModel.set('public', this.refs.publicCheckbox.getChecked());
     this.state.worldModel.set('track', this.refs.trackInput.getValue());
@@ -211,23 +215,16 @@ var WorldPage = React.createClass({
         </div>
       </Modal>
       );
-    var stepFields = this.state.worldStepDefinitions.map(function(step, index) {
-      return (
-        <div key={index}>
-          <h6>
-            Step {index+1}
-            <Glyphicon onClick={this.handleRemoveStep.bind(this, index)} className="pull-right" glyph="remove"/>
-          </h6>
-          <CodeEditor onChange={this.handleChangeStep.bind(this, index)} className="form-control" value={step}/>
-        </div>
-      );
-    }.bind(this));
     var stepCanvases = this.state.worldStepDefinitions.map(function(step, index) {
       return <div key={index}>
-        <h6>Step {index+1}</h6>
+        <h6>
+          Step {index+1}
+          <Glyphicon onClick={this.handleRemoveStep.bind(this, index)} className="pull-right" glyph="remove"/>
+        </h6>
+        <CodeEditor onChange={this.handleChangeStep.bind(this, index)} className="form-control" value={step}/>
         <WorldCanvas worldDefinition={step} />
       </div>
-    });
+    }.bind(this));
     return (
       <div className="row">
         <div className="col-md-4">
@@ -242,7 +239,7 @@ var WorldPage = React.createClass({
               <TrackDropdown ref="trackInput" onChange={this.handleChange} defaultValue={this.state.worldTrack}/>
             </div>
             <div className="form-group">
-              <label>Order in Track</label>
+              <label>Level</label>
               <input ref="orderInput" onChange={this.handleChange} type="text" className="form-control" defaultValue={this.state.worldOrder}/>
             </div>
             <div className="form-group">
@@ -250,16 +247,8 @@ var WorldPage = React.createClass({
               <textarea ref="descriptionInput" onChange={this.handleChange} className="form-control worldDescriptionInput" defaultValue={this.state.worldDescription}></textarea>
             </div>
             <div className="form-group">
-              <label>World Definition</label>
-              <CodeEditor ref="definitionInput"
-                onChange={this.handleChange}
-                defaultValue={this.state.worldModel.get('definition')} />
-            </div>
-            <div className="form-group">
-              <label>Steps</label>
-              <br />
-              {stepFields}
-              <Button onClick={this.handleAddStep}>Add Step</Button>
+              <label>Reference Solution</label>
+              <CodeEditor ref="solutionInput" onChange={this.handleChange} defaultValue={this.state.worldSolution}/>
             </div>
             <div className="form-group">
               <label>Privacy</label>
@@ -283,8 +272,17 @@ var WorldPage = React.createClass({
               <Markdown>{this.state.worldDescription}</Markdown>
             </div>
             <div className="col-md-6">
+              <div className="form-group">
+                <label>World Definition</label>
+                <CodeEditor ref="definitionInput"
+                  onChange={this.handleChange}
+                  defaultValue={this.state.worldModel.get('definition')} />
+              </div>
               <WorldCanvas worldDefinition={this.state.worldDefinition} />
-              {stepCanvases}
+              <div className="form-group">
+                {stepCanvases}
+                <Button onClick={this.handleAddStep}>Add Step</Button>
+              </div>
             </div>
           </div>
         </div>

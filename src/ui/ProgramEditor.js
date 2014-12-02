@@ -114,6 +114,24 @@ var ProgramEditor = React.createClass({
     this.refs.codeEditor.setState({editing:true});
   },
 
+  handleDemo: function() {
+    this.handleReset();
+    var demoSolution = this.props.worldModel.get('solution');
+    var lines = demoSolution.split('\n');
+    program = parser.newParser(lines, this.refs.worldCanvas.world.robot).parse();
+    this.runner = new Runner(program, this.refs.worldCanvas.renderer);
+    this.setState({runState: "demo"});
+    this.runner.run(
+      this.getSpeed(),
+      this.handleRunnerStopped
+    );
+  },
+
+  handleStopDemo: function() {
+    this.handleStop();
+    this.handleReset();
+  },
+
   handleRun: function() {
     this.handleSave();
     this.handleReset();
@@ -129,6 +147,11 @@ var ProgramEditor = React.createClass({
     this.handleContinue();
   },
 
+  getSpeed: function() {
+    var ms = {"Slow":500,"Medium":200,"Fast":50, "Very Fast":1};
+    return ms[this.state.speed];
+  },
+
   handleStop: function() {
     this.runner && this.runner.stop();
     this.setState({runState: "stopped"});
@@ -136,12 +159,10 @@ var ProgramEditor = React.createClass({
 
   handleContinue: function() {
     this.setState({runState: "running"});
-    var ms = {"Slow":500,"Medium":200,"Fast":50, "Very Fast":1};
+
     this.runner.run(
-      ms[this.state.speed],
-      this.handleRunnerStopped,
-      this.runnerDidStep,
-      this.runnerDidError
+      this.getSpeed(),
+      this.handleRunnerStopped
     );
   },
 
@@ -216,7 +237,7 @@ var ProgramEditor = React.createClass({
   },
 
   render: function() {
-    var buttons;
+    var buttons = [];
     if (this.state.runState == "running") {
       buttons = [
         <Button key="1" onClick={this.handleStop} className="pull-right" bsStyle="danger">Stop</Button>
@@ -231,7 +252,9 @@ var ProgramEditor = React.createClass({
       buttons = [
         <Button key="4" onClick={this.handleReset} bsStyle="primary" className="pull-right">Reset</Button>
       ];
-    } else {
+    } else if (this.state.runState == 'demo') {
+      buttons = <Button onClick={this.handleStopDemo} bsStyle="danger" className="pull-right">Stop Demo</Button>
+    } else if (this.state.runState == '') {
       buttons = [
         <DropdownButton key="5" title={"Speed: "+this.state.speed}>
           <MenuItem key="1" onClick={this.handleSpeedClick.bind(this, 'Slow')}>Slow</MenuItem>
@@ -240,6 +263,8 @@ var ProgramEditor = React.createClass({
           <MenuItem key="4" onClick={this.handleSpeedClick.bind(this, 'Very Fast')}>Very Fast</MenuItem>
         </DropdownButton>,
         <Button key="6" onClick={this.handleRun} bsStyle="primary" className="pull-right">Save + Run</Button>,
+        this.props.worldModel.get('solution') ?
+        <Button key="7" onClick={this.handleDemo} className="pull-right">Demo</Button> : null
       ];
     }
     if (this.props.worldModel && this.props.worldModel.get('steps')) {
