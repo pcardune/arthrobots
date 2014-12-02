@@ -19,3 +19,12 @@ body {
   border-radius: 3px;
   margin: 7px;
 }
+
+.ArthrobotApp .footer {
+  text-align: center;
+  color: #ccc;
+  font-size: smaller;
+  position: fixed;
+  bottom: 5px;
+  right: 5px;
+}

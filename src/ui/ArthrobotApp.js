@@ -82,6 +82,11 @@ var ArthrobotApp = React.createClass({
             <RouteHandler/>
           </div>
         </div>
+        <div className="row footer">
+          <div className="col-md-12">
+            Created by <a href="http://github.com/pcardune" target="_blank">pcardune</a>
+          </div>
+        </div>
       </div>
     );
   }
