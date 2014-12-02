@@ -55,11 +55,11 @@ var WorldPage = React.createClass({
           worldName:worldModel.get('name'),
           worldDescription:worldModel.get('description'),
           worldDefinition:worldModel.get('definition'),
+          worldSolution:worldModel.get('solution'),
           worldPublic:worldModel.get('public'),
           worldTrack:worldModel.get('track'),
           worldOrder:worldModel.get('order'),
           worldStepDefinitions:worldModel.get('steps') || [],
-          worldSolution:worldModel.get('worldSolution'),
           isLoading:false
         });
       }.bind(this),
