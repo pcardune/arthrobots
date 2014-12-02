@@ -27,6 +27,12 @@ var WorldModel = Parse.Object.extend("WorldModel", {
     var parser = new WorldParser(this.get('steps')[index].split('\n'), world);
     parser.parse();
     return world;
+  },
+  getTitle: function() {
+    if (this.get('order')) {
+      return 'Level '+this.get('order')+': '+this.get('name');
+    }
+    return this.get('name');
   }
 });
 

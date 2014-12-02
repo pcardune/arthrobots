@@ -177,7 +177,7 @@ var TrackPage = React.createClass({
         <li
           key={world.id}
           className={(isActive ? "active":"") + (isFinished ? " finished" : "")}>
-          <OverlayTrigger placement="bottom" overlay={<Tooltip>{world.get('name')}</Tooltip>}>
+          <OverlayTrigger placement="bottom" overlay={<Tooltip>{world.getTitle()}</Tooltip>}>
             <Link to="track" params={{trackId:this.getParams().trackId}} query={{worldId:world.id}}>
               {isFinished ? <Glyphicon glyph="star"/> : <Glyphicon glyph="star-empty"/>}
             </Link>
@@ -195,7 +195,7 @@ var TrackPage = React.createClass({
         </nav>
         <div className="row">
           <div className="col-md-4">
-            <h3 className="worldTitle">{this.getCurrentWorld().get('name')} <TrackBadge track={this.state.trackModel}/></h3>
+            <h3 className="worldTitle">{this.getCurrentWorld().getTitle()}<br/><TrackBadge track={this.state.trackModel}/></h3>
             <Markdown>{this.getCurrentWorld().get('description')}</Markdown>
           </div>
           <div className="col-md-8">
