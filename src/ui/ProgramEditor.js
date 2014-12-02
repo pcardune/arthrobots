@@ -162,7 +162,9 @@ var ProgramEditor = React.createClass({
 
     this.runner.run(
       this.getSpeed(),
-      this.handleRunnerStopped
+      this.handleRunnerStopped,
+      this.runnerDidStep,
+      this.runnerDidError
     );
   },
 
