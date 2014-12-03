@@ -267,7 +267,7 @@ var WorldPage = React.createClass({
         </div>
         <div className="worldPane col-md-8">
           <div className="row">
-            <h3>{this.state.worldName}</h3>
+            <h3>Level {this.state.worldOrder} - {this.state.worldName}</h3>
             <div className="col-md-6">
               <Markdown>{this.state.worldDescription}</Markdown>
             </div>
