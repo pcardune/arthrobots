@@ -135,7 +135,6 @@ var ProgramEditor = React.createClass({
   handleRun: function() {
     this.handleSave();
     this.handleReset();
-    this.refs.codeEditor.setState({editing:false});
     var lines = this.refs.codeEditor.getDOMNode().value.split('\n');
     try {
       this.program = parser.newParser(lines, this.refs.worldCanvas.world.robot).parse();
@@ -143,6 +142,7 @@ var ProgramEditor = React.createClass({
       this.setState({runState:"", errors:[e]});
       return
     }
+    this.refs.codeEditor.setState({editing:false});
     this.runner = new Runner(this.program, this.refs.worldCanvas.renderer);
     this.handleContinue();
   },
