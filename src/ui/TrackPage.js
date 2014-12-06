@@ -57,7 +57,7 @@ var TrackPage = React.createClass({
 
   loadTrackAndWorlds: function() {
     var query = new Parse.Query(TrackModel);
-    this.setState({isLoading: true});
+    this.setState(this.getInitialState());
     query.get(this.getParams().trackId, {
       success: function(trackModel) {
         this.setState({
@@ -117,6 +117,12 @@ var TrackPage = React.createClass({
 
   componentDidMount: function() {
     this.loadTrackAndWorlds();
+  },
+
+  componentWillReceiveProps: function(nextProps) {
+    if (this.getParams().trackId != this.state.trackModel.id) {
+      this.loadTrackAndWorlds();
+    }
   },
 
   componentDidUpdate: function() {
