@@ -6,6 +6,7 @@ var Link = require('react-router').Link;
 var ListGroup = require('react-bootstrap').ListGroup;
 var ListGroupItem = require('react-bootstrap').ListGroupItem;
 var Modal = require('react-bootstrap').Modal;
+var Jumbotron = require('react-bootstrap').Jumbotron;
 var ModalTrigger = require('react-bootstrap').ModalTrigger;
 var Nav = require('react-bootstrap').Nav;
 var Navbar = require('react-bootstrap').Navbar;
@@ -38,6 +39,7 @@ var TrackPage = React.createClass({
       worldModels: [],
       programModels: [],
       isLoading: true,
+      trackComplete: false
     };
   },
 
@@ -146,7 +148,11 @@ var TrackPage = React.createClass({
       return true;
     }.bind(this));
     var nextWorld = this.state.worldModels[currentWorldIndex + 1];
-    this.transitionTo('track', {trackId:this.getParams().trackId}, {worldId:nextWorld.id});
+    if (nextWorld) {
+      this.transitionTo('track', {trackId:this.getParams().trackId}, {worldId:nextWorld.id});
+    } else {
+      this.setState({trackComplete: true});
+    }
   },
 
   handleFinished: function(world, program) {
@@ -159,11 +165,45 @@ var TrackPage = React.createClass({
     })});
   },
 
+  handleNextTrack: function() {
+    this.transitionTo('track', {trackId:this.state.trackModel.get('nextTrack').id});
+  },
+
+  renderComplete: function() {
+    if (this.state.trackModel.get('nextTrack')) {
+      return (
+        <Jumbotron>
+          <h1>{this.state.trackModel.get('name')} Track Complete!</h1>
+          <p>
+            You are full of awesome sauce. Now it is time to keep going on your quest for awesomeness.
+          </p>
+          <p>
+            <Button bsStyle="primary" bsSize="large" onClick={this.handleNextTrack}>Next Track</Button>
+          </p>
+        </Jumbotron>
+      );
+    } else {
+      return (
+        <Jumbotron>
+          <h1>All Tracks Complete!</h1>
+          <p>
+            Wow, you just don{"'"}t quit!
+          </p>
+          <p>
+            There are no more levels left for you to finish. Check back later for more.
+          </p>
+        </Jumbotron>
+      );
+    }
+  },
+
   render: function() {
     if (this.state.isLoading || !this.getCurrentWorld()) {
       return <LoadingBlock/>;
     } else if (this.state.worldModels.length == 0) {
       return <div>There are no worlds here yet</div>;
+    } else if (this.state.trackComplete) {
+      return this.renderComplete();
     }
     var worldList = this.state.worldModels.map(function(world, index){
       var isActive = world.id == this.getCurrentWorld().id;
