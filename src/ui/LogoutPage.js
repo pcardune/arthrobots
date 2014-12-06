@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
 var Button = require('react-bootstrap').Button;
-var Parse = require('parse').Parse;
+var Parse = require('parse-browserify');
 var React = require('react');
 
 var LogoutPage = React.createClass({

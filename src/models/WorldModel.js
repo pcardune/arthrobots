@@ -1,4 +1,4 @@
-var Parse = require('parse').Parse;
+var Parse = require('parse-browserify');
 
 var ProgramModel = require('./ProgramModel');
 var World = require('../core/World');

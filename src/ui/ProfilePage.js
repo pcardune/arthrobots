@@ -7,7 +7,7 @@ var ListGroupItem = require('react-bootstrap').ListGroupItem;
 var Link = require('react-router').Link;
 var Navigation = require('react-router').Navigation;
 var State = require('react-router').State;
-var Parse = require('parse').Parse;
+var Parse = require('parse-browserify');
 var React = require('react');
 var gravatar = require('gravatar');
 

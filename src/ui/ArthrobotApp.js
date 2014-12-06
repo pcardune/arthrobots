@@ -2,7 +2,7 @@
 
 var Link = require('react-router').Link;
 var RouteHandler = require('react-router').RouteHandler;
-var Parse = require('parse').Parse;
+var Parse = require('parse-browserify');
 var React = require('react');
 var gravatar = require('gravatar');
 

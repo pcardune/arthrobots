@@ -12,7 +12,7 @@ var Nav = require('react-bootstrap').Nav;
 var NavItem = require('react-bootstrap').NavItem;
 var Navbar = require('react-bootstrap').Navbar;
 var Navigation = require('react-router').Navigation;
-var Parse = require('parse').Parse;
+var Parse = require('parse-browserify');
 var React = require('react');
 var Glyphicon = require('react-bootstrap').Glyphicon;
 
@@ -115,6 +115,7 @@ var ProgramEditor = React.createClass({
   },
 
   handleDemo: function() {
+    Parse.Analytics.track('runDemo', {world:this.props.worldModel.id});
     this.handleReset();
     var demoSolution = this.props.worldModel.get('solution');
     var lines = demoSolution.split('\n');
@@ -133,6 +134,7 @@ var ProgramEditor = React.createClass({
   },
 
   handleRun: function() {
+    Parse.Analytics.track('runProgram', {world:this.props.worldModel.id});
     this.handleSave();
     this.handleReset();
     var lines = this.refs.codeEditor.getDOMNode().value.split('\n');
@@ -190,13 +192,19 @@ var ProgramEditor = React.createClass({
           isFinished: isFinished
         });
         if (isFinished) {
-          this.state.programModel.set('finished', true);
-          this.state.programModel.save({
-            success: function(program) {
-              this.setState({programModel:program});
-              this.props.onFinished(program);
-            }.bind(this)
-          })
+          if (this.state.programModel.get('finished')) {
+            // already finished
+            this.props.onFinished(this.state.programModel);
+          } else {
+            this.state.programModel.set('finished', true);
+            this.state.programModel.save({
+              success: function(program) {
+                Parse.Analytics.track('finishedWorld', {world:this.props.worldModel.id});
+                this.setState({programModel:program});
+                this.props.onFinished(program);
+              }.bind(this)
+            });
+          }
         }
       }
     }
@@ -226,6 +234,7 @@ var ProgramEditor = React.createClass({
 
   handleSpeedClick: function(speed) {
     this.setState({speed:speed});
+    Parse.Analytics.track('setSpeed', {speed:speed, world:this.props.worldModel.id});
   },
 
   handleMouseoverStep: function(index) {

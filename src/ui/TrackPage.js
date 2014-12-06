@@ -14,7 +14,7 @@ var Navigation = require('react-router').Navigation;
 var NavItem = require('react-bootstrap').NavItem;
 var OverlayTrigger = require('react-bootstrap').OverlayTrigger;
 var Tooltip = require('react-bootstrap').Tooltip;
-var Parse = require('parse').Parse;
+var Parse = require('parse-browserify');
 var React = require('react');
 
 var Tab = require('./Tab');
