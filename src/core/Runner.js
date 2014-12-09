@@ -20,7 +20,7 @@ var Runner = Class.extend(
        * The execution stack
        * @type {Array}
        */
-      this.stack = [this.program];
+      this.stack = [{instruction: this.program, context:{}}];
 
       /**
        * The renderer, which gets called after every execution step.
@@ -97,7 +97,7 @@ var Runner = Class.extend(
         // stepping
         var last = this.stack.pop();
         try {
-          var next = last.step(this.globals);
+          var next = last.instruction.step(this.globals, last.context);
         } catch (e){
           onError && onError(e);
           return;

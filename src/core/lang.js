@@ -85,7 +85,7 @@ gvr.lang.Expression = gvr.lang.BaseExpression.extend(
      * Step over this expression.
      * @param globals global values passed throughout program execution.
      */
-    step: function(globals){
+    step: function(globals, context){
       gvr.lang.getRunner(globals).notify(this);
       this.callable.call(this.scope);
       return [];
@@ -116,10 +116,6 @@ gvr.lang.Block = Class.extend(
        * A list of expressions that are part of the block
        */
       this.expressions = expressions;
-      /**
-       * the current step in the block
-       */
-      this.currentStep = 0;
     },
 
     /**
@@ -129,17 +125,18 @@ gvr.lang.Block = Class.extend(
      * (for example, when the block is part of a loop).
      * @param globals global values passed throughout program execution.
      */
-    step: function(globals){
+    step: function(globals, context){
       var stack = [];
-      if (this.currentStep < this.expressions.length){
-        stack.push(this);
-        var next = this.expressions[this.currentStep].step(globals);
-        this.lastExecutedLine = this.expressions[this.currentStep].lastExecutedLine;
-        this.currentStep++;
+      var currentStep = context.currentStep || 0;
+      if (currentStep < this.expressions.length){
+        var next = this.expressions[currentStep].step(globals, {});
+        this.lastExecutedLine = this.expressions[currentStep].lastExecutedLine;
+        currentStep++;
+        stack.push({instruction: this, context:{currentStep:currentStep}});
         stack = stack.concat(next);
       } else {
-        this.currentStep = 0;
-        this.lastExecutedLine = this.expressions[this.currentStep].lastExecutedLine;
+        currentStep = 0;
+        this.lastExecutedLine = this.expressions[currentStep].lastExecutedLine;
       }
       return stack;
     }
@@ -200,18 +197,18 @@ gvr.lang.If = gvr.lang.BaseExpression.extend(
      * will be processed.
      * @param globals global values passed throughout program execution.
      */
-    step:function (globals){
+    step: function(globals, context){
       gvr.lang.getRunner(globals).notify(this);
       var conditionMatched = false;
       var stack = [];
       if (this.callable.call(this.scope)){
-        stack = this.block.step(globals);
+        stack = this.block.step(globals, {});
         this.lastExecutedLine = this.block.lastExecutedLine;
         conditionMatched = true;
       } else if (this.elifs.length > 0){
         for (var i=0; i < this.elifs.length; i++){
           var stackLength = stack.length;
-          stack = this.elifs[i].step(globals);
+          stack = this.elifs[i].step(globals, {});
           this.lastExecutedLine = this.elifs[i].lastExecutedLine;
           if (stackLength != stack.length){
             //Stack was changed so we shouldn't fall through anymore.
@@ -221,7 +218,7 @@ gvr.lang.If = gvr.lang.BaseExpression.extend(
         }
       }
       if (!conditionMatched && this.elseBlock.expressions.length > 0){
-        stack = this.elseBlock.step(globals);
+        stack = this.elseBlock.step(globals, {});
         this.lastExecutedLine = this.elseBlock.lastExecutedLine;
       }
       return stack;
@@ -265,12 +262,12 @@ gvr.lang.While = gvr.lang.BaseExpression.extend(
      * as long as {@link gvr.lang.While#callable} returns true
      * @param globals global values passed throughout program execution.
      */
-    step: function(globals){
+    step: function(globals, context){
       gvr.lang.getRunner(globals).notify(this);
       var stack = [];
       if (this.callable.call(this.scope)){
-        stack.push(this);
-        stack = stack.concat(this.block.step(globals));
+        stack.push({instruction: this, context:{}});
+        stack = stack.concat(this.block.step(globals, {}));
         this.lastExecutedLine = this.block.lastExecutedLine;
       }
       return stack;
@@ -311,12 +308,6 @@ gvr.lang.Do = gvr.lang.BaseExpression.extend(
        * @type gvr.lang.Block
        */
       this.block = new gvr.lang.Block(expressions);
-
-      /**
-       * The current step of the Do expression
-       * @type int
-       */
-      this.currentStep = 0;
     },
 
     /**
@@ -326,16 +317,15 @@ gvr.lang.Do = gvr.lang.BaseExpression.extend(
      * reset so the process may occur again (for nested loops).
      * @param globals global values passed throughout program execution.
      */
-    step:function(globals){
+    step: function(globals, context){
       gvr.lang.getRunner(globals).notify(this);
       var stack = [];
-      if (this.currentStep < this.count){
-        stack.push(this);
-        this.currentStep++;
-        stack = stack.concat(this.block.step(globals));
+      var currentStep = context.currentStep || 0;
+      if (currentStep < this.count){
+        currentStep++;
+        stack.push({instruction:this, context:{currentStep:currentStep}});
+        stack = stack.concat(this.block.step(globals, {}));
         this.lastExecutedLine = this.block.lastExecutedLine;
-      } else {
-        this.currentStep = 0;
       }
       return stack;
     }
@@ -378,7 +368,7 @@ gvr.lang.Define = gvr.lang.BaseExpression.extend(
      * by other language objects.
      * @param globals global values passed throughout program execution.
      */
-    step:function(globals){
+    step: function(globals, context){
       gvr.lang.getRunner(globals).notify(this);
       globals[this.name] = this;
       return [];
@@ -417,12 +407,12 @@ gvr.lang.FunctionCall = gvr.lang.BaseExpression.extend(
      * under the name specified by {@link gvr.lang.FunctionCall#fname}.
      * @param globals global values passed throughout program execution.
      */
-    step: function(globals){
+    step: function(globals, context){
       gvr.lang.getRunner(globals).notify(this);
       if (!globals[this.fname]){
         throw new Error("The function "+this.fname+" is undefined.");
       }
-      return globals[this.fname].block.step(globals);
+      return globals[this.fname].block.step(globals, context);
     }
   });
 

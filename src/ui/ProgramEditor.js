@@ -179,8 +179,8 @@ var ProgramEditor = React.createClass({
   },
 
   runnerDidStep: function(runner, lastExpression) {
-    if (lastExpression.lastExecutedLine) {
-      this.setState({lastExecutedLine: lastExpression.lastExecutedLine});
+    if (lastExpression.instruction.lastExecutedLine) {
+      this.setState({lastExecutedLine: lastExpression.instruction.lastExecutedLine});
     }
     var worldSteps = this.props.worldModel.get('steps');
     if (worldSteps && worldSteps.length > this.state.completedSteps) {
