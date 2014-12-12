@@ -125,18 +125,6 @@ var TrackPage = React.createClass({
     }
   },
 
-  componentDidUpdate: function() {
-    if (this.refs.programEditor) {
-      // debugger;
-      $(this.refs.programEditor.getDOMNode()).affix({
-        offset: {
-          top: $(this.refs.programEditor.getDOMNode()).offset().top - 10,
-          bottom: 0
-        }
-      });
-    }
-  },
-
   handleContinue: function(programModel) {
     var currentWorldIndex = null;
     this.state.worldModels.every(function(world, index) {
