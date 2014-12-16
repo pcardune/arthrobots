@@ -14,6 +14,8 @@ var Navbar = require('react-bootstrap').Navbar;
 var Navigation = require('react-router').Navigation;
 var React = require('react');
 var Glyphicon = require('react-bootstrap').Glyphicon;
+var OverlayTrigger = require('react-bootstrap').OverlayTrigger;
+var Tooltip = require('react-bootstrap').Tooltip;
 
 var Tab = require('./Tab');
 var Markdown = require('./Markdown');
@@ -48,7 +50,8 @@ var ProgramEditor = React.createClass({
       speed: 'Medium',
       errors: [],
       lastExecutedLine: null,
-      showCheckpointAtIndex: null
+      showCheckpointAtIndex: null,
+      codeIsJS: false
     }
   },
 
@@ -87,9 +90,11 @@ var ProgramEditor = React.createClass({
     if (worldModel) {
       worldModel.loadCurrentUserPrograms(function(programs){
         if (programs) {
+          var code = programs[0] ? programs[0].get('code') : '';
           this.setState({
-            programModel:programs[0],
-            programCode:programs[0] ? programs[0].get('code') : ''
+            programModel: programs[0],
+            programCode: code,
+            codeIsJS: code.indexOf("(") > 0
           });
         }
       }.bind(this))
@@ -140,7 +145,6 @@ var ProgramEditor = React.createClass({
     var parser = LangParser.newParser(lines, this.refs.worldCanvas.world.robot);
     if (parser.isJS()) {
       var js = parser.wrapJSForEval();
-      console.log(js);
       var robot = this.refs.worldCanvas.world.robot;
       for (var key in robot) {
         if (typeof robot[key] == "function") {
@@ -244,7 +248,12 @@ var ProgramEditor = React.createClass({
   },
 
   handleProgramChange: function (event) {
-    this.setState({programCode:event.target.value});
+    this.setState(
+      {
+        programCode:event.target.value,
+        codeIsJS: event.target.value.indexOf("(") >= 0
+      }
+    );
     this.refs.codeEditor.setState({editing:true});
   },
 
@@ -283,12 +292,14 @@ var ProgramEditor = React.createClass({
       buttons = <Button onClick={this.handleStopDemo} bsStyle="danger" className="pull-right">Stop Demo</Button>
     } else if (this.state.runState == '') {
       buttons = [
+        !this.state.codeIsJS ?
         <DropdownButton key="5" title={"Speed: "+this.state.speed}>
           <MenuItem key="1" onClick={this.handleSpeedClick.bind(this, 'Slow')}>Slow</MenuItem>
           <MenuItem key="2" onClick={this.handleSpeedClick.bind(this, 'Medium')}>Medium</MenuItem>
           <MenuItem key="3" onClick={this.handleSpeedClick.bind(this, 'Fast')}>Fast</MenuItem>
           <MenuItem key="4" onClick={this.handleSpeedClick.bind(this, 'Very Fast')}>Very Fast</MenuItem>
-        </DropdownButton>,
+        </DropdownButton>
+        : null,
         <Button key="6" onClick={this.handleRun} bsStyle="primary" className="pull-right">Save + Run</Button>,
         this.props.worldModel.get('solution') ?
         <Button key="7" onClick={this.handleDemo} className="pull-right">Demo</Button> : null
@@ -366,6 +377,20 @@ var ProgramEditor = React.createClass({
       worldCanvas = <WorldCanvas ref="stepCanvas" worldDefinition={this.props.worldModel.get('steps')[this.state.showCheckpointAtIndex]} />;
     }
 
+    var languageDetect = null;
+    if (this.state.codeIsJS) {
+      var tooltip = (
+        <Tooltip>
+          When you have parentheses in your program, it will be executed instantly as straight javascript.
+        </Tooltip>
+      );
+      languageDetect = (
+        <OverlayTrigger placement="top" overlay={tooltip}>
+          <p className="pull-right"><small>Interpreting as JavaScript</small></p>
+        </OverlayTrigger>
+      );
+    }
+
     return (
       <div className={"ProgramEditor row"}>
         <div className="col-md-6">
@@ -380,6 +405,7 @@ var ProgramEditor = React.createClass({
             selectedLine={this.state.lastExecutedLine}
             onChange={this.handleProgramChange}
             value={this.state.programCode}/>
+          {languageDetect}
         </div>
         <div className="col-md-6">
           <div className="worldOverlay error">
