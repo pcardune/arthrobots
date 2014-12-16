@@ -107,6 +107,41 @@ gvr.lang.parser.Parser = Class.extend(
       return new gvr.lang.Block(this.parseLines(""));
     },
 
+    isJS: function() {
+      for (var i = 0; i < this.lines.length; i++) {
+        if (this.lines[i].indexOf('(') > 0) {
+          return true;
+        }
+      }
+      return false;
+    },
+
+    wrapJSForEval: function() {
+      var js = "(function(";
+      for (var key in this.robot) {
+        if (typeof this.robot[key] == "function") {
+          js += key+',';
+        }
+      }
+      // remove trailing , from argument list
+      js = js.slice(0, js.length - 1);
+
+      js += "){\n";
+      for (var i = 0; i < this.lines.length; i++) {
+        js += this.lines[i]+"\n";
+      }
+      js += "})("
+      for (var key in this.robot) {
+        if (typeof this.robot[key] == "function") {
+          js += 'robot.'+key+',';
+        }
+      }
+      // remove trailing , again
+      js = js.slice(0, js.length - 1)
+      js += ")";
+      return js;
+    },
+
     /**
      * @private
      */
@@ -201,7 +236,6 @@ gvr.lang.parser.Parser = Class.extend(
      * @private
      */
     parseLines: function (indent){
-
       var expressions = [];
       for (; this.lineIndex < this.lines.length; this.lineIndex++){
         var line = gvr.lang.parser.removeComment(this.lines[this.lineIndex]);

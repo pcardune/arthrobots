@@ -23,7 +23,7 @@ var CodeEditor = require('./CodeEditor');
 var WorldModel = require('../models/WorldModel');
 var TrackModel = require('../models/TrackModel');
 var ProgramModel = require('../models/ProgramModel');
-var parser = require('../core/parser');
+var LangParser = require('../core/parser');
 var Runner = require('../core/Runner');
 var WorldParser = require('../core/WorldParser');
 var World = require('../core/World');
@@ -118,7 +118,7 @@ var ProgramEditor = React.createClass({
     this.handleReset();
     var demoSolution = this.props.worldModel.get('solution');
     var lines = demoSolution.split('\n');
-    program = parser.newParser(lines, this.refs.worldCanvas.world.robot).parse();
+    program = LangParser.newParser(lines, this.refs.worldCanvas.world.robot).parse();
     this.runner = new Runner(program, this.refs.worldCanvas.renderer);
     this.setState({runState: "demo"});
     this.runner.run(
@@ -137,8 +137,25 @@ var ProgramEditor = React.createClass({
     this.handleSave();
     this.handleReset();
     var lines = this.refs.codeEditor.getDOMNode().value.split('\n');
+    var parser = LangParser.newParser(lines, this.refs.worldCanvas.world.robot);
+    if (parser.isJS()) {
+      var js = parser.wrapJSForEval();
+      console.log(js);
+      var robot = this.refs.worldCanvas.world.robot;
+      for (var key in robot) {
+        if (typeof robot[key] == "function") {
+          robot[key] = robot[key].bind(robot);
+        }
+      }
+      (function(robot) {
+        eval(js);
+      })(robot)
+      this.refs.worldCanvas.renderer.render(1);
+      this.handleRunnerStopped();
+      return
+    }
     try {
-      this.program = parser.newParser(lines, this.refs.worldCanvas.world.robot).parse();
+      this.program = parser.parse();
     } catch (e) {
       this.setState({runState:"", errors:[e]});
       return
@@ -211,7 +228,7 @@ var ProgramEditor = React.createClass({
 
   handleStep: function() {
     if (!this.runner) {
-      this.program = parser.newParser(lines, this.refs.worldCanvas.world.robot).parse();
+      this.program = LangParser.newParser(lines, this.refs.worldCanvas.world.robot).parse();
       this.runner = new Runner(this.program, this.refs.worldCanvas.renderer);
     }
     this.runner.step(
