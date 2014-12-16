@@ -1,0 +1,568 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BC0DD3641A3D3E51000910BC /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC0DD35F1A3D3E51000910BC /* Bolts.framework */; };
+		BC0DD3651A3D3E51000910BC /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC0DD3601A3D3E51000910BC /* Parse.framework */; };
+		BC0DD3661A3D3E51000910BC /* ParseCrashReporting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC0DD3611A3D3E51000910BC /* ParseCrashReporting.framework */; };
+		BC0DD3671A3D3E51000910BC /* ParseFacebookUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC0DD3621A3D3E51000910BC /* ParseFacebookUtils.framework */; };
+		BC0DD3681A3D3E51000910BC /* ParseUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC0DD3631A3D3E51000910BC /* ParseUI.framework */; };
+		BC0DD36B1A3D43D8000910BC /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC0DD36A1A3D43D8000910BC /* CFNetwork.framework */; };
+		BC0DD36D1A3D43E6000910BC /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC0DD36C1A3D43E6000910BC /* CoreGraphics.framework */; };
+		BC0DD36F1A3D43F4000910BC /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC0DD36E1A3D43F4000910BC /* CoreLocation.framework */; };
+		BC0DD3711A3D4408000910BC /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BC0DD3701A3D4408000910BC /* libz.dylib */; };
+		BC0DD3731A3D4414000910BC /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC0DD3721A3D4414000910BC /* MobileCoreServices.framework */; };
+		BC0DD3751A3D441D000910BC /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC0DD3741A3D441D000910BC /* QuartzCore.framework */; };
+		BC0DD3771A3D4425000910BC /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC0DD3761A3D4425000910BC /* Security.framework */; };
+		BC0DD3791A3D442D000910BC /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC0DD3781A3D442D000910BC /* StoreKit.framework */; };
+		BC0DD37B1A3D4435000910BC /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC0DD37A1A3D4435000910BC /* SystemConfiguration.framework */; };
+		BC0DD37D1A3D4443000910BC /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC0DD37C1A3D4443000910BC /* CoreAudio.framework */; };
+		BC0DD37F1A3D445A000910BC /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BC0DD37E1A3D445A000910BC /* libsqlite3.dylib */; };
+		BC0DD3831A3D4495000910BC /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC0DD3821A3D4495000910BC /* AudioToolbox.framework */; };
+		BC0DD3851A3D47D6000910BC /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0DD3841A3D47D6000910BC /* ProfileViewController.swift */; };
+		BC0DD3871A3D4AE8000910BC /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC0DD3861A3D4AE8000910BC /* Twitter.framework */; };
+		BC0DD3891A3D4AF5000910BC /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC0DD3881A3D4AF5000910BC /* Accounts.framework */; };
+		BC0DD38B1A3D4B20000910BC /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC0DD38A1A3D4B20000910BC /* Social.framework */; };
+		BC0DD38D1A3DEFB9000910BC /* TrackTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0DD38C1A3DEFB9000910BC /* TrackTableViewController.swift */; };
+		BC0DD38F1A3DF2DA000910BC /* WorldTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0DD38E1A3DF2D9000910BC /* WorldTableViewController.swift */; };
+		BC0DD3911A3DFE67000910BC /* ProgramEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0DD3901A3DFE67000910BC /* ProgramEditorViewController.swift */; };
+		BC0DD3931A3E23CF000910BC /* ABWorldParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0DD3921A3E23CF000910BC /* ABWorldParser.swift */; };
+		BCF4DA361A3D023900746704 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF4DA351A3D023900746704 /* AppDelegate.swift */; };
+		BCF4DA381A3D023900746704 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF4DA371A3D023900746704 /* ViewController.swift */; };
+		BCF4DA3B1A3D023900746704 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BCF4DA391A3D023900746704 /* Main.storyboard */; };
+		BCF4DA3D1A3D023900746704 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BCF4DA3C1A3D023900746704 /* Images.xcassets */; };
+		BCF4DA401A3D023900746704 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = BCF4DA3E1A3D023900746704 /* LaunchScreen.xib */; };
+		BCF4DA4C1A3D023A00746704 /* ArthrobotsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF4DA4B1A3D023A00746704 /* ArthrobotsTests.swift */; };
+		BCF4DA561A3D059100746704 /* WorldCanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF4DA551A3D059100746704 /* WorldCanvasView.swift */; };
+		BCF4DA581A3D083800746704 /* ABWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF4DA571A3D083800746704 /* ABWorld.swift */; };
+		BCF4DA5A1A3D086000746704 /* ABRobot.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF4DA591A3D086000746704 /* ABRobot.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BCF4DA461A3D023900746704 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BCF4DA281A3D023900746704 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BCF4DA2F1A3D023900746704;
+			remoteInfo = Arthrobots;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		BC0DD35F1A3D3E51000910BC /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
+		BC0DD3601A3D3E51000910BC /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
+		BC0DD3611A3D3E51000910BC /* ParseCrashReporting.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseCrashReporting.framework; sourceTree = "<group>"; };
+		BC0DD3621A3D3E51000910BC /* ParseFacebookUtils.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseFacebookUtils.framework; sourceTree = "<group>"; };
+		BC0DD3631A3D3E51000910BC /* ParseUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseUI.framework; sourceTree = "<group>"; };
+		BC0DD36A1A3D43D8000910BC /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		BC0DD36C1A3D43E6000910BC /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		BC0DD36E1A3D43F4000910BC /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		BC0DD3701A3D4408000910BC /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		BC0DD3721A3D4414000910BC /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		BC0DD3741A3D441D000910BC /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		BC0DD3761A3D4425000910BC /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		BC0DD3781A3D442D000910BC /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		BC0DD37A1A3D4435000910BC /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		BC0DD37C1A3D4443000910BC /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		BC0DD37E1A3D445A000910BC /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		BC0DD3801A3D446C000910BC /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = System/Library/Frameworks/CoreAudioKit.framework; sourceTree = SDKROOT; };
+		BC0DD3821A3D4495000910BC /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		BC0DD3841A3D47D6000910BC /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		BC0DD3861A3D4AE8000910BC /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
+		BC0DD3881A3D4AF5000910BC /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
+		BC0DD38A1A3D4B20000910BC /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		BC0DD38C1A3DEFB9000910BC /* TrackTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackTableViewController.swift; sourceTree = "<group>"; };
+		BC0DD38E1A3DF2D9000910BC /* WorldTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorldTableViewController.swift; sourceTree = "<group>"; };
+		BC0DD3901A3DFE67000910BC /* ProgramEditorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgramEditorViewController.swift; sourceTree = "<group>"; };
+		BC0DD3921A3E23CF000910BC /* ABWorldParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ABWorldParser.swift; sourceTree = "<group>"; };
+		BCF4DA301A3D023900746704 /* Arthrobots.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Arthrobots.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BCF4DA341A3D023900746704 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BCF4DA351A3D023900746704 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		BCF4DA371A3D023900746704 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		BCF4DA3A1A3D023900746704 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		BCF4DA3C1A3D023900746704 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		BCF4DA3F1A3D023900746704 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		BCF4DA451A3D023900746704 /* ArthrobotsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ArthrobotsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BCF4DA4A1A3D023A00746704 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BCF4DA4B1A3D023A00746704 /* ArthrobotsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArthrobotsTests.swift; sourceTree = "<group>"; };
+		BCF4DA551A3D059100746704 /* WorldCanvasView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorldCanvasView.swift; sourceTree = "<group>"; };
+		BCF4DA571A3D083800746704 /* ABWorld.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ABWorld.swift; sourceTree = "<group>"; };
+		BCF4DA591A3D086000746704 /* ABRobot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ABRobot.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BCF4DA2D1A3D023900746704 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BC0DD38B1A3D4B20000910BC /* Social.framework in Frameworks */,
+				BC0DD3891A3D4AF5000910BC /* Accounts.framework in Frameworks */,
+				BC0DD3871A3D4AE8000910BC /* Twitter.framework in Frameworks */,
+				BC0DD3831A3D4495000910BC /* AudioToolbox.framework in Frameworks */,
+				BC0DD37F1A3D445A000910BC /* libsqlite3.dylib in Frameworks */,
+				BC0DD37D1A3D4443000910BC /* CoreAudio.framework in Frameworks */,
+				BC0DD37B1A3D4435000910BC /* SystemConfiguration.framework in Frameworks */,
+				BC0DD3791A3D442D000910BC /* StoreKit.framework in Frameworks */,
+				BC0DD3771A3D4425000910BC /* Security.framework in Frameworks */,
+				BC0DD3751A3D441D000910BC /* QuartzCore.framework in Frameworks */,
+				BC0DD3731A3D4414000910BC /* MobileCoreServices.framework in Frameworks */,
+				BC0DD3711A3D4408000910BC /* libz.dylib in Frameworks */,
+				BC0DD36F1A3D43F4000910BC /* CoreLocation.framework in Frameworks */,
+				BC0DD36D1A3D43E6000910BC /* CoreGraphics.framework in Frameworks */,
+				BC0DD36B1A3D43D8000910BC /* CFNetwork.framework in Frameworks */,
+				BC0DD3651A3D3E51000910BC /* Parse.framework in Frameworks */,
+				BC0DD3661A3D3E51000910BC /* ParseCrashReporting.framework in Frameworks */,
+				BC0DD3681A3D3E51000910BC /* ParseUI.framework in Frameworks */,
+				BC0DD3671A3D3E51000910BC /* ParseFacebookUtils.framework in Frameworks */,
+				BC0DD3641A3D3E51000910BC /* Bolts.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BCF4DA421A3D023900746704 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BC0DD3691A3D3E59000910BC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BC0DD38A1A3D4B20000910BC /* Social.framework */,
+				BC0DD3881A3D4AF5000910BC /* Accounts.framework */,
+				BC0DD3861A3D4AE8000910BC /* Twitter.framework */,
+				BC0DD3821A3D4495000910BC /* AudioToolbox.framework */,
+				BC0DD3801A3D446C000910BC /* CoreAudioKit.framework */,
+				BC0DD37E1A3D445A000910BC /* libsqlite3.dylib */,
+				BC0DD37C1A3D4443000910BC /* CoreAudio.framework */,
+				BC0DD37A1A3D4435000910BC /* SystemConfiguration.framework */,
+				BC0DD3781A3D442D000910BC /* StoreKit.framework */,
+				BC0DD3761A3D4425000910BC /* Security.framework */,
+				BC0DD3741A3D441D000910BC /* QuartzCore.framework */,
+				BC0DD3721A3D4414000910BC /* MobileCoreServices.framework */,
+				BC0DD3701A3D4408000910BC /* libz.dylib */,
+				BC0DD36E1A3D43F4000910BC /* CoreLocation.framework */,
+				BC0DD36C1A3D43E6000910BC /* CoreGraphics.framework */,
+				BC0DD36A1A3D43D8000910BC /* CFNetwork.framework */,
+				BC0DD35F1A3D3E51000910BC /* Bolts.framework */,
+				BC0DD3601A3D3E51000910BC /* Parse.framework */,
+				BC0DD3611A3D3E51000910BC /* ParseCrashReporting.framework */,
+				BC0DD3621A3D3E51000910BC /* ParseFacebookUtils.framework */,
+				BC0DD3631A3D3E51000910BC /* ParseUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BCF4DA271A3D023900746704 = {
+			isa = PBXGroup;
+			children = (
+				BCF4DA321A3D023900746704 /* Arthrobots */,
+				BCF4DA481A3D023A00746704 /* ArthrobotsTests */,
+				BCF4DA311A3D023900746704 /* Products */,
+				BC0DD3691A3D3E59000910BC /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		BCF4DA311A3D023900746704 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BCF4DA301A3D023900746704 /* Arthrobots.app */,
+				BCF4DA451A3D023900746704 /* ArthrobotsTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BCF4DA321A3D023900746704 /* Arthrobots */ = {
+			isa = PBXGroup;
+			children = (
+				BCF4DA5B1A3D086800746704 /* Core */,
+				BCF4DA351A3D023900746704 /* AppDelegate.swift */,
+				BCF4DA371A3D023900746704 /* ViewController.swift */,
+				BC0DD3841A3D47D6000910BC /* ProfileViewController.swift */,
+				BCF4DA551A3D059100746704 /* WorldCanvasView.swift */,
+				BC0DD38C1A3DEFB9000910BC /* TrackTableViewController.swift */,
+				BC0DD38E1A3DF2D9000910BC /* WorldTableViewController.swift */,
+				BC0DD3901A3DFE67000910BC /* ProgramEditorViewController.swift */,
+				BCF4DA391A3D023900746704 /* Main.storyboard */,
+				BCF4DA3C1A3D023900746704 /* Images.xcassets */,
+				BCF4DA3E1A3D023900746704 /* LaunchScreen.xib */,
+				BCF4DA331A3D023900746704 /* Supporting Files */,
+			);
+			path = Arthrobots;
+			sourceTree = "<group>";
+		};
+		BCF4DA331A3D023900746704 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BCF4DA341A3D023900746704 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BCF4DA481A3D023A00746704 /* ArthrobotsTests */ = {
+			isa = PBXGroup;
+			children = (
+				BCF4DA4B1A3D023A00746704 /* ArthrobotsTests.swift */,
+				BCF4DA491A3D023A00746704 /* Supporting Files */,
+			);
+			path = ArthrobotsTests;
+			sourceTree = "<group>";
+		};
+		BCF4DA491A3D023A00746704 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BCF4DA4A1A3D023A00746704 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BCF4DA5B1A3D086800746704 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				BCF4DA571A3D083800746704 /* ABWorld.swift */,
+				BCF4DA591A3D086000746704 /* ABRobot.swift */,
+				BC0DD3921A3E23CF000910BC /* ABWorldParser.swift */,
+			);
+			name = Core;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BCF4DA2F1A3D023900746704 /* Arthrobots */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BCF4DA4F1A3D023A00746704 /* Build configuration list for PBXNativeTarget "Arthrobots" */;
+			buildPhases = (
+				BCF4DA2C1A3D023900746704 /* Sources */,
+				BCF4DA2D1A3D023900746704 /* Frameworks */,
+				BCF4DA2E1A3D023900746704 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Arthrobots;
+			productName = Arthrobots;
+			productReference = BCF4DA301A3D023900746704 /* Arthrobots.app */;
+			productType = "com.apple.product-type.application";
+		};
+		BCF4DA441A3D023900746704 /* ArthrobotsTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BCF4DA521A3D023A00746704 /* Build configuration list for PBXNativeTarget "ArthrobotsTests" */;
+			buildPhases = (
+				BCF4DA411A3D023900746704 /* Sources */,
+				BCF4DA421A3D023900746704 /* Frameworks */,
+				BCF4DA431A3D023900746704 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BCF4DA471A3D023900746704 /* PBXTargetDependency */,
+			);
+			name = ArthrobotsTests;
+			productName = ArthrobotsTests;
+			productReference = BCF4DA451A3D023900746704 /* ArthrobotsTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BCF4DA281A3D023900746704 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0610;
+				ORGANIZATIONNAME = "Paul Carduner";
+				TargetAttributes = {
+					BCF4DA2F1A3D023900746704 = {
+						CreatedOnToolsVersion = 6.1.1;
+					};
+					BCF4DA441A3D023900746704 = {
+						CreatedOnToolsVersion = 6.1.1;
+						TestTargetID = BCF4DA2F1A3D023900746704;
+					};
+				};
+			};
+			buildConfigurationList = BCF4DA2B1A3D023900746704 /* Build configuration list for PBXProject "Arthrobots" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = BCF4DA271A3D023900746704;
+			productRefGroup = BCF4DA311A3D023900746704 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BCF4DA2F1A3D023900746704 /* Arthrobots */,
+				BCF4DA441A3D023900746704 /* ArthrobotsTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BCF4DA2E1A3D023900746704 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCF4DA3B1A3D023900746704 /* Main.storyboard in Resources */,
+				BCF4DA401A3D023900746704 /* LaunchScreen.xib in Resources */,
+				BCF4DA3D1A3D023900746704 /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BCF4DA431A3D023900746704 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BCF4DA2C1A3D023900746704 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BC0DD38F1A3DF2DA000910BC /* WorldTableViewController.swift in Sources */,
+				BC0DD3851A3D47D6000910BC /* ProfileViewController.swift in Sources */,
+				BC0DD3911A3DFE67000910BC /* ProgramEditorViewController.swift in Sources */,
+				BCF4DA5A1A3D086000746704 /* ABRobot.swift in Sources */,
+				BC0DD38D1A3DEFB9000910BC /* TrackTableViewController.swift in Sources */,
+				BCF4DA381A3D023900746704 /* ViewController.swift in Sources */,
+				BC0DD3931A3E23CF000910BC /* ABWorldParser.swift in Sources */,
+				BCF4DA361A3D023900746704 /* AppDelegate.swift in Sources */,
+				BCF4DA581A3D083800746704 /* ABWorld.swift in Sources */,
+				BCF4DA561A3D059100746704 /* WorldCanvasView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BCF4DA411A3D023900746704 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCF4DA4C1A3D023A00746704 /* ArthrobotsTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BCF4DA471A3D023900746704 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BCF4DA2F1A3D023900746704 /* Arthrobots */;
+			targetProxy = BCF4DA461A3D023900746704 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		BCF4DA391A3D023900746704 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BCF4DA3A1A3D023900746704 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		BCF4DA3E1A3D023900746704 /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BCF4DA3F1A3D023900746704 /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		BCF4DA4D1A3D023A00746704 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BCF4DA4E1A3D023A00746704 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		BCF4DA501A3D023A00746704 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				INFOPLIST_FILE = Arthrobots/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
+				VALID_ARCHS = "armv7 armv7s arm64";
+			};
+			name = Debug;
+		};
+		BCF4DA511A3D023A00746704 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				INFOPLIST_FILE = Arthrobots/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
+				VALID_ARCHS = "armv7 armv7s arm64";
+			};
+			name = Release;
+		};
+		BCF4DA531A3D023A00746704 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = ArthrobotsTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Arthrobots.app/Arthrobots";
+			};
+			name = Debug;
+		};
+		BCF4DA541A3D023A00746704 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = ArthrobotsTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Arthrobots.app/Arthrobots";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BCF4DA2B1A3D023900746704 /* Build configuration list for PBXProject "Arthrobots" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BCF4DA4D1A3D023A00746704 /* Debug */,
+				BCF4DA4E1A3D023A00746704 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BCF4DA4F1A3D023A00746704 /* Build configuration list for PBXNativeTarget "Arthrobots" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BCF4DA501A3D023A00746704 /* Debug */,
+				BCF4DA511A3D023A00746704 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BCF4DA521A3D023A00746704 /* Build configuration list for PBXNativeTarget "ArthrobotsTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BCF4DA531A3D023A00746704 /* Debug */,
+				BCF4DA541A3D023A00746704 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BCF4DA281A3D023900746704 /* Project object */;
+}

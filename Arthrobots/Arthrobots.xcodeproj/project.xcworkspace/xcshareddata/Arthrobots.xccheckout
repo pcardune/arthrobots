@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>F65B1C59-1CFB-417E-941D-9DBEAAC02CA1</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Arthrobots</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>E3F6BFE5A0D8FBADBDBC118E465227BD446C122C</key>
+		<string>github.com:pcardune/arthrobots.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Arthrobots/Arthrobots.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>E3F6BFE5A0D8FBADBDBC118E465227BD446C122C</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>github.com:pcardune/arthrobots.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>E3F6BFE5A0D8FBADBDBC118E465227BD446C122C</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>E3F6BFE5A0D8FBADBDBC118E465227BD446C122C</string>
+			<key>IDESourceControlWCCName</key>
+			<string>arthrobots</string>
+		</dict>
+	</array>
+</dict>
+</plist>
