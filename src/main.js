@@ -24,6 +24,8 @@ var ArthrobotApp = require('./ui/ArthrobotApp');
 var LoginAnonymouslyPage = require('./ui/LoginAnonymouslyPage');
 var ProfilePage = require('./ui/ProfilePage');
 
+var AILandingPage = require('./aiui/AILandingPage');
+
 var ParseKeys = require('./ParseKeys');
 Parse.initialize(ParseKeys.APP_ID, ParseKeys.JS_KEY);
 
@@ -44,6 +46,7 @@ var routes = (
     </Route>
     <Route name="profile" path="/profile/:username" handler={ProfilePage} />
     <Route name="track" path="/tracks/:trackId" handler={TrackPage} />
+    <Route name="ai" path="/ai" handler={AILandingPage}/>
     <Route name="login" handler={LoginPage} />
     <Route name="login-anonymously" handler={LoginAnonymouslyPage} />
     <Route name="logout" handler={LogoutPage} />
@@ -55,18 +58,18 @@ var routes = (
 
 window.fbAsyncInit = function() {
     // Fix in Parse's date parser
-  var _parseDate = Parse._parseDate;
-  Parse._parseDate = function(str) {
-    return new Date(Date.parse(str));
-  };
-  //Parse.FacebookUtils
-  FB.init({
-    appId      : '366410923540952',
-    xfbml      : false,
-    cookie     : true,
-    status     : true,
-    version    : 'v2.1'
-  });
+  // var _parseDate = Parse._parseDate;
+  // Parse._parseDate = function(str) {
+  //   return new Date(Date.parse(str));
+  // };
+  // //Parse.FacebookUtils
+  // FB.init({
+  //   appId      : '366410923540952',
+  //   xfbml      : false,
+  //   cookie     : true,
+  //   status     : true,
+  //   version    : 'v2.1'
+  // });
   Router.run(routes, Router.HistoryLocation, function (Handler) {
     React.render(<Handler/>, document.body);
   });

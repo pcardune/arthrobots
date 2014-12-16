@@ -17,7 +17,8 @@ var ArthrobotApp = React.createClass({
 
   getInitialState: function() {
     return {
-      isAdministrator: false
+      isAdministrator: false,
+      canPlayAI: false
     }
   },
 
@@ -34,7 +35,10 @@ var ArthrobotApp = React.createClass({
             success: function(users) {
               for (var i = 0; i < users.length; i++) {
                 if (users[i].id == Parse.User.current().id) {
-                  this.setState({isAdministrator:true});
+                  this.setState({
+                    isAdministrator:true,
+                    canPlayAI:true
+                  });
                   break;
                 }
               }
@@ -70,6 +74,7 @@ var ArthrobotApp = React.createClass({
           <Nav>
             <Tab to="landing">Home</Tab>
             {this.state.isAdministrator ? <Tab to="worlds">Worlds</Tab> : null}
+            {this.state.canPlayAI ? <Tab to="ai">AI</Tab> : null}
           </Nav>
           <Nav className="navbar-right">
             {navbar}
