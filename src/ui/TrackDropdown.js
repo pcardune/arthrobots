@@ -1,7 +1,6 @@
 /** @jsx React.DOM */
 var Button = require('react-bootstrap').Button;
 var Input = require('react-bootstrap').Input;
-var Parse = require('parse-browserify');
 var React = require('react');
 
 var WorldModel = require('../models/WorldModel');

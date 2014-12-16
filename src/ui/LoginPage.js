@@ -1,7 +1,6 @@
 /** @jsx React.DOM */
 var Button = require('react-bootstrap').Button;
 var Link = require('react-router').Link;
-var Parse = require('parse-browserify');
 var React = require('react');
 
 

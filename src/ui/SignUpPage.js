@@ -3,7 +3,6 @@
 var Button = require('react-bootstrap').Button;
 var Link = require('react-router').Link;
 var Navigation = require('react-router').Navigation;
-var Parse = require('parse-browserify');
 var React = require('react');
 
 var SignUpPage = React.createClass({

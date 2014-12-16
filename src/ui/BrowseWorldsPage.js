@@ -10,7 +10,6 @@ var Nav = require('react-bootstrap').Nav;
 var NavItem = require('react-bootstrap').NavItem;
 var Navbar = require('react-bootstrap').Navbar;
 var Navigation = require('react-router').Navigation;
-var Parse = require('parse-browserify');
 var React = require('react');
 
 var Tab = require('./Tab');

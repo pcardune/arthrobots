@@ -7,7 +7,6 @@ var ListGroupItem = require('react-bootstrap').ListGroupItem;
 var Link = require('react-router').Link;
 var Navigation = require('react-router').Navigation;
 var State = require('react-router').State;
-var Parse = require('parse-browserify');
 var React = require('react');
 var gravatar = require('gravatar');
 
@@ -54,14 +53,18 @@ var ProfilePage = React.createClass({
   },
 
   handleConnectToFacebook: function() {
-    Parse.FacebookUtils.link(Parse.User.current(), null, {
-      success: function(user) {
-        console.log("Woohoo, user logged in with Facebook!");
-      },
-      error: function(user, error) {
-        console.warn("User cancelled the Facebook login or did not fully authorize:", error);
-      }
-    });
+    // Parse.FacebookUtils.link(Parse.User.current(), null, {
+    //   success: function(user) {
+    //     console.log("Woohoo, user logged in with Facebook!");
+    //   },
+    //   error: function(user, error) {
+    //     console.warn("User cancelled the Facebook login or did not fully authorize:", error);
+    //   }
+    // });
+    FB.login(function(response) {
+      r = response;
+      console.log("response was", response);
+    })
   },
 
   render: function() {

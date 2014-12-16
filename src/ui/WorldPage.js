@@ -8,7 +8,6 @@ var Nav = require('react-bootstrap').Nav;
 var Navbar = require('react-bootstrap').Navbar;
 var Navigation = require('react-router').Navigation;
 var State = require('react-router').State;
-var Parse = require('parse-browserify');
 var React = require('react');
 
 var Markdown = require('./Markdown');

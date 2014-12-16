@@ -1,6 +1,5 @@
 /** @jsx React.DOM */
 
-Parse = require('parse-browserify');
 var React = require('react');
 var Router = require('react-router');
 var Route = Router.Route;
@@ -55,14 +54,21 @@ var routes = (
 
 
 window.fbAsyncInit = function() {
-  Parse.FacebookUtils.init({
+    // Fix in Parse's date parser
+  var _parseDate = Parse._parseDate;
+  Parse._parseDate = function(str) {
+    return new Date(Date.parse(str));
+  };
+  //Parse.FacebookUtils
+  FB.init({
     appId      : '366410923540952',
     xfbml      : false,
     cookie     : true,
+    status     : true,
     version    : 'v2.1'
   });
   Router.run(routes, Router.HistoryLocation, function (Handler) {
-  React.render(<Handler/>, document.body);
+    React.render(<Handler/>, document.body);
   });
 };
 
