@@ -2,6 +2,12 @@ body {
   font-family: "Arvo","Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
+
+body .modal {
+  /* patching bootstrap's modal overflow behavior */
+  overflow-y: auto;
+}
+
 .btn:focus, .btn:active, .btn:active:focus,
 *:focus,*:active,*:active:focus {
     outline: 0;
