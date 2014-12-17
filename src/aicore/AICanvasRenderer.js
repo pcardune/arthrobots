@@ -14,8 +14,8 @@ var AICanvasRenderer = Class.extend({
     this.context.fillStyle = 'white';
     this.context.strokeStyle = 'red';
     this.context.lineWidth = 5;
-    this.context.translate(robot.x, robot.y);
-    this.context.rotate(robot.angle);
+    this.context.translate(robot.getX(), robot.getY());
+    this.context.rotate(robot.getAngle());
 
     this.context.beginPath();
     this.context.moveTo(5, 0);
@@ -28,16 +28,34 @@ var AICanvasRenderer = Class.extend({
     this.context.restore();
   },
 
+  renderWall: function(wall) {
+    this.context.save();
+
+    this.context.strokeStyle = 'black';
+    this.context.lineWidth = 2;
+
+    this.context.beginPath();
+    this.context.moveTo(wall.x1, wall.y1);
+    this.context.lineTo(wall.x2, wall.y2);
+    this.context.stroke();
+    this.context.restore();
+  },
+
+  renderMany: function(items, renderer) {
+    renderer = renderer.bind(this);
+    for (var i = 0; i < items.length; i++) {
+      renderer(items[i]);
+    }
+  },
+
   render: function() {
     this.context.save();
     this.context.clearRect(0,0,this.canvas.width, this.canvas.height);
     //reorient to bottom left being 0 0;
     this.context.transform(1,0,0,-1,0,this.canvas.height);
 
-    var robots = this.world.getRobots();
-    for (var i = 0; i < robots.length; i++) {
-      this.renderRobot(robots[i]);
-    }
+    this.renderMany(this.world.getRobots(), this.renderRobot);
+    this.renderMany(this.world.getWalls(), this.renderWall);
     this.context.restore();
   }
 });

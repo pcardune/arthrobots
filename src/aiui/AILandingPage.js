@@ -12,40 +12,57 @@ var AICanvasRenderer = require('../aicore/AICanvasRenderer');
 
 var AILandingPage = React.createClass({
 
+  getInitialState: function() {
+    return {
+      code: '{\n' +
+        'run: function() {\n' +
+        '  this.move();\n' +
+        '  this.turn(.01);\n' +
+        '}\n' +
+      '}'
+    };
+  },
+
   componentWillMount: function() {
     this.world = new AIWorld();
+    this.world.addWall(new AIWorld.Wall({x1:100, x2:400, y1:100, y2:100}));
+    this.world.addWall(new AIWorld.Wall({x1:400, x2:400, y1:100, y2:400}));
+    this.world.addWall(new AIWorld.Wall({x1:400, x2:100, y1:400, y2:400}));
+    this.world.addWall(new AIWorld.Wall({x1:100, x2:100, y1:400, y2:100}));
   },
 
   componentDidMount: function() {
     this.renderer = new AICanvasRenderer(this.refs.canvas.getDOMNode(), this.world)
-    this.robot = new AIRobot();
-    this.robot.x = 250;
-    this.robot.y = 250;
+    this.robot = new AIRobot({x:250,y:250,angle:0, world:this.world});
     this.world.addRobot(this.robot);
     this.renderer.render();
+    this.simulator = new AISimulator(this.world, this.renderer);
+    this.augmentBot(this.state.code);
+    this.simulator.run();
   },
 
-  handleRun: function() {
-    this.simulator = new AISimulator(this.world, this.renderer);
-    var code = this.refs.editor.getDOMNode().value;
-
-    js = 'var CustomRobot = AIRobot.extend('+code+');'
+  augmentBot: function(code) {
+    js = 'var extendWith = '+code+';'
     eval(js);
-    robot = new CustomRobot();
-    robot.x = 250;
-    robot.y = 250;
-    this.world.replaceRobot(this.robot, robot);
-    this.robot = robot;
+    for (var key in extendWith) {
+      this.robot[key] = extendWith[key];
+    }
+  },
 
-    this.simulator.run();
+  handleCodeChange: function(event) {
+    var code = event.target.value;
+    this.setState({code:code});
+    this.augmentBot(code);
+    if (!this.simulator.running) {
+      this.simulator.run();
+    }
   },
 
   render: function() {
     return (
       <div className="row">
         <div className="col-md-6">
-          <CodeEditor ref="editor" />
-          <Button onClick={this.handleRun}>Run</Button>
+          <CodeEditor ref="editor" onChange={this.handleCodeChange} value={this.state.code}/>
         </div>
         <div className="col-md-6">
           <AIWorldCanvas ref="canvas" />

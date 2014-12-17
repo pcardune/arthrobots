@@ -18,7 +18,7 @@ var ArthrobotApp = React.createClass({
   getInitialState: function() {
     return {
       isAdministrator: false,
-      canPlayAI: false
+      canPlayAI: true
     }
   },
 

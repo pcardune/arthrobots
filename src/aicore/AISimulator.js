@@ -7,6 +7,7 @@ var AISimulator = Class.extend({
     this.world = world
     this.renderer = renderer;
     this.frames = 0;
+    this.running = false;
   },
 
   _innerRun: function(timestamp) {
@@ -16,14 +17,26 @@ var AISimulator = Class.extend({
     }
     var robots = this.world.getRobots();
     for (var i = 0; i < robots.length; i++) {
-      robots[i].run();
+      try {
+        robots[i].run();
+      } catch (e) {
+        console.warn(e);
+        this.pause();
+      }
     }
     this.renderer.render();
-    window.requestAnimationFrame(this._innerRun.bind(this))
+    if (this.running) {
+      window.requestAnimationFrame(this._innerRun.bind(this))
+    }
   },
 
   run: function() {
+    this.running = true;
     window.requestAnimationFrame(this._innerRun.bind(this));
+  },
+
+  pause: function() {
+    this.running = false;
   }
 });
 
