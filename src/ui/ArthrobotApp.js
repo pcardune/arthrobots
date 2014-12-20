@@ -11,14 +11,14 @@ var NavItem = require('react-bootstrap').NavItem;
 
 var Tab = require('./Tab');
 
-require('./ArthrobotApp.css')
+require('./ArthrobotApp.css');
 
 var ArthrobotApp = React.createClass({
 
   getInitialState: function() {
     return {
       isAdministrator: false
-    }
+    };
   },
 
   loadIsAdministrator: function() {
@@ -52,7 +52,15 @@ var ArthrobotApp = React.createClass({
   render: function() {
     var navbar = [];
     var user = Parse.User.current();
+    var anonUserNotice = null;
     if (user) {
+      if (!user.get('email')) {
+        anonUserNotice = (
+          <div className="text-center alert alert-danger">
+          You are logged in anonymously! <Link to="signup" className="btn btn-primary">Creat an Account</Link> to save your progress.
+          </div>
+        );
+      }
       navbar = [
         <Link key="1" to="profile" params={{username:user.get('username')}}><img className="gravatar" src={gravatar.url(user.get('email'))} /></Link>,
         <Tab key="2" to="logout">Logout</Tab>
@@ -66,6 +74,7 @@ var ArthrobotApp = React.createClass({
     var brand = <Link to="landing">Arthrobots</Link>;
     return (
       <div className="container ArthrobotApp">
+        {anonUserNotice}
         <Navbar brand={brand} fluid={true} className="navbar-inverse">
           <Nav>
             <Tab to="landing">Home</Tab>

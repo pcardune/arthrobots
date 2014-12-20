@@ -90,7 +90,7 @@ var LandingPage = React.createClass({
         <div className="col-md-12">
           <Jumbotron>
             <WorldCanvas className="pull-right" worldDefinition={this.props.exampleWorld} ref="worldCanvas"/>
-            <h1>Anthrobots</h1>
+            <h1>Arthrobots</h1>
             <p>Robots, exploring a world, completely at your command!</p>
             <p>Choose your level:</p>
             <p>

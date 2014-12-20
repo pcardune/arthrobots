@@ -5,7 +5,7 @@ var Link = require('react-router').Link;
 var Navigation = require('react-router').Navigation;
 var React = require('react');
 
-var SignUpPage = React.createClass({
+var UpgradeAccountPage = React.createClass({
   mixins: [Navigation],
 
   getInitialState: function() {
@@ -33,14 +33,11 @@ var SignUpPage = React.createClass({
       messageType:"info"
     });
 
-    var wasAnonymous = false;
-    if (this.state.user && !this.state.user.get('email')) {
-      wasAnonymous = true;
-    }
-    var user = this.state.user || new Parse.User();
+    var user = this.state.user;
     user.set("username", this.refs.username.getDOMNode().value);
     user.set("password", this.refs.password.getDOMNode().value);
     user.set("email", this.refs.email.getDOMNode().value);
+    user.setACL(new Parse.ACL(user));
 
     user.signUp(null, {
       success: function(user) {
@@ -50,10 +47,6 @@ var SignUpPage = React.createClass({
           messageType:"success",
           user: Parse.User.current()
         });
-        if (wasAnonymous) {
-          localStorage.removeItem('username');
-          localStorage.removeItem('password');
-        }
       }.bind(this),
       error: function(user, error) {
         // Show the error message somewhere and let the user try again.
@@ -72,7 +65,7 @@ var SignUpPage = React.createClass({
     }
 
     var form = null;
-    if (this.state.user && this.state.user.get('email')) {
+    if (this.state.user.get('email')) {
       form = <Button onClick={this.handleContinue} className="btn-lg" bsStyle="success">Continue</Button>
     } else {
       form = (
@@ -93,7 +86,7 @@ var SignUpPage = React.createClass({
             <label>Confirm Password:</label>
             <input type="password" ref="passwordConfirm" className="form-control" placeholder="Confirm password" />
           </div>
-          <Button onClick={this.handleSignUp} bsStyle="primary">Sign Up</Button> or <Link to="login">Log In</Link>
+          <Button onClick={this.handleSignUp} bsStyle="primary">Sign Up</Button>
         </form>
       );
     }
@@ -102,7 +95,7 @@ var SignUpPage = React.createClass({
         <div className="col-md-3"/>
         <div className="col-md-6">
           <div className="jumbotron">
-            <h1>{this.state.user && this.state.user.get('email') ? "W00t!" : "Sign Up!"}</h1>
+            <h1>{this.state.user.get('email') ? "W00t!" : "Sign Up!"}</h1>
             {alert}
             {form}
           </div>
@@ -112,4 +105,4 @@ var SignUpPage = React.createClass({
   }
 });
 
-module.exports = SignUpPage;
+module.exports = UpgradeAccountPage;
