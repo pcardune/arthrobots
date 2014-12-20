@@ -6,6 +6,11 @@ var AIRobot = Class.extend({
     var y = config.y;
     var angle = config.angle;
     var world = config.world;
+    var sprite = config.sprite;
+    var game = config.game;
+
+    sprite.body.collideWorldBounds = true;
+    sprite.body.maxVelocity.setTo(400, 400)
 
 
     var distanceToWall = function(w) {
@@ -18,37 +23,24 @@ var AIRobot = Class.extend({
 
     // define functions here so that extensions don't have access to above variables.
     this.getX = function() {
-      return x;
+      return sprite.x;
     };
 
     this.getY = function() {
-      return y;
+      return sprite.y;
     };
 
     this.getAngle = function() {
-      return angle;
-    };
-
-    this.canMove = function() {
-      var walls = world.getWalls();
-      var i = walls.length;
-      while (i--) {
-        if (distanceToWall(walls[i]) < 10) {
-          return false;
-        }
-      }
-      return true;
+      return sprite.angle;
     };
 
     this.move = function() {
-      if (this.canMove()) {
-        x += Math.cos(angle);
-        y += Math.sin(angle);
-      }
+      s = sprite;
+      game.physics.arcade.velocityFromRotation(sprite.rotation, 100, sprite.body.velocity);
     };
 
     this.turn = function(byAngle) {
-      angle += byAngle;
+      sprite.angle += byAngle;
     }
 
     this.run = function() {
