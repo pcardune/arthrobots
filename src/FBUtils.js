@@ -3,10 +3,10 @@ var gravatar = require('gravatar');
 var FBUtils = {
   getProfilePic: function(user) {
     var authData = user.get('authData');
-    if (authData.facebook) {
+    if (authData && authData.facebook) {
       return 'http://graph.facebook.com/'+authData.facebook.id+'/picture?type=square&width=170&height=170'
     } else {
-      return gravatar.url(this.state.user.get('email'), {s:170});
+      return gravatar.url(user.get('email'), {s:170});
     }
   },
 

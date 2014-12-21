@@ -23,6 +23,7 @@ var TrackPage = require('./ui/TrackPage');
 var ArthrobotApp = require('./ui/ArthrobotApp');
 var LoginAnonymouslyPage = require('./ui/LoginAnonymouslyPage');
 var ProfilePage = require('./ui/ProfilePage');
+var LeaderboardPage = require('./ui/LeaderboardPage');
 
 var Empty = React.createClass({
 
@@ -39,12 +40,13 @@ var routes = (
       <Route name="world" path="/worlds/:worldId" handler={WorldPage} />
       <DefaultRoute name="browseworlds" handler={BrowseWorldsPage} />
     </Route>
-    <Route name="profile" path="/profile/:username" handler={ProfilePage} />
+    <Route name="profile" path="/profile/:userId" handler={ProfilePage} />
     <Route name="track" path="/tracks/:trackId" handler={TrackPage} />
     <Route name="login" handler={LoginPage} />
     <Route name="login-anonymously" handler={LoginAnonymouslyPage} />
     <Route name="logout" handler={LogoutPage} />
     <Route name="signup" handler={SignUpPage} />
+    <Route name="leaderboard" handler={LeaderboardPage} />
     <DefaultRoute name="landing" handler={LandingPage}/>
   </Route>
 );

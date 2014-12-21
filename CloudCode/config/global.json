@@ -1,0 +1,14 @@
+{
+    "applications": {
+        "Arthrobots": {
+            "applicationId": "MdChOQB40vX9zT4MhQwVsdBc10uKnXfZ6LHaBTrV", 
+            "masterKey": "2NQPlS63BZAvff4TwKfEIolrAYwxYEyfPXfOfSZG"
+        }, 
+        "_default": {
+            "link": "Arthrobots"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.3.2"
+    }
+}

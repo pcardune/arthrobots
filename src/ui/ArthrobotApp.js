@@ -64,7 +64,7 @@ var ArthrobotApp = React.createClass({
         );
       }
       navbar = [
-        <Link key="1" to="profile" params={{username:user.get('username')}}><img className="gravatar" src={FBUtils.getProfilePic(user)} /></Link>,
+        <Link key="1" to="profile" params={{userId:user.id}}><img className="gravatar" src={FBUtils.getProfilePic(user)} /></Link>,
         <Tab key="2" to="logout">Logout</Tab>
       ];
     } else {
@@ -80,6 +80,7 @@ var ArthrobotApp = React.createClass({
         <Navbar brand={brand} fluid={true} className="navbar-inverse">
           <Nav>
             <Tab to="landing">Home</Tab>
+            <Tab to="leaderboard">Leaderboard</Tab>
             {this.state.isAdministrator ? <Tab to="worlds">Worlds</Tab> : null}
           </Nav>
           <Nav className="navbar-right">
