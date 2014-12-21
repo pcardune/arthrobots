@@ -13,6 +13,22 @@ var LoginPage = React.createClass({
     }
   },
 
+  handleFBLogin: function() {
+    Parse.FacebookUtils.logIn(null, {
+      success: function(user) {
+        if (!user.existed()) {
+          alert("User signed up and logged in through Facebook!");
+        } else {
+          alert("User logged in through Facebook!");
+        }
+        window.location = "/";
+      },
+      error: function(user, error) {
+        alert("User cancelled the Facebook login or did not fully authorize.");
+      }
+    });
+  },
+
   handleLogin: function() {
     this.setState({
       message:"Logging you in...",
@@ -67,6 +83,7 @@ var LoginPage = React.createClass({
               <Button onClick={this.handleLogin}>
                 Log In
               </Button> or <Link to="signup">Sign Up</Link> or <Link to="login-anonymously">Continue Anonymously</Link>
+              <Button onClick={this.handleFBLogin}>Login with Facebook</Button>
             </form>
           </div>
         </div>

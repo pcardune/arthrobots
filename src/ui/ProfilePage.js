@@ -53,18 +53,14 @@ var ProfilePage = React.createClass({
   },
 
   handleConnectToFacebook: function() {
-    // Parse.FacebookUtils.link(Parse.User.current(), null, {
-    //   success: function(user) {
-    //     console.log("Woohoo, user logged in with Facebook!");
-    //   },
-    //   error: function(user, error) {
-    //     console.warn("User cancelled the Facebook login or did not fully authorize:", error);
-    //   }
-    // });
-    FB.login(function(response) {
-      r = response;
-      console.log("response was", response);
-    })
+    Parse.FacebookUtils.link(Parse.User.current(), null, {
+      success: function(user) {
+        console.log("Woohoo, user logged in with Facebook!");
+      },
+      error: function(user, error) {
+        console.warn("User cancelled the Facebook login or did not fully authorize:", error);
+      }
+    });
   },
 
   render: function() {
@@ -89,15 +85,18 @@ var ProfilePage = React.createClass({
       );
     });
     var  connectToFB = null;
-    if (Parse.User.current() &&
-        Parse.User.current().id == this.state.user.id &&
-        !Parse.FacebookUtils.isLinked(Parse.User.current())) {
-      connectToFB = <Button bsStyle="primary" onClick={this.handleConnectToFacebook}>Connect to Facebook</Button>;
+    if (Parse.User.current() && Parse.User.current().id == this.state.user.id && !Parse.FacebookUtils.isLinked(Parse.User.current())) {
+      connectToFB = (<Button bsStyle="primary" onClick={this.handleConnectToFacebook}>Connect to Facebook</Button>);
+    }
+    var profilePic = gravatar.url(this.state.user.get('email'), {s:170});
+    var authData = this.state.user.get('authData');
+    if (authData) {
+      profilePic = 'http://graph.facebook.com/'+authData.facebook.id+'/picture';
     }
     return (
       <div className="row ProfilePage">
         <div className="col-md-2">
-          <img className="gravatar" src={gravatar.url(this.state.user.get('email'), {s:170})}/>
+          <img className="gravatar" src={profilePic}/>
           <p>{this.state.user.get('username')}</p>
           {connectToFB}
         </div>

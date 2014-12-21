@@ -19,6 +19,29 @@
   </head>
 
   <body>
+    <script>
+     var ParseKeys = {
+         APP_ID: 'MdChOQB40vX9zT4MhQwVsdBc10uKnXfZ6LHaBTrV',
+         JS_KEY: 'LCUFVocN8uiuS7YJwBy7o9aCOZkcMPkdfHz0bnY1'
+     };
+     Parse.initialize(ParseKeys.APP_ID, ParseKeys.JS_KEY);
+     window.fbAsyncInit = function() {
+         Parse.FacebookUtils.init({
+             appId      : '366410923540952',
+             xfbml      : true,
+             version    : 'v2.2',
+             cookie     : true
+         });
+     };
+
+     (function(d, s, id){
+         var js, fjs = d.getElementsByTagName(s)[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement(s); js.id = id; js.async=true;
+         js.src = "//connect.facebook.net/en_US/sdk.js";
+         fjs.parentNode.insertBefore(js, fjs);
+     }(document, 'script', 'facebook-jssdk'));
+    </script>
     <div id="react-root" class="container" style="margin-top:15px">
       <nav class="navbar navbar-default navbar-inverse">
         <div class="container-fluid">
