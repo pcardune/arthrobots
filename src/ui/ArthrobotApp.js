@@ -56,10 +56,10 @@ var ArthrobotApp = React.createClass({
     var user = Parse.User.current();
     var anonUserNotice = null;
     if (user) {
-      if (!user.get('email')) {
+      if (!user.get('email') && !user.get('authData')) {
         anonUserNotice = (
           <div className="text-center alert alert-danger">
-          You are logged in anonymously! <Link to="signup" className="btn btn-primary">Creat an Account</Link> to save your progress.
+          You are logged in anonymously! <Link to="signup" className="btn btn-primary">Create an Account</Link> to save your progress.
           </div>
         );
       }

@@ -3,7 +3,6 @@ var Button = require('react-bootstrap').Button;
 var Link = require('react-router').Link;
 var React = require('react');
 
-
 var LoginPage = React.createClass({
 
   getInitialState: function() {
@@ -20,6 +19,7 @@ var LoginPage = React.createClass({
     });
     Parse.FacebookUtils.logIn(null, {
       success: function(user) {
+        Parse.Analytics.track('FBLoginSuccess', {error:error});
         FB.api('/me', function(response) {
           user.set('fbProfile', response);
           user.save(null, {success:function() {
@@ -28,7 +28,7 @@ var LoginPage = React.createClass({
         });
       },
       error: function(user, error) {
-        alert("User cancelled the Facebook login or did not fully authorize.");
+        Parse.Analytics.track('FBLoginFail', {error:error});
       }
     });
   },
