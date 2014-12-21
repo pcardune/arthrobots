@@ -12,6 +12,7 @@ var gravatar = require('gravatar');
 
 var ProgramModel = require('../models/ProgramModel');
 var TrackBadge = require('./TrackBadge');
+var FBUtils = require('../FBUtils');
 
 require('./ProfilePage.css');
 var ProfilePage = React.createClass({
@@ -34,16 +35,16 @@ var ProfilePage = React.createClass({
       success: function(users) {
         if (users.length) {
           this.setState({user:users[0]});
+          var programQuery = new Parse.Query(ProgramModel);
+          programQuery.equalTo('owner', users[0]);
+          programQuery.include('world');
+          programQuery.include('world.track');
+          programQuery.find({
+            success: function(programs) {
+              this.setState({programs:programs, isLoading: false})
+            }.bind(this)
+          });
         }
-        var programQuery = new Parse.Query(ProgramModel);
-        programQuery.equalTo('owner', users[0]);
-        programQuery.include('world');
-        programQuery.include('world.track');
-        programQuery.find({
-          success: function(programs) {
-            this.setState({programs:programs, isLoading: false})
-          }.bind(this)
-        })
       }.bind(this)
     });
   },
@@ -88,16 +89,12 @@ var ProfilePage = React.createClass({
     if (Parse.User.current() && Parse.User.current().id == this.state.user.id && !Parse.FacebookUtils.isLinked(Parse.User.current())) {
       connectToFB = (<Button bsStyle="primary" onClick={this.handleConnectToFacebook}>Connect to Facebook</Button>);
     }
-    var profilePic = gravatar.url(this.state.user.get('email'), {s:170});
-    var authData = this.state.user.get('authData');
-    if (authData) {
-      profilePic = 'http://graph.facebook.com/'+authData.facebook.id+'/picture';
-    }
+    var profilePic = FBUtils.getProfilePic(this.state.user);
     return (
       <div className="row ProfilePage">
         <div className="col-md-2">
           <img className="gravatar" src={profilePic}/>
-          <p>{this.state.user.get('username')}</p>
+          <p>{FBUtils.getUserName(this.state.user)}</p>
           {connectToFB}
         </div>
         <div className="col-md-5">

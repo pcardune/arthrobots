@@ -14,14 +14,18 @@ var LoginPage = React.createClass({
   },
 
   handleFBLogin: function() {
+    this.setState({
+      message:"Logging you in...",
+      messageType:"info"
+    });
     Parse.FacebookUtils.logIn(null, {
       success: function(user) {
-        if (!user.existed()) {
-          alert("User signed up and logged in through Facebook!");
-        } else {
-          alert("User logged in through Facebook!");
-        }
-        window.location = "/";
+        FB.api('/me', function(response) {
+          user.set('fbProfile', response);
+          user.save(null, {success:function() {
+            window.location = "/";
+          }});
+        });
       },
       error: function(user, error) {
         alert("User cancelled the Facebook login or did not fully authorize.");
@@ -73,6 +77,9 @@ var LoginPage = React.createClass({
             {alert}
             <form>
               <div className="form-group">
+                <Button bsStyle="primary" onClick={this.handleFBLogin}>Login with Facebook</Button>
+              </div>
+              <div className="form-group">
                 <label>Username:</label>
                 <input ref="username" type="text" className="form-control" placeholder="Enter username" />
               </div>
@@ -83,7 +90,6 @@ var LoginPage = React.createClass({
               <Button onClick={this.handleLogin}>
                 Log In
               </Button> or <Link to="signup">Sign Up</Link> or <Link to="login-anonymously">Continue Anonymously</Link>
-              <Button onClick={this.handleFBLogin}>Login with Facebook</Button>
             </form>
           </div>
         </div>

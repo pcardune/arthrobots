@@ -9,6 +9,8 @@ var Navbar = require('react-bootstrap').Navbar;
 var Nav = require('react-bootstrap').Nav;
 var NavItem = require('react-bootstrap').NavItem;
 
+var FBUtils = require('../FBUtils');
+
 var Tab = require('./Tab');
 
 require('./ArthrobotApp.css');
@@ -62,7 +64,7 @@ var ArthrobotApp = React.createClass({
         );
       }
       navbar = [
-        <Link key="1" to="profile" params={{username:user.get('username')}}><img className="gravatar" src={gravatar.url(user.get('email'))} /></Link>,
+        <Link key="1" to="profile" params={{username:user.get('username')}}><img className="gravatar" src={FBUtils.getProfilePic(user)} /></Link>,
         <Tab key="2" to="logout">Logout</Tab>
       ];
     } else {
