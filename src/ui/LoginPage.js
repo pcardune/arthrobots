@@ -63,6 +63,13 @@ var LoginPage = React.createClass({
     this.refs.username.getDOMNode().focus();
   },
 
+  handleKeyPress: function(event) {
+    // press enter
+    if (event.which == 13) {
+      this.handleLogin(event)
+    }
+  },
+
   render: function() {
     var alert = null;
     if (this.state.message) {
@@ -85,7 +92,7 @@ var LoginPage = React.createClass({
               </div>
               <div className="form-group">
                 <label>Password:</label>
-                <input ref="password" type="password" className="form-control" placeholder="Password" />
+                <input ref="password" type="password" className="form-control" placeholder="Password" onKeyPress={this.handleKeyPress} />
               </div>
               <Button onClick={this.handleLogin}>
                 Log In
