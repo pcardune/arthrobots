@@ -14,6 +14,62 @@ var ProgramModel = require('../models/ProgramModel');
 var TrackBadge = require('./TrackBadge');
 var FBUtils = require('../FBUtils');
 
+var LinkFacebookButton = React.createClass({
+
+  getInitialState: function() {
+    return {
+      isConnecting: false,
+      isDisconnecting: false,
+      isLinked: Parse.User.current() && Parse.FacebookUtils.isLinked(Parse.User.current())
+    }
+  },
+
+  handleConnectToFacebook: function(event) {
+    this.setState({isConnecting:true})
+    Parse.FacebookUtils.link(Parse.User.current(), null, {
+      success: function(user) {
+        FB.api('/me', function(response) {
+          user.set('fbProfile', response);
+          user.save(null, {success:function() {
+            this.setState(this.getInitialState());
+          }.bind(this)});
+        }.bind(this));
+      }.bind(this),
+      error: function(user, error) {
+        console.warn("User cancelled the Facebook login or did not fully authorize:", error);
+      }
+    });
+  },
+
+  handleUnlinkFacebook: function() {
+    this.setState({isDisconnecting: true});
+    Parse.FacebookUtils.unlink(Parse.User.current(), {
+      success: function(user) {
+        user.set('fbProfile', null);
+        user.save(null, {
+          success: function() {
+            this.setState(this.getInitialState());
+          }.bind(this)
+        })
+      }.bind(this)
+    })
+  },
+
+  render: function() {
+    if (this.state.isLinked) {
+      if (this.state.isDisconnecting) {
+        return <Button>Disconnecting...</Button>;
+      }
+      return <Button onClick={this.handleUnlinkFacebook}>Disconnect from Facebook</Button>;
+    } else {
+      if (this.state.isConnecting) {
+        return <Button bsStyle="primary">Connecting...</Button>
+      }
+      return <Button bsStyle="primary" onClick={this.handleConnectToFacebook}>Connect to Facebook</Button>
+    }
+  }
+});
+
 require('./ProfilePage.css');
 var ProfilePage = React.createClass({
 
@@ -53,17 +109,6 @@ var ProfilePage = React.createClass({
     this.loadUser();
   },
 
-  handleConnectToFacebook: function() {
-    Parse.FacebookUtils.link(Parse.User.current(), null, {
-      success: function(user) {
-        console.log("Woohoo, user logged in with Facebook!");
-      },
-      error: function(user, error) {
-        console.warn("User cancelled the Facebook login or did not fully authorize:", error);
-      }
-    });
-  },
-
   render: function() {
     if (this.state.isLoading) {
       return (<div>Loading...</div>);
@@ -86,8 +131,8 @@ var ProfilePage = React.createClass({
       );
     });
     var  connectToFB = null;
-    if (Parse.User.current() && Parse.User.current().id == this.state.user.id && !Parse.FacebookUtils.isLinked(Parse.User.current())) {
-      connectToFB = (<Button bsStyle="primary" onClick={this.handleConnectToFacebook}>Connect to Facebook</Button>);
+    if (Parse.User.current().id == this.state.user.id) {
+      connectToFB = <LinkFacebookButton />;
     }
     var profilePic = FBUtils.getProfilePic(this.state.user);
     return (
