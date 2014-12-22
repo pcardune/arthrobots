@@ -19,7 +19,7 @@ var LoginPage = React.createClass({
     });
     Parse.FacebookUtils.logIn(null, {
       success: function(user) {
-        Parse.Analytics.track('FBLoginSuccess', {error:error});
+        Parse.Analytics.track('FBLoginSuccess', {});
         FB.api('/me', function(response) {
           user.set('fbProfile', response);
           user.save(null, {success:function() {
