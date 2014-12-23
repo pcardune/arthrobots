@@ -1,16 +1,15 @@
 
 var Class = require('./Class');
 
-var gvr = {lang:{}};
-
-gvr.lang.RUNNER_GLOBAL_KEY = "$runner";
+var lang = {};
+lang.RUNNER_GLOBAL_KEY = "$runner";
 
 /**
  * @function
  */
-gvr.lang.getRunner = function getRunner(globals){
+lang.getRunner = function getRunner(globals){
   globals = globals || {};
-  var runner = globals[gvr.lang.RUNNER_GLOBAL_KEY];
+  var runner = globals[lang.RUNNER_GLOBAL_KEY];
   if (!runner){
     /**
      * stubbed out version of {@link gvr.runner.Runner}
@@ -25,8 +24,8 @@ gvr.lang.getRunner = function getRunner(globals){
   return runner;
 };
 
-gvr.lang.BaseExpression = Class.extend(
-  /** @lends gvr.lang.BaseExpression# */
+lang.BaseExpression = Class.extend(
+  /** @lends lang.BaseExpression# */
   {
     /**
      * the line number associated with this expression.
@@ -55,8 +54,8 @@ gvr.lang.BaseExpression = Class.extend(
   }
 );
 
-gvr.lang.Expression = gvr.lang.BaseExpression.extend(
-  /** @lends gvr.lang.Expression# */
+lang.Expression = lang.BaseExpression.extend(
+  /** @lends lang.Expression# */
   {
 
     /**
@@ -70,9 +69,9 @@ gvr.lang.Expression = gvr.lang.BaseExpression.extend(
 
     /**
      * @class Represents a single expression in the gvr language.
-     * @extends gvr.lang.BaseExpression
+     * @extends lang.BaseExpression
      * @constructs
-     * @param line See {@link gvr.lang.BaseExpression#line}
+     * @param line See {@link lang.BaseExpression#line}
      * @param callable The callable function that constitutes execution of this expression.
      * @param scope The scope with which to call the callable function.
      */
@@ -86,7 +85,7 @@ gvr.lang.Expression = gvr.lang.BaseExpression.extend(
      * @param globals global values passed throughout program execution.
      */
     step: function(globals, context){
-      gvr.lang.getRunner(globals).notify(this);
+      lang.getRunner(globals).notify(this);
       this.callable.call(this.scope);
       return [];
     }
@@ -94,21 +93,21 @@ gvr.lang.Expression = gvr.lang.BaseExpression.extend(
 
 /**
  * Creates a new Expression object.
- * @see gvr.lang.Expression
- * @returns {gvr.lang.Expression}
+ * @see lang.Expression
+ * @returns {lang.Expression}
  */
-gvr.lang.newExpression = function(line, callable, scope){
-  return new gvr.lang.Expression(line, callable, scope);
+lang.newExpression = function(line, callable, scope){
+  return new lang.Expression(line, callable, scope);
 };
 
 
-gvr.lang.Block = Class.extend(
-  /** @lends gvr.lang.Block# */
+lang.Block = Class.extend(
+  /** @lends lang.Block# */
   {
     /**
-     * @class Represents an executable grouping of {@link gvr.lang.BaseExpression} objects.
+     * @class Represents an executable grouping of {@link lang.BaseExpression} objects.
      * @constructs
-     * @param expressions A list of {@link gvr.lang.BaseExpression} objects to step over.
+     * @param expressions A list of {@link lang.BaseExpression} objects to step over.
      */
     init: function(expressions){
       this.name="block";
@@ -142,18 +141,18 @@ gvr.lang.Block = Class.extend(
     }
   });
 
-gvr.lang.If = gvr.lang.BaseExpression.extend(
-  /** @lends gvr.lang.If# */
+lang.If = lang.BaseExpression.extend(
+  /** @lends lang.If# */
   {
     /**
      * @class Represents an if statement in the gvr language.
-     * @extends gvr.lang.BaseExpression
+     * @extends lang.BaseExpression
      * @constructs
-     * @param line See {@link gvr.lang.BaseExpression#line}
-     * @param callable See {@link gvr.lang.If#callable}
-     * @param scope See {@link gvr.lang.If#scope}
+     * @param line See {@link lang.BaseExpression#line}
+     * @param callable See {@link lang.If#callable}
+     * @param scope See {@link lang.If#scope}
      * @param expressions A list of expressions with which to
-     *          create a {@link gvr.lang.Block} object
+     *          create a {@link lang.Block} object
      */
     init: function (line, callable, scope, expressions){
       this._super(line, "if");
@@ -172,9 +171,9 @@ gvr.lang.If = gvr.lang.BaseExpression.extend(
 
       /**
        * The block to step into if the callable returns true
-       * @type {gvr.lang.Block}
+       * @type {lang.Block}
        */
-      this.block = new gvr.lang.Block(expressions);
+      this.block = new lang.Block(expressions);
 
       /**
        * A list of other elif conditions to try.
@@ -184,21 +183,21 @@ gvr.lang.If = gvr.lang.BaseExpression.extend(
 
       /**
        * The block to step into if the callable returns false.
-       * @type {gvr.lang.Block}
+       * @type {lang.Block}
        */
-      this.elseBlock = new gvr.lang.Block([]);
+      this.elseBlock = new lang.Block([]);
     },
 
     /**
      * Step into the appropriate block depending
-     * on the return value of {@link gvr.lang.If#callable}.
-     * If there {@link gvr.lang.If#elifs} is not empty, and
-     * {@link gvr.lang.If#callable} returns false, then all the elifs
+     * on the return value of {@link lang.If#callable}.
+     * If there {@link lang.If#elifs} is not empty, and
+     * {@link lang.If#callable} returns false, then all the elifs
      * will be processed.
      * @param globals global values passed throughout program execution.
      */
     step: function(globals, context){
-      gvr.lang.getRunner(globals).notify(this);
+      lang.getRunner(globals).notify(this);
       var conditionMatched = false;
       var stack = [];
       if (this.callable.call(this.scope)){
@@ -226,26 +225,26 @@ gvr.lang.If = gvr.lang.BaseExpression.extend(
   });
 
 /**
- * creates a new {@link gvr.lang.If} object
- * @returns {gvr.lang.If}
+ * creates a new {@link lang.If} object
+ * @returns {lang.If}
  */
-gvr.lang.newIf = function (line, callable, scope, expressions){
-  return new gvr.lang.If(line, callable, scope, expressions);
+lang.newIf = function (line, callable, scope, expressions){
+  return new lang.If(line, callable, scope, expressions);
 };
 
 
-gvr.lang.While = gvr.lang.BaseExpression.extend(
-  /** @lends gvr.lang.While# */
+lang.While = lang.BaseExpression.extend(
+  /** @lends lang.While# */
   {
     /**
      * @class Represents a while loop in the gvr language.
-     * @extends gvr.lang.BaseExpression
+     * @extends lang.BaseExpression
      * @constructs
-     * @param line See {@link gvr.lang.BaseExpression#line}
-     * @param callable See {@link gvr.lang.If#callable}
-     * @param scope See {@link gvr.lang.If#scope}
+     * @param line See {@link lang.BaseExpression#line}
+     * @param callable See {@link lang.If#callable}
+     * @param scope See {@link lang.If#scope}
      * @param expressions A list of expressions with which to
-     *          create a {@link gvr.lang.Block} object
+     *          create a {@link lang.Block} object
      */
     init: function(line, callable, scope, expressions){
       this._super(line, "while");
@@ -254,16 +253,16 @@ gvr.lang.While = gvr.lang.BaseExpression.extend(
       /** the scope with which to call the callable */
       this.scope = scope;
       /** The block to step into as long as the callable returns true */
-      this.block = new gvr.lang.Block(expressions);
+      this.block = new lang.Block(expressions);
     },
 
     /**
      * Step into the while loop's block
-     * as long as {@link gvr.lang.While#callable} returns true
+     * as long as {@link lang.While#callable} returns true
      * @param globals global values passed throughout program execution.
      */
     step: function(globals, context){
-      gvr.lang.getRunner(globals).notify(this);
+      lang.getRunner(globals).notify(this);
       var stack = [];
       if (this.callable.call(this.scope)){
         stack.push({instruction: this, context:{}});
@@ -275,24 +274,24 @@ gvr.lang.While = gvr.lang.BaseExpression.extend(
   });
 
 /**
- * creates a new {@link gvr.lang.While} object
- * @returns {gvr.lang.While}
+ * creates a new {@link lang.While} object
+ * @returns {lang.While}
  */
-gvr.lang.newWhile = function(line, callable, scope, expressions){
-  return new gvr.lang.While(line, callable, scope, expressions);
+lang.newWhile = function(line, callable, scope, expressions){
+  return new lang.While(line, callable, scope, expressions);
 };
 
-gvr.lang.Do = gvr.lang.BaseExpression.extend(
-  /** @lends gvr.lang.Do# */
+lang.Do = lang.BaseExpression.extend(
+  /** @lends lang.Do# */
   {
     /**
      * @class Represents a do loop in the gvr language.
-     * @extends gvr.lang.BaseExpression
+     * @extends lang.BaseExpression
      * @constructs
-     * @param line See {@link gvr.lang.BaseExpression#line}
-     * @param count See {@link gvr.lang.Do#count}
+     * @param line See {@link lang.BaseExpression#line}
+     * @param count See {@link lang.Do#count}
      * @param expressions A list of expressions with which to
-     *          create a {@link gvr.lang.Block} object
+     *          create a {@link lang.Block} object
      */
     init: function(line, count, expressions){
       this._super(line, "do");
@@ -305,20 +304,20 @@ gvr.lang.Do = gvr.lang.BaseExpression.extend(
 
       /**
        * The block to step into after each successive step
-       * @type gvr.lang.Block
+       * @type lang.Block
        */
-      this.block = new gvr.lang.Block(expressions);
+      this.block = new lang.Block(expressions);
     },
 
     /**
      * Step into the do loop's block
-     * up to the number of times specified by {@link gvr.lang.Do#count}.
+     * up to the number of times specified by {@link lang.Do#count}.
      * Once the block has been entered this many times, the counter is
      * reset so the process may occur again (for nested loops).
      * @param globals global values passed throughout program execution.
      */
     step: function(globals, context){
-      gvr.lang.getRunner(globals).notify(this);
+      lang.getRunner(globals).notify(this);
       var stack = [];
       var currentStep = context.currentStep || 0;
       if (currentStep < this.count){
@@ -332,35 +331,35 @@ gvr.lang.Do = gvr.lang.BaseExpression.extend(
   });
 
 /**
- * creates a new {@link gvr.lang.Do} object
- * @returns {gvr.lang.Do}
+ * creates a new {@link lang.Do} object
+ * @returns {lang.Do}
  */
-gvr.lang.newDo = function(line, count, expressions){
-  return new gvr.lang.Do(line, count, expressions);
+lang.newDo = function(line, count, expressions){
+  return new lang.Do(line, count, expressions);
 };
 
 
 
-gvr.lang.Define = gvr.lang.BaseExpression.extend(
-  /** @lends gvr.lang.Define# */
+lang.Define = lang.BaseExpression.extend(
+  /** @lends lang.Define# */
   {
     /**
      * @class Represents a function definition in the gvr language.
-     * @extends gvr.lang.BaseExpression
+     * @extends lang.BaseExpression
      * @constructs
      * @param name The name of the function.  Should be unique for each definition.
      *       Used by FunctionCall to look up the function.
-     * @param line See {@link gvr.lang.BaseExpression#line}
+     * @param line See {@link lang.BaseExpression#line}
      * @param expressions A list of expressions with which to
-     *          create a {@link gvr.lang.Block} object
+     *          create a {@link lang.Block} object
      */
     init: function(line, name, expressions){
       this._super(line, name);
       /**
        * The block to step into when this definition is called.
-       * @type gvr.lang.Block
+       * @type lang.Block
        */
-      this.block = new gvr.lang.Block(expressions);
+      this.block = new lang.Block(expressions);
     },
 
     /**
@@ -369,7 +368,7 @@ gvr.lang.Define = gvr.lang.BaseExpression.extend(
      * @param globals global values passed throughout program execution.
      */
     step: function(globals, context){
-      gvr.lang.getRunner(globals).notify(this);
+      lang.getRunner(globals).notify(this);
       globals[this.name] = this;
       return [];
     }
@@ -377,22 +376,22 @@ gvr.lang.Define = gvr.lang.BaseExpression.extend(
 );
 
 /**
- * creates a new {@link gvr.lang.Define} object
- * @returns {gvr.lang.Define}
+ * creates a new {@link lang.Define} object
+ * @returns {lang.Define}
  */
-gvr.lang.newDefine = function(line, name, expressions){
-  return new gvr.lang.Define(line, name, expressions);
+lang.newDefine = function(line, name, expressions){
+  return new lang.Define(line, name, expressions);
 };
 
-gvr.lang.FunctionCall = gvr.lang.BaseExpression.extend(
-  /** @lends gvr.lang.FunctionCall# */
+lang.FunctionCall = lang.BaseExpression.extend(
+  /** @lends lang.FunctionCall# */
   {
     /**
      * @class Represents a functionc all in the gvr language.
-     * @extends gvr.lang.BaseExpression
+     * @extends lang.BaseExpression
      * @constructs
-     * @param line See {@link gvr.lang.BaseExpression#line}
-     * @param fname See {@link gvr.lang.FunctionCall#fname}
+     * @param line See {@link lang.BaseExpression#line}
+     * @param fname See {@link lang.FunctionCall#fname}
      */
     init: function(line, fname){
       this._super(line, "call");
@@ -404,11 +403,11 @@ gvr.lang.FunctionCall = gvr.lang.BaseExpression.extend(
     },
     /**
      * Steps into the block of the function stored in globals
-     * under the name specified by {@link gvr.lang.FunctionCall#fname}.
+     * under the name specified by {@link lang.FunctionCall#fname}.
      * @param globals global values passed throughout program execution.
      */
     step: function(globals, context){
-      gvr.lang.getRunner(globals).notify(this);
+      lang.getRunner(globals).notify(this);
       if (!globals[this.fname]){
         throw new Error("The function "+this.fname+" is undefined.");
       }
@@ -417,11 +416,11 @@ gvr.lang.FunctionCall = gvr.lang.BaseExpression.extend(
   });
 
 /**
- * creates a new {@link gvr.lang.FunctionCall} object
- * @returns {gvr.lang.FunctionCall}
+ * creates a new {@link lang.FunctionCall} object
+ * @returns {lang.FunctionCall}
  */
-gvr.lang.newFunctionCall = function(line, fname){
-  return new gvr.lang.FunctionCall(line, fname);
+lang.newFunctionCall = function(line, fname){
+  return new lang.FunctionCall(line, fname);
 };
 
-module.exports = gvr.lang;
+module.exports = lang;
