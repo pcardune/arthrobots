@@ -1,10 +1,10 @@
 /**
- * @name gvr.lang.parser
+ * @name parser
  * @namespace parser module for generating the parse tree.
  */
-var gvr = {debug: function(){}};
-gvr.lang = require('./lang');
-gvr.lang.parser = {};
+var debug = function(){};
+var lang = require('./lang');
+var parser = {};
 
 var Class = require('./Class');
 
@@ -12,54 +12,54 @@ var Class = require('./Class');
  * regex for an expression.
  * @constant
  */
-gvr.lang.parser.EXPRESSION = /^(\w*)\s*$/;
+parser.EXPRESSION = /^(\w*)\s*$/;
 /**
  * regex for a do line.
  * @constant
  */
-gvr.lang.parser.DO = /^do\s*(\d+)\s*:\s*$/;
+parser.DO = /^do\s*(\d+)\s*:\s*$/;
 /**
  * regex for an if line
  * @constant
  */
-gvr.lang.parser.IF = /^if\s*(\w+)\s*:\s*$/;
+parser.IF = /^if\s*(\w+)\s*:\s*$/;
 /**
  * regex for an elif line
  * @constant
  */
-gvr.lang.parser.ELIF = /^elif\s*(\w+)\s*:\s*$/;
+parser.ELIF = /^elif\s*(\w+)\s*:\s*$/;
 /**
  * reges for an else line
  * @constant
  */
-gvr.lang.parser.ELSE = /^else\s*:\s*$/;
+parser.ELSE = /^else\s*:\s*$/;
 /**
  * regex for a while line.
  * @constant
  */
-gvr.lang.parser.WHILE = /^while\s*(\w+)\s*:\s*$/;
+parser.WHILE = /^while\s*(\w+)\s*:\s*$/;
 /**
  * regex for a function definition line.
  * @constant
  */
-gvr.lang.parser.DEFINE = /^define\s*(\w+)\s*:\s*$/;
+parser.DEFINE = /^define\s*(\w+)\s*:\s*$/;
 /**
  * regex for an empty line
  * @constant
  */
-gvr.lang.parser.EMPTY_LINE = /^\s*$/;
+parser.EMPTY_LINE = /^\s*$/;
 /**
  * regex for the indentation of a line.
  * @constant
  */
-gvr.lang.parser.INDENTATION = /^(\s*).*$/;
+parser.INDENTATION = /^(\s*).*$/;
 
 
 /**
  * removes a comment from a line. Comments start with #.
  * @param line The line form which to remove a comment.
  */
-gvr.lang.parser.removeComment = function(line){
+parser.removeComment = function(line){
   var commentStart = line.indexOf('#');
   if (commentStart >= 0){
     line = line.slice(0, commentStart);
@@ -68,14 +68,14 @@ gvr.lang.parser.removeComment = function(line){
 };
 
 
-gvr.lang.parser.Parser = Class.extend(
-  /** @lends gvr.lang.parser.Parser */
+parser.Parser = Class.extend(
+  /** @lends parser.Parser */
   {
     /**
      * @class A parser for the gvr language.
      * @constructs
-     * @param lines See {@link gvr.lang.parser.Parser#lines}
-     * @param robot See {@link gvr.lang.parser.Parser#robot}
+     * @param lines See {@link parser.Parser#lines}
+     * @param robot See {@link parser.Parser#robot}
      */
     init: function(lines, robot){
       /**
@@ -100,11 +100,11 @@ gvr.lang.parser.Parser = Class.extend(
     },
 
     /**
-     * Parse the lines defined by {@link gvr.lang.parser.Parser#lines}
-     * @returns gvr.lang.Block
+     * Parse the lines defined by {@link parser.Parser#lines}
+     * @returns lang.Block
      */
     parse: function (){
-      return new gvr.lang.Block(this.parseLines(""));
+      return new lang.Block(this.parseLines(""));
     },
 
     isJS: function() {
@@ -147,14 +147,14 @@ gvr.lang.parser.Parser = Class.extend(
      */
     handlers: [
       function parseExpression(line, indent, expressions){
-        var expressionMatch = line.match(gvr.lang.parser.EXPRESSION);
+        var expressionMatch = line.match(parser.EXPRESSION);
         if (expressionMatch){
           var expr = expressionMatch[1];
-          gvr.debug(indent+expr);
+          debug(indent+expr);
           if (expr in this.robot){
-            expressions.push(gvr.lang.newExpression(this.lineIndex, this.robot[expr], this.robot));
+            expressions.push(lang.newExpression(this.lineIndex, this.robot[expr], this.robot));
           } else {
-            expressions.push(gvr.lang.newFunctionCall(this.lineIndex, expr));
+            expressions.push(lang.newFunctionCall(this.lineIndex, expr));
           }
           return true;
         }
@@ -162,23 +162,23 @@ gvr.lang.parser.Parser = Class.extend(
       },
 
       function parseDo(line, indent, expressions){
-        var doMatch = line.match(gvr.lang.parser.DO);
+        var doMatch = line.match(parser.DO);
         if (doMatch){
           var count = parseInt(doMatch[1],10);
-          gvr.debug(indent+'do '+count+':');
-          expressions.push(gvr.lang.newDo(this.lineIndex, count, this.parseBlock()));
+          debug(indent+'do '+count+':');
+          expressions.push(lang.newDo(this.lineIndex, count, this.parseBlock()));
           return true;
         }
         return false;
       },
 
       function parseIf(line, indent, expressions){
-        var ifMatch = line.match(gvr.lang.parser.IF);
+        var ifMatch = line.match(parser.IF);
         if (ifMatch){
           var cond = ifMatch[1];
           if (cond in this.robot){
-            gvr.debug(indent+'if '+cond+':');
-            expressions.push(gvr.lang.newIf(this.lineIndex, this.robot[cond], this.robot, this.parseBlock()));
+            debug(indent+'if '+cond+':');
+            expressions.push(lang.newIf(this.lineIndex, this.robot[cond], this.robot, this.parseBlock()));
             return true;
           }
         }
@@ -186,21 +186,21 @@ gvr.lang.parser.Parser = Class.extend(
       },
 
       function parseElif(line, indent, expressions){
-        var elifMatch = line.match(gvr.lang.parser.ELIF);
+        var elifMatch = line.match(parser.ELIF);
         if (elifMatch && expressions[expressions.length-1].name === 'if'){
           var cond = elifMatch[1];
-          gvr.debug(indent+'elif '+cond+':');
+          debug(indent+'elif '+cond+':');
           expressions[expressions.length-1].elifs.push(
-            gvr.lang.newIf(this.lineIndex, this.robot[cond], this.robot, this.parseBlock()));
+            lang.newIf(this.lineIndex, this.robot[cond], this.robot, this.parseBlock()));
           return true;
         }
         return false;
       },
 
       function parseElse(line, indent, expressions){
-        var elseMatch = line.match(gvr.lang.parser.ELSE);
+        var elseMatch = line.match(parser.ELSE);
         if (elseMatch && expressions[expressions.length-1].name === 'if'){
-          gvr.debug(indent+'else:');
+          debug(indent+'else:');
           expressions[expressions.length-1].elseBlock.expressions = this.parseBlock();
           return true;
         }
@@ -208,12 +208,12 @@ gvr.lang.parser.Parser = Class.extend(
       },
 
       function parseWhile(line, indent, expressions){
-        var whileMatch = line.match(gvr.lang.parser.WHILE);
+        var whileMatch = line.match(parser.WHILE);
         if (whileMatch){
           cond = whileMatch[1];
           if (cond in this.robot){
-            gvr.debug(indent+'while '+cond+':');
-            expressions.push(gvr.lang.newWhile(this.lineIndex, this.robot[cond], this.robot, this.parseBlock()));
+            debug(indent+'while '+cond+':');
+            expressions.push(lang.newWhile(this.lineIndex, this.robot[cond], this.robot, this.parseBlock()));
             return true;
           }
         }
@@ -221,11 +221,11 @@ gvr.lang.parser.Parser = Class.extend(
       },
 
       function parseDefine(line, indent, expressions){
-        var defineMatch = line.match(gvr.lang.parser.DEFINE);
+        var defineMatch = line.match(parser.DEFINE);
         if (defineMatch){
           var name = defineMatch[1];
-          gvr.debug(indent+'define '+name+':');
-          expressions.push(gvr.lang.newDefine(this.lineIndex, name, this.parseBlock()));
+          debug(indent+'define '+name+':');
+          expressions.push(lang.newDefine(this.lineIndex, name, this.parseBlock()));
           return true;
         }
         return false;
@@ -238,13 +238,13 @@ gvr.lang.parser.Parser = Class.extend(
     parseLines: function (indent){
       var expressions = [];
       for (; this.lineIndex < this.lines.length; this.lineIndex++){
-        var line = gvr.lang.parser.removeComment(this.lines[this.lineIndex]);
+        var line = parser.removeComment(this.lines[this.lineIndex]);
         if (line.indexOf(indent) !== 0){
           break;
         } else {
           line = line.slice(indent.length);
         }
-        if (line.match(gvr.lang.parser.EMPTY_LINE)){
+        if (line.match(parser.EMPTY_LINE)){
           continue;
         }
         var done = false;
@@ -267,7 +267,7 @@ gvr.lang.parser.Parser = Class.extend(
      */
     parseBlock: function(){
       var nextLine = this.lines[++this.lineIndex];
-      var indentation = nextLine.match(gvr.lang.parser.INDENTATION)[1];
+      var indentation = nextLine.match(parser.INDENTATION)[1];
       var subExpressions = this.parseLines(indentation);
       this.lineIndex--;
       return subExpressions;
@@ -277,13 +277,13 @@ gvr.lang.parser.Parser = Class.extend(
 
 
 /**
- * Create a new {@link gvr.lang.parser.Parser} object
- * @param lines See {@link gvr.lang.parser.Parser#lines}
- * @param robot See {@link gvr.lang.parser.Parser#robot}
- * @returns gvr.lang.parser.Parser
+ * Create a new {@link parser.Parser} object
+ * @param lines See {@link parser.Parser#lines}
+ * @param robot See {@link parser.Parser#robot}
+ * @returns parser.Parser
  */
-gvr.lang.parser.newParser = function(lines, robot){
-  return new gvr.lang.parser.Parser(lines, robot);
+parser.newParser = function(lines, robot){
+  return new parser.Parser(lines, robot);
 };
 
-module.exports = gvr.lang.parser;
+module.exports = parser;
