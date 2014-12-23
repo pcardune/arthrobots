@@ -1,3 +1,6 @@
+
+var lang = require('./lang');
+
 var TOKENS = {
   IDENTIFIER: 'identifier',
   DEFINE: 'define',
@@ -15,14 +18,15 @@ var TOKENS = {
 }
 
 
-var ProgramParser = function(code) {
+var ProgramParser = function(code, builtins) {
   this.code = code;
+  this.builtins = builtins;
   this.charIndex = 0;
   this.curIndent = 0;
   this.indentStack = [0];
   this.identifier = null;
   this.number = null;
-  this.currentToken = null;
+  this.currentLine = 0;
 };
 
 ProgramParser.prototype.getToken = function() {
@@ -71,10 +75,18 @@ ProgramParser.prototype.getToken = function() {
     }
   }
 
+  var isAlpha = function(c) {
+    return (c >= 'A' && c <= 'z') || c == '_';
+  }
+
+  var isAlphaNum = function(c) {
+    return isAlpha(c) || (c >= '0' && c <= '9');
+  }
+
   this.identifier = '';
-  if (this.code[this.charIndex] >= 'A' && this.code[this.charIndex] <= 'z') {
+  if (isAlpha(this.code[this.charIndex])) {
     //identifier, eat up the entire identifier
-    while (this.code[this.charIndex] >= 'A' && this.code[this.charIndex] <= 'z') {
+    while (isAlphaNum(this.code[this.charIndex])) {
       this.identifier += this.code[this.charIndex++];
     }
     switch (this.identifier) {
@@ -116,6 +128,7 @@ ProgramParser.prototype.getToken = function() {
   }
 
   if (this.code[this.charIndex] == '\n') {
+    this.currentLine++;
     return this.code[this.charIndex++];
   }
 
@@ -128,13 +141,13 @@ ProgramParser.prototype.getToken = function() {
 
 ProgramParser.prototype.parseNewBlock = function() {
   if (this.getToken() != TOKENS.COLON) {
-    throw new Error("Expected a colon");
+    throw new Error("Expected a colon on line "+this.currentLine);
   }
   if (this.getToken() != TOKENS.NEWLINE) {
-    throw new Error("Expected a newline");
+    throw new Error("Expected a newline on line "+this.currentLine);
   }
   if (this.getToken() != TOKENS.INDENT) {
-    throw new Error("Expected an indented block");
+    throw new Error("Expected an indented block on line"+this.currentLine);
   }
 };
 
@@ -144,26 +157,35 @@ ProgramParser.prototype.parseDefine = function() {
     throw new Error("Expected a function name after define");
   }
   var funcName = this.identifier;
+  var funcLine = this.currentLine;
   this.parseNewBlock();
   console.log("> Parsed function prototype with name", funcName);
-  this.parseBlock();
+  var expressions = this.parseBlock();
   console.log("< done parsing define", funcName);
+  return new lang.Define(funcLine, funcName, expressions);
 };
 
 ProgramParser.prototype.parseDo = function() {
   var numberToken = this.getToken();
   if (numberToken != TOKENS.NUMBER) {
-    throw new Error("Expected number after do");
+    throw new Error("Expected number after do on line "+this.currentLine);
   }
   var number = this.number;
+  var doLine = this.currentLine;
   this.parseNewBlock();
   console.log("> Parsed a do loop with number", number);
-  this.parseBlock();
+  var expressions = this.parseBlock();
   console.log("< done parsing do block");
+  return new lang.Do(doLine, number, expressions);
 };
 
 ProgramParser.prototype.parseIdentifier = function() {
   console.log("Parsed an identifier:", this.identifier);
+  if (this.builtins[this.identifier]) {
+    return new lang.Expression(this.currentLine, this.builtins[this.identifier], this.builtins);
+  } else {
+    return new lang.FunctionCall(this.currentLine, this.identifier);
+  }
 };
 
 ProgramParser.prototype.parseIf = function() {
@@ -172,29 +194,40 @@ ProgramParser.prototype.parseIf = function() {
     throw new Error("Expected a conditional expression after an if");
   }
   var conditionIdentifier = this.identifier;
+  var ifLine = this.currentLine;
   this.parseNewBlock();
   console.log("> parsed an if:", conditionIdentifier);
-  this.parseBlock();
+  var expressions = this.parseBlock();
   console.log("< done parsing if", conditionIdentifier);
+  return new lang.If(ifLine, this.builtins[conditionIdentifier], this.builtins, expressions);
 };
 
-ProgramParser.prototype.parseElif = function() {
+ProgramParser.prototype.parseElif = function(ifStatement) {
+  if (!ifStatement || !ifStatement.elifs) {
+    throw new Error("elif statement can only come after an if statement");
+  }
   var identifierToken = this.getToken();
   if (identifierToken != TOKENS.IDENTIFIER) {
     throw new Error("Expected a conditional expression after an elif");
   }
   var conditionIdentifier = this.identifier;
+  elifLine = this.currentLine;
   this.parseNewBlock();
   console.log("> parsed an elif:", conditionIdentifier);
-  this.parseBlock();
+  var expressions = this.parseBlock();
   console.log("< done parsing elif", conditionIdentifier);
+  ifStatement.elifs.push(new lang.If(elifLine, this.builtins[conditionIdentifier], this.builtins, expressions));
 };
 
-ProgramParser.prototype.parseElse = function() {
+ProgramParser.prototype.parseElse = function(ifStatement) {
+  if (!ifStatement || !ifStatement.elseBlock) {
+    throw new Error("elif statement can only come after an if statement");
+  }
   this.parseNewBlock();
   console.log("> parsed an else");
-  this.parseBlock();
+  var expressions = this.parseBlock();
   console.log("< done parsing else block");
+  ifStatement.elseBlock = new lang.Block(expressions);
 };
 
 ProgramParser.prototype.parseWhile = function() {
@@ -203,44 +236,56 @@ ProgramParser.prototype.parseWhile = function() {
     throw new Error("Expected a conditional expression after a while");
   }
   var conditionIdentifier = this.identifier;
+  var line = this.currentLine;
   this.parseNewBlock();
   console.log("> parsed a while:", conditionIdentifier);
-  this.parseBlock();
+  var expressions = this.parseBlock();
   console.log("< done parsing while", conditionIdentifier);
+  return new lang.While(line, this.builtins[conditionIdentifier], this.builtins, expressions);
 };
 
 ProgramParser.prototype.parseBlock = function() {
-  while ((this.currentToken = this.getToken()) != TOKENS.EOF) {
-    switch (this.currentToken) {
+  var expressions = [];
+  var currentToken;
+  while ((currentToken = this.getToken()) != TOKENS.EOF) {
+    var nextExpression = null;
+    switch (currentToken) {
     case TOKENS.DEFINE:
-    this.parseDefine();
+    nextExpression = this.parseDefine();
     break;
     case TOKENS.DO:
-    this.parseDo();
+    nextExpression = this.parseDo();
     break;
     case TOKENS.IDENTIFIER:
-    this.parseIdentifier();
+    nextExpression = this.parseIdentifier();
     break;
     case TOKENS.IF:
-    this.parseIf();
+    nextExpression = this.parseIf();
     break;
     case TOKENS.ELIF:
-    this.parseElif();
+    nextExpression = this.parseElif(expressions[expressions.length-1]);
     break;
     case TOKENS.ELSE:
-    this.parseElse();
+    nextExpression = this.parseElse(expressions[expressions.length-1]);
     break;
     case TOKENS.WHILE:
-    this.parseWhile();
+    nextExpression = this.parseWhile();
     break;
     case TOKENS.DEDENT:
-    return;
+    return expressions;
+    }
+    if (nextExpression) {
+      expressions.push(nextExpression);
+      nextExpression = null;
     }
   }
+  return expressions;
 };
 
 ProgramParser.prototype.parse = function() {
-  this.parseBlock();
+  var expressions = this.parseBlock();
+  console.log(expressions);
+  return new lang.Block(expressions);
 };
 
 module.exports = ProgramParser;
