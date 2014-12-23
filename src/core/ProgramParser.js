@@ -38,7 +38,7 @@ ProgramParser.prototype.getToken = function() {
         indent += ' ';
         this.charIndex++;
       }
-      if (this.code[this.charIndex] != '\n') {
+      if (this.code[this.charIndex] != '\n' && this.code[this.charIndex] != '#') {
         var curIndent = this.indentStack[this.indentStack.length-1];
         if (curIndent > indent.length) {
           this.indentStack.pop();
@@ -147,8 +147,12 @@ ProgramParser.prototype.parseNewBlock = function() {
   if (this.getToken() != TOKENS.NEWLINE) {
     throw new Error("Expected a newline on line "+this.currentLine);
   }
-  if (this.getToken() != TOKENS.INDENT) {
-    throw new Error("Expected an indented block on line"+this.currentLine);
+  var token;
+  while ((token = this.getToken()) == TOKENS.NEWLINE) {
+    continue
+  }
+  if (token != TOKENS.INDENT) {
+    throw new Error("Expected an indented block on line "+this.currentLine);
   }
 };
 
