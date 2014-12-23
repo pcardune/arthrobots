@@ -164,9 +164,7 @@ ProgramParser.prototype.parseDefine = function() {
   var funcName = this.identifier;
   var funcLine = this.currentLine;
   this.parseNewBlock();
-  console.log("> Parsed function prototype with name", funcName);
   var expressions = this.parseBlock();
-  console.log("< done parsing define", funcName);
   return new lang.Define(funcLine, funcName, expressions);
 };
 
@@ -178,14 +176,11 @@ ProgramParser.prototype.parseDo = function() {
   var number = this.number;
   var doLine = this.currentLine;
   this.parseNewBlock();
-  console.log("> Parsed a do loop with number", number);
   var expressions = this.parseBlock();
-  console.log("< done parsing do block");
   return new lang.Do(doLine, number, expressions);
 };
 
 ProgramParser.prototype.parseIdentifier = function() {
-  console.log("Parsed an identifier:", this.identifier);
   if (this.builtins[this.identifier]) {
     return new lang.Expression(this.currentLine, this.builtins[this.identifier], this.builtins);
   } else {
@@ -201,9 +196,7 @@ ProgramParser.prototype.parseIf = function() {
   var conditionIdentifier = this.identifier;
   var ifLine = this.currentLine;
   this.parseNewBlock();
-  console.log("> parsed an if:", conditionIdentifier);
   var expressions = this.parseBlock();
-  console.log("< done parsing if", conditionIdentifier);
   return new lang.If(ifLine, this.builtins[conditionIdentifier], this.builtins, expressions);
 };
 
@@ -218,9 +211,7 @@ ProgramParser.prototype.parseElif = function(ifStatement) {
   var conditionIdentifier = this.identifier;
   elifLine = this.currentLine;
   this.parseNewBlock();
-  console.log("> parsed an elif:", conditionIdentifier);
   var expressions = this.parseBlock();
-  console.log("< done parsing elif", conditionIdentifier);
   ifStatement.elifs.push(new lang.If(elifLine, this.builtins[conditionIdentifier], this.builtins, expressions));
 };
 
@@ -229,9 +220,7 @@ ProgramParser.prototype.parseElse = function(ifStatement) {
     throw new Error("elif statement can only come after an if statement");
   }
   this.parseNewBlock();
-  console.log("> parsed an else");
   var expressions = this.parseBlock();
-  console.log("< done parsing else block");
   ifStatement.elseBlock = new lang.Block(expressions);
 };
 
@@ -243,9 +232,7 @@ ProgramParser.prototype.parseWhile = function() {
   var conditionIdentifier = this.identifier;
   var line = this.currentLine;
   this.parseNewBlock();
-  console.log("> parsed a while:", conditionIdentifier);
   var expressions = this.parseBlock();
-  console.log("< done parsing while", conditionIdentifier);
   return new lang.While(line, this.builtins[conditionIdentifier], this.builtins, expressions);
 };
 
