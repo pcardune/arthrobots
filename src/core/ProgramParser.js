@@ -40,8 +40,9 @@ ProgramParser.prototype.getToken = function() {
       }
       if (this.code[this.charIndex] != '\n') {
         var curIndent = this.indentStack[this.indentStack.length-1];
-        if (indent.length < curIndent) {
+        if (curIndent > indent.length) {
           this.indentStack.pop();
+          this.charIndex -= indent.length;
           return TOKENS.DEDENT;
         } else if (indent.length > curIndent) {
           this.indentStack.push(indent.length);
@@ -284,7 +285,6 @@ ProgramParser.prototype.parseBlock = function() {
 
 ProgramParser.prototype.parse = function() {
   var expressions = this.parseBlock();
-  console.log(expressions);
   return new lang.Block(expressions);
 };
 
