@@ -25,7 +25,7 @@ var CodeEditor = require('./CodeEditor');
 var WorldModel = require('../models/WorldModel');
 var TrackModel = require('../models/TrackModel');
 var ProgramModel = require('../models/ProgramModel');
-var LangParser = require('../core/parser');
+var ProgramParser = require('../core/ProgramParser');
 var Runner = require('../core/Runner');
 var WorldParser = require('../core/WorldParser');
 var World = require('../core/World');
@@ -122,8 +122,7 @@ var ProgramEditor = React.createClass({
     Parse.Analytics.track('runDemo', {world:this.props.worldModel.id});
     this.handleReset();
     var demoSolution = this.props.worldModel.get('solution');
-    var lines = demoSolution.split('\n');
-    program = LangParser.newParser(lines, this.refs.worldCanvas.world.robot).parse();
+    program = new ProgramParser(demoSolution, this.refs.worldCanvas.world.robot).parse();
     this.runner = new Runner(program, this.refs.worldCanvas.renderer);
     this.setState({runState: "demo"});
     this.runner.run(
@@ -141,9 +140,9 @@ var ProgramEditor = React.createClass({
     Parse.Analytics.track('runProgram', {world:this.props.worldModel.id});
     this.handleSave();
     this.handleReset();
-    var lines = this.refs.codeEditor.getDOMNode().value.split('\n');
-    var parser = LangParser.newParser(lines, this.refs.worldCanvas.world.robot);
-    if (parser.isJS()) {
+    var parser = new ProgramParser(this.refs.codeEditor.getDOMNode().value, this.refs.worldCanvas.world.robot);
+    if (this.refs.codeEditor.getDOMNode().value.indexOf('(') > 0) {
+      //it's javascript
       var js = parser.wrapJSForEval();
       var robot = this.refs.worldCanvas.world.robot;
       for (var key in robot) {

@@ -8,7 +8,7 @@ var React = require('react');
 
 var World = require('../core/World');
 var WorldParser = require('../core/WorldParser');
-var parser = require('../core/parser');
+var ProgramParser = require('../core/ProgramParser');
 var Runner = require('../core/Runner');
 var CanvasRenderer = require('../core/CanvasRenderer');
 
@@ -56,10 +56,11 @@ var LandingPage = React.createClass({
   },
 
   handleRun: function() {
-    var lines = this.props.exampleProgram.split('\n');
-    var program = parser.newParser(lines, this.refs.worldCanvas.world.robot).parse();
+    parser = new ProgramParser(this.props.exampleProgram, this.refs.worldCanvas.world.robot);
+    var program = parser.parse();
+
     //define a runner to run the program.
-    this.runner = new Runner(program, this.refs.worldCanvas.renderer);
+    this.runner = new Runner(program, this.refs.worldCanvas.renderer, null, console.log);
     //run the program at a rate of 5 execution steps per second.
     this.runner.run(100);
   },

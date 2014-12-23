@@ -292,4 +292,28 @@ ProgramParser.prototype.parse = function() {
   return new lang.Block(expressions);
 };
 
+ProgramParser.prototype.wrapJSForEval = function() {
+  var js = "(function(";
+  for (var key in this.builtins) {
+    if (typeof this.builtins[key] == "function") {
+      js += key+',';
+    }
+  }
+  // remove trailing , from argument list
+  js = js.slice(0, js.length - 1);
+
+  js += "){\n";
+  js += this.code;
+  js += "})("
+  for (var key in this.builtins) {
+    if (typeof this.builtins[key] == "function") {
+      js += 'robot.'+key+',';
+    }
+  }
+  // remove trailing , again
+  js = js.slice(0, js.length - 1)
+  js += ")";
+  return js;
+};
+
 module.exports = ProgramParser;
