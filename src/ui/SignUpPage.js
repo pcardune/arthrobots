@@ -118,7 +118,7 @@ var SignUpPage = React.createClass({
             <span className="fa fa-facebook-square"/> Sign Up with Facebook
           </Button>
           <div style={{padding:"20px"}}>
-            or <a href="#" onClick={this.showEmailSignup}>sign up with email</a>
+            or <a href="#" onClick={this.showEmailSignup}>sign up with a username</a>
           </div>
         </div>
       );

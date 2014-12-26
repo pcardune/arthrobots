@@ -75,17 +75,21 @@ var LoginPage = React.createClass({
       alert = <div className={"alert alert-"+this.state.messageType}>{this.state.message}</div>
     }
     return (
-      <div className="row loginPage">
+      <div className="row LoginPage">
         <div className="col-md-3"/>
         <div className="col-md-6">
           <div className="jumbotron">
-            <h1>Log In!</h1>
             {alert}
             <form>
-              <div className="form-group">
-                <Button bsStyle="primary" onClick={this.handleFBLogin}>Login with Facebook</Button>
+              <div className="form-group text-center">
+                <Button bsSize="large" bsStyle="primary" onClick={this.handleFBLogin}>
+                  <span className="fa fa-facebook-square"/> Login with Facebook
+                </Button>
               </div>
               <div className="form-group">
+                <div className="text-center" style={{padding:"20px"}}>
+                  or with your username:
+                </div>
                 <label>Username:</label>
                 <input ref="username" type="text" className="form-control" placeholder="Enter username" />
               </div>
@@ -95,7 +99,7 @@ var LoginPage = React.createClass({
               </div>
               <Button onClick={this.handleLogin}>
                 Log In
-              </Button> or <Link to="signup">Sign Up</Link> or <Link to="login-anonymously">Continue Anonymously</Link>
+              </Button> or <Link to="signup">Sign Up</Link>
             </form>
           </div>
         </div>
