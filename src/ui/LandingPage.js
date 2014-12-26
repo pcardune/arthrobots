@@ -87,15 +87,15 @@ var LandingPage = React.createClass({
     if (Parse.User.current()) {
       buttonToolbar = (
         <ButtonToolbar>
-          <Link to="track" params={{trackId:'yh1vdAIkHs'}} className="btn btn-success">Beginner</Link>
-          <Link to="track" params={{trackId:'02eHrPIc55'}} className="btn btn-danger">Advanced</Link>
+          <Link to="track" params={{trackId:'yh1vdAIkHs'}} className="btn btn-success" bsSize="large">Beginner</Link>
+          <Link to="track" params={{trackId:'02eHrPIc55'}} className="btn btn-danger" bsSize="large">Advanced</Link>
         </ButtonToolbar>
       );
     } else {
       buttonToolbar = (
         <ButtonToolbar>
-          <Button onClick={this.handleChooseTrack.bind(this, 'yh1vdAIkHs')} bsStyle="success">Beginner</Button>
-          <Button onClick={this.handleChooseTrack.bind(this, '02eHrPIc55')} bsStyle="danger">Advanced</Button>
+          <Button onClick={this.handleChooseTrack.bind(this, 'yh1vdAIkHs')} bsStyle="success" bsSize="large">Beginner</Button>
+          <Button onClick={this.handleChooseTrack.bind(this, '02eHrPIc55')} bsStyle="danger" bsSize="large">Advanced</Button>
         </ButtonToolbar>
       );
     }
@@ -106,10 +106,7 @@ var LandingPage = React.createClass({
             <WorldCanvas className="pull-right" worldDefinition={this.props.exampleWorld} ref="worldCanvas"/>
             <h1>Arthrobots</h1>
             <p>Robots, exploring a world, completely at your command!</p>
-            <p>Choose your level:</p>
-            <p>
-              {buttonToolbar}
-            </p>
+            <p>Choose your level: {buttonToolbar}</p>
           </Jumbotron>
         </div>
       </div>
