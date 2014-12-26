@@ -55,7 +55,7 @@ var ProgramEditor = React.createClass({
     }
   },
 
-  handleSave: function() {
+  handleSave: function(callback) {
     var program = this.state.programModel;
     if (!program) {
       program = new ProgramModel();
@@ -66,7 +66,7 @@ var ProgramEditor = React.createClass({
       acl.setWriteAccess(Parse.User.current().id, true);
       program.setACL(acl);
     }
-    var code = this.refs.codeEditor.getDOMNode().value;
+    var code = this.state.programCode;
     if (program.get('code') == code) {
       return;
     }
@@ -77,6 +77,7 @@ var ProgramEditor = React.createClass({
         this.setState({
           programModel:program,
         });
+        callback(program);
       }.bind(this),
       error: function(gameScore, error) {
         // Execute any logic that should take place if the save fails.
@@ -138,34 +139,35 @@ var ProgramEditor = React.createClass({
 
   handleRun: function() {
     Parse.Analytics.track('runProgram', {world:this.props.worldModel.id});
-    this.handleSave();
-    this.handleReset();
-    var parser = new ProgramParser(this.state.programCode, this.refs.worldCanvas.world.robot);
-    if (this.state.programCode.indexOf('(') > 0) {
-      //it's javascript
-      var js = parser.wrapJSForEval();
-      var robot = this.refs.worldCanvas.world.robot;
-      for (var key in robot) {
-        if (typeof robot[key] == "function") {
-          robot[key] = robot[key].bind(robot);
+    this.handleSave(function(){
+      this.handleReset();
+      var parser = new ProgramParser(this.state.programCode, this.refs.worldCanvas.world.robot);
+      if (this.state.programCode.indexOf('(') > 0) {
+        //it's javascript
+        var js = parser.wrapJSForEval();
+        var robot = this.refs.worldCanvas.world.robot;
+        for (var key in robot) {
+          if (typeof robot[key] == "function") {
+            robot[key] = robot[key].bind(robot);
+          }
         }
+        (function(robot) {
+          eval(js);
+        })(robot)
+        this.refs.worldCanvas.renderer.render(1);
+        this.handleRunnerStopped();
+        return
       }
-      (function(robot) {
-        eval(js);
-      })(robot)
-      this.refs.worldCanvas.renderer.render(1);
-      this.handleRunnerStopped();
-      return
-    }
-    try {
-      this.program = parser.parse();
-    } catch (e) {
-      this.setState({runState:"", errors:[e]});
-      return
-    }
-    this.refs.codeEditor.setState({editing:false});
-    this.runner = new Runner(this.program, this.refs.worldCanvas.renderer);
-    this.handleContinue();
+      try {
+        this.program = parser.parse();
+      } catch (e) {
+        this.setState({runState:"", errors:[e]});
+        return
+      }
+      this.refs.codeEditor.setState({editing:false});
+      this.runner = new Runner(this.program, this.refs.worldCanvas.renderer);
+      this.handleContinue();
+    }.bind(this));
   },
 
   getSpeed: function() {
