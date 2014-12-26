@@ -3,21 +3,25 @@
 var Button = require('react-bootstrap').Button;
 var Link = require('react-router').Link;
 var Navigation = require('react-router').Navigation;
+var State = require('react-router').State;
 var React = require('react');
+var FBUtils = require('../FBUtils');
 
+require('./SignUpPage.css');
 var SignUpPage = React.createClass({
-  mixins: [Navigation],
+  mixins: [Navigation, State],
 
   getInitialState: function() {
     return {
       message: "",
       messageType: "",
-      user: Parse.User.current()
+      user: Parse.User.current(),
+      showFacebook: true
     }
   },
 
   handleContinue: function() {
-    window.location = "/";
+    window.location = this.getQuery().next || "/";
   },
 
   handleSignUp: function() {
@@ -54,6 +58,7 @@ var SignUpPage = React.createClass({
           localStorage.removeItem('username');
           localStorage.removeItem('password');
         }
+        this.handleContinue();
       }.bind(this),
       error: function(user, error) {
         // Show the error message somewhere and let the user try again.
@@ -65,6 +70,38 @@ var SignUpPage = React.createClass({
     });
   },
 
+  handleFBSignup: function() {
+    if (Parse.User.current()) {
+      FBUtils.linkAccount({
+        success: function() {
+          console.log("successfully linked account");
+          this.setState(this.getInitialState())
+          this.handleContinue();
+        }.bind(this),
+        error: function() {
+          console.warn("failed to link account");
+          FBUtils.logIn({
+            success: function() {
+              this.setState(this.getInitialState())
+              this.handleContinue();
+            }.bind(this)
+          });
+        }.bind(this)
+      });
+    } else {
+      FBUtils.logIn({
+        success: function() {
+          this.setState(this.getInitialState())
+          this.handleContinue();
+        }.bind(this)
+      });
+    }
+  },
+
+  showEmailSignup: function() {
+    this.setState({showFacebook:false});
+  },
+
   render: function() {
     var alert = null;
     if (this.state.message) {
@@ -74,6 +111,17 @@ var SignUpPage = React.createClass({
     var form = null;
     if (this.state.user && this.state.user.get('email')) {
       form = <Button onClick={this.handleContinue} className="btn-lg" bsStyle="success">Continue</Button>
+    } else if (this.state.showFacebook) {
+      form = (
+        <div className="text-center">
+          <Button bsStyle="primary" bsSize="large" onClick={this.handleFBSignup}>
+            <span className="fa fa-facebook-square"/> Sign Up with Facebook
+          </Button>
+          <div style={{padding:"20px"}}>
+            or <a href="#" onClick={this.showEmailSignup}>sign up with email</a>
+          </div>
+        </div>
+      );
     } else {
       form = (
         <form>
@@ -98,11 +146,10 @@ var SignUpPage = React.createClass({
       );
     }
     return (
-      <div className="row loginPage">
+      <div className="row SignUpPage">
         <div className="col-md-3"/>
         <div className="col-md-6">
           <div className="jumbotron">
-            <h1>{this.state.user && this.state.user.get('email') ? "W00t!" : "Sign Up!"}</h1>
             {alert}
             {form}
           </div>

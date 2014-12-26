@@ -26,18 +26,10 @@ var LinkFacebookButton = React.createClass({
 
   handleConnectToFacebook: function(event) {
     this.setState({isConnecting:true})
-    Parse.FacebookUtils.link(Parse.User.current(), null, {
-      success: function(user) {
-        FB.api('/me', function(response) {
-          user.set('fbProfile', response);
-          user.save(null, {success:function() {
-            this.setState(this.getInitialState());
-          }.bind(this)});
-        }.bind(this));
-      }.bind(this),
-      error: function(user, error) {
-        console.warn("User cancelled the Facebook login or did not fully authorize:", error);
-      }
+    FBUtils.linkAccount({
+      success:function() {
+        this.setState(this.getInitialState());
+      }.bind(this)
     });
   },
 

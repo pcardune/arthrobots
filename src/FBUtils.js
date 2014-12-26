@@ -17,6 +17,41 @@ var FBUtils = {
       return user.get('username');
     }
     return 'Anonymous User';
+  },
+
+  logIn: function(callback) {
+    Parse.FacebookUtils.logIn(null, {
+      success: function(user) {
+        Parse.Analytics.track('FBLoginSuccess', {});
+        FB.api('/me', function(response) {
+          user.set('fbProfile', response);
+          user.save(null, callback);
+        });
+      },
+      error: function(user, error) {
+        Parse.Analytics.track('FBLoginFail', {error:error});
+        if (callback.error) {
+          callback.error(error);
+        }
+      }
+    });
+  },
+
+  linkAccount: function(callback) {
+    Parse.FacebookUtils.link(Parse.User.current(), null, {
+      success: function(user) {
+        FB.api('/me', function(response) {
+          user.set('fbProfile', response);
+          user.save(null, callback);
+        }.bind(this));
+      }.bind(this),
+      error: function(user, error) {
+        console.warn("User cancelled the Facebook login or did not fully authorize:", error);
+        if (callback.error) {
+          callback.error(error);
+        }
+      }
+    });
   }
 };
 

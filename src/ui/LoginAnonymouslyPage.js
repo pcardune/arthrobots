@@ -2,7 +2,7 @@
 var Button = require('react-bootstrap').Button;
 var Link = require('react-router').Link;
 var React = require('react');
-
+var UserUtils = require('../UserUtils');
 
 var LoginAnonymouslyPage = React.createClass({
 
@@ -18,38 +18,8 @@ var LoginAnonymouslyPage = React.createClass({
       message:"Working...",
       messageType:"info"
     });
-
-    if (localStorage.getItem('username') && localStorage.getItem('password')) {
-      Parse.User.logIn(
-        localStorage.getItem('username'),
-        localStorage.getItem('password'),
-        {
-          success: function() {
-            window.location = "/";
-          },
-          error: function(user, error) {
-            // Show the error message somewhere and let the user try again.
-            this.setState({
-              message:"There was an error while signing you up: "+error.code+" "+error.message,
-              messageType:"danger"
-            });
-          }.bind(this)
-        }
-      );
-      return;
-    }
-
-    var user = new Parse.User();
-    var username = ''+Math.floor(Math.random()*1000000000);
-    var password = ''+Math.floor(Math.random()*1000000000);
-    localStorage.setItem('username', username);
-    localStorage.setItem('password', password);
-    user.set("username", username);
-    user.set("password", password);
-
-    user.signUp(null, {
-      success: function(user) {
-        // Hooray! Let them use the app now.
+    UserUtils.loginAnonymousUser({
+      success: function() {
         window.location = "/";
       },
       error: function(user, error) {

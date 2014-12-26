@@ -13,7 +13,7 @@ var Runner = require('../core/Runner');
 var CanvasRenderer = require('../core/CanvasRenderer');
 
 var WorldCanvas = require('./WorldCanvas');
-
+var UserUtils = require('../UserUtils');
 require('./LandingPage.css');
 
 var LandingPage = React.createClass({
@@ -69,6 +69,19 @@ var LandingPage = React.createClass({
     this.runner.stop();
   },
 
+  handleChooseTrack: function(trackId) {
+    if (!Parse.User.current()) {
+      UserUtils.loginAnonymousUser({
+        success:function() {
+          window.location = "/tracks/"+trackId;
+        }.bind(this),
+        error: function() {
+          window.location = "/login";
+        }
+      });
+    }
+  },
+
   render: function() {
     var buttonToolbar;
     if (Parse.User.current()) {
@@ -81,8 +94,8 @@ var LandingPage = React.createClass({
     } else {
       buttonToolbar = (
         <ButtonToolbar>
-          <Link to="login" className="btn btn-success">Beginner</Link>
-          <Link to="login" className="btn btn-danger">Advanced</Link>
+          <Button onClick={this.handleChooseTrack.bind(this, 'yh1vdAIkHs')} bsStyle="success">Beginner</Button>
+          <Button onClick={this.handleChooseTrack.bind(this, '02eHrPIc55')} bsStyle="danger">Advanced</Button>
         </ButtonToolbar>
       );
     }

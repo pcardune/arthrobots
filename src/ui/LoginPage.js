@@ -2,8 +2,12 @@
 var Button = require('react-bootstrap').Button;
 var Link = require('react-router').Link;
 var React = require('react');
+var Navigation = require('react-router').Navigation;
+var State = require('react-router').State;
+var FBUtils = require('../FBUtils');
 
 var LoginPage = React.createClass({
+  mixins: [Navigation, State],
 
   getInitialState: function() {
     return {
@@ -12,24 +16,19 @@ var LoginPage = React.createClass({
     }
   },
 
+  goToNextUrl: function() {
+    window.location = this.getQuery().next || "/";
+  },
+
   handleFBLogin: function() {
     this.setState({
       message:"Logging you in...",
       messageType:"info"
     });
-    Parse.FacebookUtils.logIn(null, {
-      success: function(user) {
-        Parse.Analytics.track('FBLoginSuccess', {});
-        FB.api('/me', function(response) {
-          user.set('fbProfile', response);
-          user.save(null, {success:function() {
-            window.location = "/";
-          }});
-        });
-      },
-      error: function(user, error) {
-        Parse.Analytics.track('FBLoginFail', {error:error});
-      }
+    FBUtils.logIn({
+      success: function() {
+        this.goToNextUrl();
+      }.bind(this)
     });
   },
 
@@ -47,7 +46,7 @@ var LoginPage = React.createClass({
             message:"Great success!",
             messageType:"success"
           });
-          window.location = "/";
+          this.goToNextUrl();
         }.bind(this),
         error: function(user, error) {
           this.setState({

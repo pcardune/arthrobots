@@ -25,7 +25,7 @@ var ArthrobotApp = React.createClass({
       if (!user.get('email') && !user.get('authData')) {
         anonUserNotice = (
           <div className="text-center alert alert-danger">
-          You are logged in anonymously! <Link to="signup" className="btn btn-primary">Create an Account</Link> to save your progress.
+          You are logged in anonymously! <Link to="signup" query={{next:window.location.pathname+window.location.search}} className="btn btn-primary">Create an Account</Link> to save your progress.
           </div>
         );
       }
@@ -35,8 +35,8 @@ var ArthrobotApp = React.createClass({
       ];
     } else {
       navbar = [
-        <Tab key="1" to="signup"><strong>Sign Up</strong></Tab>,
-        <Tab key="2" to="login">Log In</Tab>
+        <Tab key="1" to="signup" query={{next:window.location.pathname+window.location.search}}><strong>Sign Up</strong></Tab>,
+        <Tab key="2" to="login" query={{next:window.location.pathname+window.location.search}}>Log In</Tab>
       ];
     }
     var brand = <Link to="landing">Arthrobots</Link>;
