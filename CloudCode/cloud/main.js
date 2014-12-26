@@ -8,6 +8,7 @@ Parse.Cloud.define("hello", function(request, response) {
 Parse.Cloud.define("getLeaderboard", function(request, response) {
   var query = new Parse.Query("ProgramModel");
   query.equalTo('finished', true);
+  query.limit(1000);
   query.find({
     success: function(programs) {
       programsByOwner = {};
