@@ -68,6 +68,7 @@ var ProgramEditor = React.createClass({
     }
     var code = this.state.programCode;
     if (program.get('code') == code) {
+      callback(program);
       return;
     }
     program.set('code', code);
