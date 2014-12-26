@@ -1,19 +1,17 @@
 .CodeEditor {
   border: 1px solid #ccc;
-  border-left: 3px solid #ccc;
-  border-radius: 0px;
-  background-color: #eee;
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
-  min-height: 200px;
-  height: auto;
-}
-.CodeEditor.form-control:focus {
-  box-shadow: inherit;
-  border-color: #ccc;
 }
 .CodeEditor.notEditing {
   white-space: pre;
 }
 .CodeEditor.notEditing div.selected {
   background-color: yellow;
+}
+
+.CodeMirror-gutter-wrapper {
+  position: relative;
+}
+
+.CodeMirror {
+  height: 350px;
 }

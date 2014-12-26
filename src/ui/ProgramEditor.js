@@ -140,8 +140,8 @@ var ProgramEditor = React.createClass({
     Parse.Analytics.track('runProgram', {world:this.props.worldModel.id});
     this.handleSave();
     this.handleReset();
-    var parser = new ProgramParser(this.refs.codeEditor.getDOMNode().value, this.refs.worldCanvas.world.robot);
-    if (this.refs.codeEditor.getDOMNode().value.indexOf('(') > 0) {
+    var parser = new ProgramParser(this.state.programCode, this.refs.worldCanvas.world.robot);
+    if (this.state.programCode.indexOf('(') > 0) {
       //it's javascript
       var js = parser.wrapJSForEval();
       var robot = this.refs.worldCanvas.world.robot;

@@ -1,15 +1,36 @@
 /** @jsx React.DOM */
 var React = require('react');
 
+var CodeMirror = require('react-code-mirror');
+
 require('./CodeEditor.css');
 var CodeEditor = React.createClass({
   getInitialState: function() {
-    return {editing:true};
+    return {
+      editing: true,
+      selectedLine: null
+    };
   },
 
   render: function() {
-    if (this.state.editing) {
-      return <textarea {...this.props} ref="textarea" className="CodeEditor editing form-control"/>;
+    if (this.state.editing || true) {
+      return (
+        <CodeMirror
+          {...this.props}
+          lineNumbers={true}
+          indentWithTabs={false}
+          extraKeys={{
+            Tab: function(cm) {
+              var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+              cm.replaceSelection(spaces);
+            }
+          }}
+          viewportMargin={Infinity}
+          textAreaClassName="form-control"
+          className="CodeEditor"
+          theme="solarized"/>
+      );
+      // return <textarea {...this.props} ref="textarea" className="CodeEditor editing form-control"/>;
     } else {
       return (
         <div className="CodeEditor notEditing form-control">

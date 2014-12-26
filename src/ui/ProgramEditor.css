@@ -21,10 +21,6 @@
   cursor: pointer;
 }
 
-.ProgramEditor .CodeEditor {
-  min-height: 350px;
-}
-
 .ProgramEditor .worldOverlay {
   position: relative;
   text-align: center;

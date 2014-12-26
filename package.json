@@ -4,6 +4,7 @@
   "description": "A robot programming game",
   "repository": "pcardune/arthrobots",
   "dependencies": {
+    "codemirror": "4.9.0",
     "connect-url-rewrite": "^0.1.0",
     "css-loader": "0.9.0",
     "express": "^4.10.2",
@@ -11,6 +12,7 @@
     "jsx-loader": "0.12.2",
     "react": "0.12.1",
     "react-bootstrap": "0.13.0",
+    "react-code-mirror": "3.0.3",
     "react-router": "0.11.3",
     "showdown": "0.3.1",
     "style-loader": "0.8.2",
