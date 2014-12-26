@@ -149,13 +149,19 @@ var TrackPage = React.createClass({
   },
 
   handleFinished: function(world, program) {
-    this.setState({programModels:this.state.programModels.map(function(programModel){
+    var foundProgram = false;
+    var programModels = this.state.programModels.map(function(programModel){
       // swap out the old program for the new program
       if (programModel.id == program.id) {
+        foundProgram = true;
         return program;
       }
       return programModel;
-    })});
+    });
+    if (!foundProgram) {
+      programModels.push(program);
+    }
+    this.setState({programModels:programModels});
   },
 
   handleNextTrack: function() {
