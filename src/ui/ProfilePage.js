@@ -123,7 +123,7 @@ var ProfilePage = React.createClass({
       );
     });
     var  connectToFB = null;
-    if (Parse.User.current().id == this.state.user.id) {
+    if (Parse.User.current() && Parse.User.current().id == this.state.user.id) {
       connectToFB = <LinkFacebookButton />;
     }
     var profilePic = FBUtils.getProfilePic(this.state.user);
