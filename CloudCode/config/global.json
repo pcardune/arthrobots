@@ -4,6 +4,10 @@
             "applicationId": "MdChOQB40vX9zT4MhQwVsdBc10uKnXfZ6LHaBTrV", 
             "masterKey": "2NQPlS63BZAvff4TwKfEIolrAYwxYEyfPXfOfSZG"
         }, 
+        "Arthrobots-dev": {
+            "applicationId": "lYyZHcOlfD0AX9V8JWmj8R7uudQhWPJz9pBHjMKf", 
+            "masterKey": "UBgLkpugf1PNeRueAJWk9f4x7dSqgAMuHxPjsKEU"
+        }, 
         "_default": {
             "link": "Arthrobots"
         }

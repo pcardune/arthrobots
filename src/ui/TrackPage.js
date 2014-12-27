@@ -108,7 +108,7 @@ var TrackPage = React.createClass({
           }.bind(this)
         });
       }.bind(this),
-      error: function() {
+      error: function(trackModel, error) {
         alert("failed to fetch track:"+error.code+" "+error.message);
       }.bind(this)
     })

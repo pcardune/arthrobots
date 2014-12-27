@@ -27,7 +27,14 @@
          APP_ID: 'MdChOQB40vX9zT4MhQwVsdBc10uKnXfZ6LHaBTrV',
          JS_KEY: 'LCUFVocN8uiuS7YJwBy7o9aCOZkcMPkdfHz0bnY1'
      };
-     Parse.initialize(ParseKeys.APP_ID, ParseKeys.JS_KEY);
+     var ParseDevKeys = {
+         APP_ID: 'lYyZHcOlfD0AX9V8JWmj8R7uudQhWPJz9pBHjMKf',
+         JS_KEY: 'JAlWS3ZUnB2i7BueFJrulvowMiq9zklawQ4l2McV'
+     };
+     var Keys = ParseKeys;
+     // uncomment the next line to hit the development app
+     // Keys = ParseDevKeys;
+     Parse.initialize(Keys.APP_ID, Keys.JS_KEY);
      window.fbAsyncInit = function() {
          Parse.FacebookUtils.init({
              appId      : '366410923540952',
