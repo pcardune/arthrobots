@@ -24,6 +24,7 @@ var ArthrobotApp = require('./ui/ArthrobotApp');
 var LoginAnonymouslyPage = require('./ui/LoginAnonymouslyPage');
 var ProfilePage = require('./ui/ProfilePage');
 var LeaderboardPage = require('./ui/LeaderboardPage');
+var AboutPage = require('./ui/AboutPage');
 
 var Empty = React.createClass({
 
@@ -47,6 +48,7 @@ var routes = (
     <Route name="logout" handler={LogoutPage} />
     <Route name="signup" handler={SignUpPage} />
     <Route name="leaderboard" handler={LeaderboardPage} />
+    <Route name="about" handler={AboutPage} />
     <DefaultRoute name="landing" handler={LandingPage}/>
   </Route>
 );

@@ -47,6 +47,7 @@ var ArthrobotApp = React.createClass({
           <Nav>
             <Tab to="landing">Home</Tab>
             <Tab to="leaderboard">Leaderboard</Tab>
+            <Tab to="about">About</Tab>
           </Nav>
           <Nav className="navbar-right">
             {navbar}
