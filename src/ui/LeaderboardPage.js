@@ -8,6 +8,7 @@ var gravatar = require('gravatar');
 var Navbar = require('react-bootstrap').Navbar;
 var Nav = require('react-bootstrap').Nav;
 var NavItem = require('react-bootstrap').NavItem;
+var LoadingBlock = require('./LoadingBlock');
 
 var FBUtils = require('../FBUtils');
 
@@ -23,21 +24,14 @@ var LeaderboardPage = React.createClass({
 
   loadLeaderboard: function() {
     this.setState({isLoading: true});
-    Parse.Cloud.run('getLeaderboard', {num:20}, {success:function(leaderboard) {
-      var userIds = leaderboard.map(function(item){ return item.owner; });
-      var userQuery = new Parse.Query(Parse.User);
-      userQuery.containedIn("objectId", userIds);
-      userQuery.find({success:function(users) {
-        var usersById = {};
-        users.forEach(function(user) {
-          usersById[user.id] = user;
-        });
-        leaderboard = leaderboard.map(function(item) {
-          return {owner:usersById[item.owner], programCount:item.programCount};
-        });
-        this.setState({isLoading:false, leaderboard:leaderboard});
-      }.bind(this)});
-    }.bind(this)})
+    var query = new Parse.Query(Parse.User);
+    query.descending("programsFinished");
+    query.limit(20);
+    query.find({
+      success: function(users) {
+        this.setState({isLoading:false, leaderboard:users});
+      }.bind(this)
+    });
   },
 
   componentDidMount: function() {
@@ -46,22 +40,19 @@ var LeaderboardPage = React.createClass({
 
   render: function() {
     if (this.state.isLoading) {
-      return (<div>Loading...</div>);
+      return <LoadingBlock/>;
     }
-    var leaderboard = this.state.leaderboard.map(function(item) {
-      if (!item.owner) {
-        return null;
-      }
+    var leaderboard = this.state.leaderboard.map(function(user) {
       return (
         <tr>
           <td>
-            <Link to="profile" params={{userId:item.owner.id}}>
-              <img className="gravatar" src={FBUtils.getProfilePic(item.owner)}/>
-              {item.owner ? FBUtils.getUserName(item.owner) : "?"}
+            <Link to="profile" params={{userId:user.id}}>
+              <img className="gravatar" src={FBUtils.getProfilePic(user)}/>
+              {FBUtils.getUserName(user)}
             </Link>
           </td>
           <td>
-            {item.programCount}
+            {user.get('programsFinished')}
           </td>
         </tr>
       );
