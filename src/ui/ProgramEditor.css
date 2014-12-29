@@ -19,6 +19,7 @@
   text-align: right;
   height: 0px;
   cursor: pointer;
+  z-index: 100;
 }
 
 .ProgramEditor .worldOverlay {
