@@ -143,12 +143,12 @@ var World = Class.extend(
         return false;
       }
       for (var key in this.beepers) {
-        if (!world.beepers[key] == this.beepers[key]) {
+        if ((world.beepers[key] || 0) != (this.beepers[key] || 0)) {
           return false;
         }
       }
       for (var key in world.beepers) {
-        if (!world.beepers[key] == this.beepers[key]) {
+        if ((world.beepers[key] || 0) != (this.beepers[key] || 0)) {
           return false;
         }
       }
