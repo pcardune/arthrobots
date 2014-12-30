@@ -23,7 +23,7 @@ var CanvasRenderer = Class.extend(
        * from {@link gvr.renderer.Renderer#canvas}
        */
       this.context = this.canvas.getContext('2d');
-      this.context.font = "20px Arial";
+      this.context.font = "15px Arial";
       //compatibility for older firefoxes (I hope)
       var that = this;
       if (typeof this.context.measureText === "undefined" &&
