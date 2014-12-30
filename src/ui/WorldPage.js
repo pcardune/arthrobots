@@ -72,7 +72,7 @@ var WorldPage = React.createClass({
     var name = this.refs.nameInput.getDOMNode().value;
     var description = this.refs.descriptionInput.getDOMNode().value;
     var solution = this.refs.solutionInput.getDOMNode().value;
-    var definition = this.refs.definitionInput.getDOMNode().value;
+    var definition = this.refs.definitionInput.getValue();
     var isPublic = this.refs.publicCheckbox.getChecked();
     var track = this.refs.trackInput.getValue();
     var order = parseInt(this.refs.orderInput.getDOMNode().value);
@@ -122,7 +122,7 @@ var WorldPage = React.createClass({
     this.state.worldModel.set('name', this.refs.nameInput.getDOMNode().value);
     this.state.worldModel.set('description', this.refs.descriptionInput.getDOMNode().value);
     this.state.worldModel.set('solution', this.refs.solutionInput.getDOMNode().value);
-    this.state.worldModel.set('definition', this.refs.definitionInput.getDOMNode().value);
+    this.state.worldModel.set('definition', this.refs.definitionInput.getValue());
     this.state.worldModel.set('public', this.refs.publicCheckbox.getChecked());
     this.state.worldModel.set('track', this.refs.trackInput.getValue());
     this.state.worldModel.set('order', parseInt(this.refs.orderInput.getDOMNode().value));

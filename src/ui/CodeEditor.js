@@ -12,11 +12,16 @@ var CodeEditor = React.createClass({
     };
   },
 
+  getValue: function() {
+    return this.refs.editor.editor.getValue();
+  },
+
   render: function() {
     if (this.state.editing || true) {
       return (
         <CodeMirror
           {...this.props}
+          ref="editor"
           lineNumbers={true}
           indentWithTabs={false}
           extraKeys={{
