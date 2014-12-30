@@ -63,9 +63,12 @@ var TrackPage = React.createClass({
           trackModel:trackModel
         });
 
-        var query = new Parse.Query(WorldModel);
+        publicWorlds = new Parse.Query(WorldModel);
+        publicWorlds.equalTo('public', true);
+        privateWorlds = new Parse.Query(WorldModel);
+        privateWorlds.equalTo('owner', Parse.User.current());
+        var query = Parse.Query.or(publicWorlds, privateWorlds);
         query.equalTo('track', trackModel);
-        query.equalTo('public', true);
         query.ascending('order');
         query.find({
           success: function(worldModels) {
