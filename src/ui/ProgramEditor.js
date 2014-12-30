@@ -51,7 +51,8 @@ var ProgramEditor = React.createClass({
       errors: [],
       lastExecutedLine: null,
       showCheckpointAtIndex: null,
-      codeIsJS: false
+      codeIsJS: false,
+      isSaving: false
     }
   },
 
@@ -72,17 +73,20 @@ var ProgramEditor = React.createClass({
       return;
     }
     program.set('code', code);
+    this.setState({isSaving: true});
     program.save(null, {
       success: function(world) {
         // Execute any logic that should take place after the object is saved.
         this.setState({
           programModel:program,
+          isSaving: false
         });
         callback(program);
       }.bind(this),
       error: function(gameScore, error) {
         // Execute any logic that should take place if the save fails.
         // error is a Parse.Error with an error code and message.
+        this.setState({isSaving: false});
         alert('Failed to save program, with error code: ' + error.message);
       }.bind(this)
     });
@@ -302,7 +306,9 @@ var ProgramEditor = React.createClass({
           <MenuItem key="4" onClick={this.handleSpeedClick.bind(this, 'Very Fast')}>Very Fast</MenuItem>
         </DropdownButton>
         : null,
-        <Button key="6" onClick={this.handleRun} bsStyle="primary" className="pull-right">Save + Run</Button>,
+        <Button key="6" onClick={this.handleRun} bsStyle="primary" className="pull-right">
+          {this.state.isSaving ? "Saving..." : "Save + Run"}
+        </Button>,
         this.props.worldModel.get('solution') ?
         <Button key="7" onClick={this.handleDemo} className="pull-right">Demo</Button> : null
       ];
