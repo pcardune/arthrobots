@@ -55,6 +55,7 @@ var TrackPage = React.createClass({
   },
 
   loadTrackAndWorlds: function() {
+    this.setState({isLoading: true});
     var query = new Parse.Query(TrackModel);
     this.setState(this.getInitialState());
     query.get(this.getParams().trackId, {
@@ -73,8 +74,7 @@ var TrackPage = React.createClass({
         query.find({
           success: function(worldModels) {
             this.setState({
-              worldModels: worldModels,
-              isLoading: false
+              worldModels: worldModels
             });
 
             var programQuery = new Parse.Query(ProgramModel);
@@ -83,7 +83,8 @@ var TrackPage = React.createClass({
             programQuery.find({
               success: function(programs) {
                 this.setState({
-                  programModels: programs
+                  programModels: programs,
+                  isLoading: false
                 });
                 var transitionedToWorld = false;
                 this.state.worldModels.every(function(world, worldIndex) {

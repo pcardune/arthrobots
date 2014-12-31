@@ -21,6 +21,7 @@ var Tab = require('./Tab');
 var Markdown = require('./Markdown');
 var WorldCanvas = require('./WorldCanvas');
 var CodeEditor = require('./CodeEditor');
+var LoadingBlock = require('./LoadingBlock');
 
 var WorldModel = require('../models/WorldModel');
 var TrackModel = require('../models/TrackModel');
@@ -42,6 +43,7 @@ var ProgramEditor = React.createClass({
 
   getInitialState: function() {
     return {
+      isLoading: true,
       runState: "",
       programModel: null,
       programCode: '',
@@ -52,7 +54,8 @@ var ProgramEditor = React.createClass({
       lastExecutedLine: null,
       showCheckpointAtIndex: null,
       codeIsJS: false,
-      isSaving: false
+      isSaving: false,
+      numTokens: 0
     }
   },
 
@@ -94,13 +97,16 @@ var ProgramEditor = React.createClass({
 
   loadProgram: function(worldModel) {
     if (worldModel) {
+      this.setState({isLoading: true});
       worldModel.loadCurrentUserPrograms(function(programs){
+        this.setState({isLoading: false});
         if (programs) {
           var code = programs[0] ? programs[0].get('code') : '';
           this.setState({
             programModel: programs[0],
             programCode: code,
-            codeIsJS: code.indexOf("(") > 0
+            codeIsJS: code.indexOf("(") > 0,
+            numTokens: new ProgramParser(code).getNumTokens()
           });
         }
       }.bind(this))
@@ -254,9 +260,11 @@ var ProgramEditor = React.createClass({
   },
 
   handleProgramChange: function (event) {
+    var numTokens = new ProgramParser(event.target.value).getNumTokens();
     this.setState(
       {
         programCode:event.target.value,
+        numTokens: numTokens != null ? numTokens : this.state.numTokens,
         codeIsJS: event.target.value.indexOf("(") >= 0
       }
     );
@@ -399,9 +407,23 @@ var ProgramEditor = React.createClass({
       );
     }
 
-    return (
-      <div className={"ProgramEditor row"}>
-        <div className="col-md-6">
+    var numTokensTooltip = <Tooltip>A measure of how long your program is.</Tooltip>
+    var numTokens = (
+      <OverlayTrigger placement="top" overlay={numTokensTooltip}>
+        <small>
+          {this.state.numTokens} tokens {this.props.worldModel.get('solution') ?
+            <span>compared to {new ProgramParser(this.props.worldModel.get('solution')).getNumTokens()} for the demo solution</span>
+            : null}
+        </small>
+      </OverlayTrigger>
+    );
+
+    var codeEditor = null;
+    if (this.state.isLoading) {
+      codeEditor = <LoadingBlock/>;
+    } else {
+      codeEditor = (
+        <div>
           <ModalTrigger modal={helpModal}>
             <Glyphicon glyph="question-sign" className="helpButton"/>
           </ModalTrigger>
@@ -414,6 +436,15 @@ var ProgramEditor = React.createClass({
             onChange={this.handleProgramChange}
             value={this.state.programCode}/>
           {languageDetect}
+          {numTokens}
+        </div>
+      );
+    }
+
+    return (
+      <div className={"ProgramEditor row"}>
+        <div className="col-md-6">
+          {codeEditor}
         </div>
         <div className="col-md-6">
           <div className="worldOverlay error">

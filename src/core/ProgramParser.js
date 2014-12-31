@@ -140,6 +140,14 @@ ProgramParser.prototype.getToken = function() {
   return this.code[++this.charIndex];
 };
 
+ProgramParser.prototype.getNumTokens = function() {
+  count = 0;
+  while (this.getToken() != TOKENS.EOF) {
+    count += 1;
+  }
+  return count;
+}
+
 ProgramParser.prototype.parseNewBlock = function() {
   if (this.getToken() != TOKENS.COLON) {
     throw new Error("Expected a colon on line "+this.currentLine);
