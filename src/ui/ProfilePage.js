@@ -62,6 +62,25 @@ var LinkFacebookButton = React.createClass({
   }
 });
 
+var dedupeAndSortPrograms = function(programs) {
+  var programsByWorld = {};
+  programs.forEach(function(program) {
+    var key = program.get('world').id;
+    if (!programsByWorld[key]) {
+      programsByWorld[key] = program
+    } else if (program.get('finished')) {
+      programsByWorld[key] = program
+    }
+  });
+  var dedupedPrograms = [];
+  for (var key in programsByWorld) {
+    if (programsByWorld.hasOwnProperty(key)) {
+      dedupedPrograms.push(programsByWorld[key]);
+    }
+  }
+  return dedupedPrograms.sort(function(a,b) {return a.createdAt - b.createdAt;});
+}
+
 require('./ProfilePage.css');
 var ProfilePage = React.createClass({
 
@@ -89,7 +108,7 @@ var ProfilePage = React.createClass({
           programQuery.include('world.track');
           programQuery.find({
             success: function(programs) {
-              this.setState({programs:programs, isLoading: false})
+              this.setState({programs:dedupeAndSortPrograms(programs), isLoading: false});
             }.bind(this)
           });
         }
