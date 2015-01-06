@@ -172,7 +172,7 @@ var CanvasRenderer = Class.extend(
      */
     renderCoordinates: function(){
       this.context.fillStyle = 'black';
-      var coords, width;
+      var coords, width, height;
       for (var x=this.startX; x < this.endX; x++){
         coords = this.getCanvasCoords(x, this.startY-1);
         this.context.save();
@@ -183,16 +183,33 @@ var CanvasRenderer = Class.extend(
         this.context.fillText(""+x, 0, 0);
         this.context.restore();
       }
+
+      this.context.save();
+      width = this.context.measureText("Avenues").width;
+      this.context.translate(this.canvas.width/2-width/2, 2);
+      this.context.scale(1,-1);
+      this.context.fillText("Avenues", 0, 0);
+      this.context.restore();
+
       for (var y=this.startY; y < this.endY; y++){
         coords = this.getCanvasCoords(this.startX-1, y);
         this.context.save();
         width = this.context.measureText(""+y).width;
         this.context.translate(
-          coords.x+this.scale/2-width/2, coords.y+this.scale/2-6);
+          coords.x+this.scale/2-width/2+6, coords.y+this.scale/2-6);
         this.context.scale(1,-1);
         this.context.fillText(""+y, 0, 0);
         this.context.restore();
       }
+
+      this.context.save();
+      height = this.context.measureText("Streets").height;
+      this.context.translate(14, this.canvas.height/2);
+      this.context.scale(1,-1);
+      this.context.rotate(3*Math.PI/2);
+      this.context.fillText("Streets", 0, 0);
+      this.context.restore();
+
     },
 
     /**
