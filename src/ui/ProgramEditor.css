@@ -1,3 +1,9 @@
+@media (min-width:992px){
+  .TrackPage .ProgramEditor {
+    position: fixed;
+    top: 146px;
+  }
+}
 .ProgramEditor .buttons {
   padding-bottom: 5px;
 }
