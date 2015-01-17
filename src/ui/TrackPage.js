@@ -178,10 +178,19 @@ var TrackPage = React.createClass({
         <Jumbotron>
           <h1>{this.state.trackModel.get('name')} Track Complete!</h1>
           <p>
-            You are full of awesome sauce. Now it is time to keep going on your quest for awesomeness.
+            You are full of awesome sauce. Now it is time to keep going on your quest for awesomeness.<br />
+            Check out the next track by clicking the button below.
           </p>
           <p>
             <Button bsStyle="primary" bsSize="large" onClick={this.handleNextTrack}>Next Track</Button>
+          </p>
+          <p>
+            Or continue learning how to program by checking out these other sites:
+          </p>
+          <p>
+            <a target="_blank" href="http://www.codecademy.com/">codecademy.com</a><br />
+            <a target="_blank" href="http://code.org/">code.org</a><br />
+            <a target="_blank" href="https://codecombat.com/">codecombat.com</a><br />
           </p>
         </Jumbotron>
       );
