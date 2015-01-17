@@ -49,7 +49,7 @@ var ProgramEditor = React.createClass({
       programCode: '',
       completedSteps: 0,
       isFinished: false,
-      speed: 'Medium',
+      speed: localStorage.getItem('speed') || 'Medium',
       errors: [],
       lastExecutedLine: null,
       showCheckpointAtIndex: null,
@@ -287,6 +287,8 @@ var ProgramEditor = React.createClass({
   handleSpeedClick: function(speed) {
     this.setState({speed:speed});
     Parse.Analytics.track('setSpeed', {speed:speed, world:this.props.worldModel.id});
+    this.refs.speedDrowndown.setDropdownState(false);
+    localStorage.setItem('speed', speed);
   },
 
   handleMouseoverStep: function(index) {
@@ -320,7 +322,7 @@ var ProgramEditor = React.createClass({
     } else if (this.state.runState == '') {
       buttons = [
         !this.state.codeIsJS ?
-        <DropdownButton key="5" title={"Speed: "+this.state.speed}>
+        <DropdownButton key="5" title={"Speed: "+this.state.speed} ref="speedDrowndown">
           <MenuItem key="1" onClick={this.handleSpeedClick.bind(this, 'Slow')}>Slow</MenuItem>
           <MenuItem key="2" onClick={this.handleSpeedClick.bind(this, 'Medium')}>Medium</MenuItem>
           <MenuItem key="3" onClick={this.handleSpeedClick.bind(this, 'Fast')}>Fast</MenuItem>
