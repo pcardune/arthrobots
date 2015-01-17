@@ -218,7 +218,7 @@ var ProgramEditor = React.createClass({
   runnerDidError: function(error) {
     this.setState({
       errors:[error],
-      runState:"stopped"
+      runState:"error"
     });
     this.refs.codeEditor.setState({editing:true});
   },
@@ -313,7 +313,7 @@ var ProgramEditor = React.createClass({
         <Button key="2" onClick={this.handleStep} className="pull-right">Step</Button>,
         <Button key="3" onClick={this.handleReset} className="pull-right">Reset</Button>
       ];
-    } else if (this.state.runState == "finished") {
+    } else if (this.state.runState == "error" || this.state.runState == "finished") {
       buttons = [
         <Button key="4" onClick={this.handleReset} bsStyle="primary" className="pull-right">Reset</Button>
       ];
