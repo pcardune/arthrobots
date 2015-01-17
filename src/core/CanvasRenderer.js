@@ -74,6 +74,8 @@ var CanvasRenderer = Class.extend(
        * @type int
        */
       this.scale = 40;
+
+      this.shouldFollowRobot = true;
     },
 
     /**
@@ -119,6 +121,9 @@ var CanvasRenderer = Class.extend(
      * @private
      */
     renderRobot: function(){
+      if (this.robot.x < this.startX || this.robot.y < this.startY) {
+        return;
+      }
       this.context.save();
       this.context.fillStyle = 'white';
       this.context.lineWidth = 5;
@@ -186,7 +191,7 @@ var CanvasRenderer = Class.extend(
 
       this.context.save();
       width = this.context.measureText("Avenues").width;
-      this.context.translate(this.canvas.width/2-width/2, 2);
+      this.context.translate(this.canvas.width/2-width/2 + this.startX*this.scale, 2 + (this.startY-1)*this.scale);
       this.context.scale(1,-1);
       this.context.fillText("Avenues", 0, 0);
       this.context.restore();
@@ -204,7 +209,7 @@ var CanvasRenderer = Class.extend(
 
       this.context.save();
       height = this.context.measureText("Streets").height;
-      this.context.translate(14, this.canvas.height/2);
+      this.context.translate(14 + (this.startX-1)*this.scale, this.canvas.height/2 + (this.startY-1)*this.scale);
       this.context.scale(1,-1);
       this.context.rotate(3*Math.PI/2);
       this.context.fillText("Streets", 0, 0);
@@ -297,7 +302,9 @@ var CanvasRenderer = Class.extend(
     },
 
     _renderFrame: function() {
-      this.followRobot();
+      if (this.shouldFollowRobot) {
+        this.followRobot();
+      }
       this.context.save();
       this.context.clearRect(0,0,this.canvas.width, this.canvas.height);
       //reorient to bottom left being 0 0;
