@@ -126,7 +126,7 @@ var ProgramEditor = React.createClass({
 
   handleReset: function() {
     this.refs.worldCanvas.renderWorld();
-    this.setState({runState:"",errors:[]});
+    this.setState({runState:"", errors:[], completedSteps:0});
     this.refs.codeEditor.setState({editing:true});
   },
 
@@ -139,8 +139,21 @@ var ProgramEditor = React.createClass({
     this.setState({runState: "demo"});
     this.runner.run(
       this.getSpeed(),
-      this.handleRunnerStopped
+      this.handleRunnerStopped,
+      this.demoDidStep
     );
+  },
+
+  demoDidStep: function(runner, lastExpression) {
+    var worldSteps = this.props.worldModel.get('steps');
+    if (worldSteps && worldSteps.length > this.state.completedSteps) {
+      var nextStepWorld = this.props.worldModel.getNewWorldAtStep(this.state.completedSteps);
+      if (this.refs.worldCanvas.world.isEqualTo(nextStepWorld)) {
+        this.setState({
+          completedSteps: this.state.completedSteps + 1,
+        });
+      }
+    }
   },
 
   handleStopDemo: function() {
