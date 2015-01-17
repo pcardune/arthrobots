@@ -3,6 +3,9 @@
     position: fixed;
     top: 146px;
   }
+  .TrackPage .ProgramEditor .buttons {
+    width: 355px;
+  }
 }
 .ProgramEditor .buttons {
   padding-bottom: 5px;
