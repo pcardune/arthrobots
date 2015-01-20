@@ -12,12 +12,12 @@ var Navbar = require('react-bootstrap').Navbar;
 var Navigation = require('react-router').Navigation;
 var React = require('react');
 
-var Tab = require('./Tab');
-var TrackBadge = require('./TrackBadge');
-var LoadingBlock = require('./LoadingBlock');
+var Tab = require('../Tab');
+var TrackBadge = require('../TrackBadge');
+var LoadingBlock = require('../LoadingBlock');
 
-var WorldModel = require('../models/WorldModel');
-var TrackModel = require('../models/TrackModel');
+var WorldModel = require('../../models/WorldModel');
+var TrackModel = require('../../models/TrackModel');
 
 var WorldList = React.createClass({
   render: function() {

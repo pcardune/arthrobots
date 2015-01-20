@@ -16,16 +16,16 @@ var OverlayTrigger = require('react-bootstrap').OverlayTrigger;
 var Tooltip = require('react-bootstrap').Tooltip;
 var React = require('react');
 
-var Tab = require('./Tab');
-var Markdown = require('./Markdown');
-var WorldCanvas = require('./WorldCanvas');
-var ProgramEditor = require('./ProgramEditor');
-var TrackBadge = require('./TrackBadge');
-var LoadingBlock = require('./LoadingBlock');
+var Tab = require('../Tab');
+var Markdown = require('../Markdown');
+var WorldCanvas = require('../WorldCanvas');
+var ProgramEditor = require('../ProgramEditor');
+var TrackBadge = require('../TrackBadge');
+var LoadingBlock = require('../LoadingBlock');
 
-var WorldModel = require('../models/WorldModel');
-var TrackModel = require('../models/TrackModel');
-var ProgramModel = require('../models/ProgramModel');
+var WorldModel = require('../../models/WorldModel');
+var TrackModel = require('../../models/TrackModel');
+var ProgramModel = require('../../models/ProgramModel');
 
 require('./TrackPage.css');
 var TrackPage = React.createClass({

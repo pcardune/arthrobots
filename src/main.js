@@ -13,18 +13,18 @@ var ReactBootstrap = require('react-bootstrap');
 var Panel = ReactBootstrap.Panel;
 var Button = ReactBootstrap.Button;
 
-var LandingPage = require('./ui/LandingPage');
-var LoginPage = require('./ui/LoginPage');
-var LogoutPage = require('./ui/LogoutPage');
-var SignUpPage = require('./ui/SignUpPage');
-var BrowseWorldsPage = require('./ui/BrowseWorldsPage');
-var WorldPage = require('./ui/WorldPage');
-var TrackPage = require('./ui/TrackPage');
+var LandingPage = require('./ui/pages/LandingPage');
+var LoginPage = require('./ui/pages/LoginPage');
+var LogoutPage = require('./ui/pages/LogoutPage');
+var SignUpPage = require('./ui/pages/SignUpPage');
+var BrowseWorldsPage = require('./ui/pages/BrowseWorldsPage');
+var WorldPage = require('./ui/pages/WorldPage');
+var TrackPage = require('./ui/pages/TrackPage');
 var ArthrobotApp = require('./ui/ArthrobotApp');
-var LoginAnonymouslyPage = require('./ui/LoginAnonymouslyPage');
-var ProfilePage = require('./ui/ProfilePage');
-var LeaderboardPage = require('./ui/LeaderboardPage');
-var AboutPage = require('./ui/AboutPage');
+var LoginAnonymouslyPage = require('./ui/pages/LoginAnonymouslyPage');
+var ProfilePage = require('./ui/pages/ProfilePage');
+var LeaderboardPage = require('./ui/pages/LeaderboardPage');
+var AboutPage = require('./ui/pages/AboutPage');
 
 var Empty = React.createClass({
 

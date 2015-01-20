@@ -4,7 +4,7 @@ var Link = require('react-router').Link;
 var React = require('react');
 var Navigation = require('react-router').Navigation;
 var State = require('react-router').State;
-var FBUtils = require('../FBUtils');
+var FBUtils = require('../../FBUtils');
 
 var LoginPage = React.createClass({
   mixins: [Navigation, State],

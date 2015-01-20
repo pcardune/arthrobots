@@ -2,8 +2,8 @@
 
 var React = require('react');
 
-var Markdown = require('./Markdown');
-var LoadingBlock = require('./LoadingBlock');
+var Markdown = require('../Markdown');
+var LoadingBlock = require('../LoadingBlock');
 
 require('./LeaderboardPage.css');
 var AboutPage = React.createClass({

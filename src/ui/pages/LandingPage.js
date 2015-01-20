@@ -6,16 +6,16 @@ var Link = require('react-router').Link;
 var Navigation = require('react-router').Navigation;
 var React = require('react');
 
-var World = require('../core/World');
-var WorldParser = require('../core/WorldParser');
-var ProgramParser = require('../core/ProgramParser');
-var Runner = require('../core/Runner');
-var CanvasRenderer = require('../core/CanvasRenderer');
+var World = require('../../core/World');
+var WorldParser = require('../../core/WorldParser');
+var ProgramParser = require('../../core/ProgramParser');
+var Runner = require('../../core/Runner');
+var CanvasRenderer = require('../../core/CanvasRenderer');
 
-var WorldCanvas = require('./WorldCanvas');
-var UserUtils = require('../UserUtils');
+var WorldCanvas = require('../WorldCanvas');
+var UserUtils = require('../../UserUtils');
+
 require('./LandingPage.css');
-
 var LandingPage = React.createClass({
 
   mixins: [Navigation],

@@ -10,9 +10,9 @@ var State = require('react-router').State;
 var React = require('react');
 var gravatar = require('gravatar');
 
-var ProgramModel = require('../models/ProgramModel');
-var TrackBadge = require('./TrackBadge');
-var FBUtils = require('../FBUtils');
+var ProgramModel = require('../../models/ProgramModel');
+var TrackBadge = require('../TrackBadge');
+var FBUtils = require('../../FBUtils');
 
 var LinkFacebookButton = React.createClass({
 

@@ -5,7 +5,7 @@ var Link = require('react-router').Link;
 var Navigation = require('react-router').Navigation;
 var State = require('react-router').State;
 var React = require('react');
-var FBUtils = require('../FBUtils');
+var FBUtils = require('../../FBUtils');
 
 require('./SignUpPage.css');
 var SignUpPage = React.createClass({

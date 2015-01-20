@@ -10,12 +10,12 @@ var Navigation = require('react-router').Navigation;
 var State = require('react-router').State;
 var React = require('react');
 
-var Markdown = require('./Markdown');
-var CodeEditor = require('./CodeEditor');
-var TrackDropdown = require('./TrackDropdown');
+var Markdown = require('../Markdown');
+var CodeEditor = require('../CodeEditor');
+var TrackDropdown = require('../TrackDropdown');
 
-var WorldModel = require('../models/WorldModel');
-var WorldCanvas = require('./WorldCanvas');
+var WorldModel = require('../../models/WorldModel');
+var WorldCanvas = require('../WorldCanvas');
 
 require('./WorldPage.css');
 var WorldPage = React.createClass({

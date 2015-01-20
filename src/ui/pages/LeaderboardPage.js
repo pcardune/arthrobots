@@ -8,9 +8,9 @@ var gravatar = require('gravatar');
 var Navbar = require('react-bootstrap').Navbar;
 var Nav = require('react-bootstrap').Nav;
 var NavItem = require('react-bootstrap').NavItem;
-var LoadingBlock = require('./LoadingBlock');
+var LoadingBlock = require('../LoadingBlock');
 
-var FBUtils = require('../FBUtils');
+var FBUtils = require('../../FBUtils');
 
 require('./LeaderboardPage.css');
 var LeaderboardPage = React.createClass({

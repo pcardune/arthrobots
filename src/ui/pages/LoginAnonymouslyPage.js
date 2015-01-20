@@ -2,7 +2,7 @@
 var Button = require('react-bootstrap').Button;
 var Link = require('react-router').Link;
 var React = require('react');
-var UserUtils = require('../UserUtils');
+var UserUtils = require('../../UserUtils');
 
 var LoginAnonymouslyPage = React.createClass({
 
