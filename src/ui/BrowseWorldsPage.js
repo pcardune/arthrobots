@@ -14,31 +14,80 @@ var React = require('react');
 
 var Tab = require('./Tab');
 var TrackBadge = require('./TrackBadge');
+var LoadingBlock = require('./LoadingBlock');
 
 var WorldModel = require('../models/WorldModel');
+var TrackModel = require('../models/TrackModel');
 
-var BrowseWorldsPage = React.createClass({
+var WorldList = React.createClass({
+  render: function() {
+    var worldLinks = this.props.worlds.map(function(worldModel) {
+      return (
+        <Link key={worldModel.id} className="list-group-item" to="world" params={{worldId:worldModel.id}}>
+          <h4>
+            {worldModel.getTitle()} by {worldModel.get('owner').get('username')}
+          </h4>
+          <p>{(worldModel.get('description') || '').slice(0,100)}...</p>
+        </Link>
+      );
+    });
+    return <ListGroup>{worldLinks}</ListGroup>;
+  }
+});
+
+var TrackBrowser = React.createClass({
 
   mixins: [Navigation, State],
 
+  getDefaultProps: function() {
+    return {
+      filter: "yours",
+      track: null
+    }
+  },
+
   getInitialState: function() {
     return {
-      worldModels:[],
-      isLoading: true,
-      filter: "yours"
+      worldModels: null,
     };
+  },
+
+  loadWorldModels: function(filter) {
+    var query = new Parse.Query(WorldModel);
+    query.equalTo("track", this.props.track);
+    if (filter == "yours") {
+      query.equalTo("owner", Parse.User.current());
+    }
+    if (filter == "all") {
+      query.equalTo("public", true);
+    }
+    query.ascending("order");
+    query.include("owner");
+    query.include("track");
+    query.find({
+      success: function(worldModels) {
+        this.setState({
+          worldModels: worldModels
+        })
+      }.bind(this)
+    });
+  },
+
+  componentDidMount: function() {
+    this.loadWorldModels(this.props.filter);
   },
 
   handleCreateNewWorld: function() {
     var world = new WorldModel();
     world.set('owner', Parse.User.current());
     world.set('name', this.refs.worldNameInput.getDOMNode().value);
+    world.set('track', this.props.track);
     world.save(null, {
       success: function(world) {
         // Execute any logic that should take place after the object is saved.
         this.transitionTo('world', {worldId: world.id})
       }.bind(this),
-      error: function(gameScore, error) {
+      error: function(world, error) {
         // Execute any logic that should take place if the save fails.
         // error is a Parse.Error with an error code and message.
         alert('Failed to create new world, with error code: ' + error.message);
@@ -46,25 +95,65 @@ var BrowseWorldsPage = React.createClass({
     });
   },
 
-  loadWorldModels: function(filter) {
-    var query = new Parse.Query(WorldModel);
+  render: function() {
+    var createWorldModal = (
+      <Modal title="Create World" animation={false}>
+        <div className="modal-body">
+          <div className="form-group">
+            <label>World Name</label>
+            <input ref="worldNameInput" type="text" className="form-control" placeholder="World Name" />
+          </div>
+          <div className="form-group">
+            <label>Track</label>
+            <div><TrackBadge track={this.props.track}/></div>
+          </div>
+          <div className="modal-footer">
+            <Button onClick={this.handleCreateNewWorld} bsStyle="primary">Create World</Button>
+          </div>
+        </div>
+      </Modal>
+    );
+    return (
+      <div>
+        <h2>
+          <TrackBadge track={this.props.track} />
+          <ModalTrigger modal={createWorldModal}>
+            <Button bsStyle="primary" className="pull-right">Create New World</Button>
+          </ModalTrigger>
+        </h2>
+        {this.state.worldModels ? <WorldList worlds={this.state.worldModels} /> : <LoadingBlock />}
+      </div>
+    );
+  }
+});
+
+var BrowseWorldsPage = React.createClass({
+
+  mixins: [Navigation, State],
+
+  getInitialState: function() {
+    return {
+      trackModels: null,
+      filter: "yours"
+    };
+  },
+
+  loadTrackModels: function(filter) {
+    var query = new Parse.Query(TrackModel);
     if (filter == "yours") {
       query.equalTo("owner", Parse.User.current());
     }
-    if (filter == "all") {
-      query.equalTo("public", true);
-    }
-    query.descending("order");
+    query.ascending("name");
     query.include("owner");
-    query.include("track");
     query.find({
-      success: function(worldModels) {
-        this.setState({
-          isLoading: false,
-          worldModels: worldModels
-        })
+      success: function(trackModels) {
+        this.setState({trackModels: trackModels});
       }.bind(this)
     });
+  },
+
+  isLoading: function() {
+    return !this.state.trackModels;
   },
 
   setFilter: function(filter) {
@@ -74,40 +163,23 @@ var BrowseWorldsPage = React.createClass({
   },
 
   componentDidMount: function() {
-    this.loadWorldModels(this.state.filter);
+    this.loadTrackModels(this.state.filter);
   },
 
   componentWillUpdate: function(nextProps, nextState) {
     if (this.state.filter != nextState.filter) {
-      this.loadWorldModels(nextState.filter);
+      this.loadTrackModels(nextState.filter);
     }
   },
 
   render: function() {
-    var worldLinks = this.state.worldModels.map(function(worldModel) {
-      return (
-        <Link key={worldModel.id} className="list-group-item" to="world" params={{worldId:worldModel.id}}>
-          <h4>
-            {worldModel.get('track') ? <TrackBadge track={worldModel.get('track')} /> : null} {worldModel.getTitle()} by {worldModel.get('owner').get('username')}
-          </h4>
-          <p>{(worldModel.get('description') || '').slice(0,100)}...</p>
-        </Link>
-      );
-    });
+    if (this.isLoading()) {
+      return <LoadingBlock />;
+    }
 
-    var createWorldModal = (
-      <Modal title="Create World" animation={false}>
-        <div className="modal-body">
-          <div className="form-group">
-            <label>World Name</label>
-            <input ref="worldNameInput" type="text" className="form-control" placeholder="World Name" />
-          </div>
-          <div className="modal-footer">
-            <Button onClick={this.handleCreateNewWorld} bsStyle="primary">Create World</Button>
-          </div>
-        </div>
-      </Modal>
-    );
+    var trackGroups = this.state.trackModels.map(function(trackModel) {
+      return <TrackBrowser track={trackModel} filter={this.state.filter} />
+    }.bind(this));
 
     return (
       <div className="row loginPage">
@@ -126,13 +198,7 @@ var BrowseWorldsPage = React.createClass({
               </NavItem>
             </Nav>
           </Navbar>
-          {this.state.isLoading ? "Loading..." : null}
-          <ListGroup>
-            {worldLinks}
-          </ListGroup>
-          <ModalTrigger modal={createWorldModal}>
-            <Button bsStyle="primary">Create New World</Button>
-          </ModalTrigger>
+          {trackGroups}
         </div>
       </div>
     );
