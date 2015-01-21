@@ -61,7 +61,8 @@ var WorldWrapperPage = React.createClass({
         <Navbar brand={this.state.worldModel.getTitle()} fluid={true}>
           <Nav>
             <Tab to="world" params={{worldId:this.state.worldModel.id}}>Preview</Tab>
-            <Tab to="world-definition-editor" params={{worldId:this.state.worldModel.id}}>Edit</Tab>
+            <Tab to="world-details-editor" params={{worldId:this.state.worldModel.id}}>Edit Details</Tab>
+            <Tab to="world-definition-editor" params={{worldId:this.state.worldModel.id}}>Edit World</Tab>
           </Nav>
         </Navbar>
         <RouteHandler world={this.state.worldModel} onWorldChange={this.handleWorldChange}/>

@@ -27,6 +27,7 @@ var LoginAnonymouslyPage = require('./ui/pages/LoginAnonymouslyPage');
 var ProfilePage = require('./ui/pages/ProfilePage');
 var LeaderboardPage = require('./ui/pages/LeaderboardPage');
 var AboutPage = require('./ui/pages/AboutPage');
+var WorldDetailsEditorPage = require('./ui/pages/WorldDetailsEditorPage');
 
 var Empty = React.createClass({
 
@@ -42,6 +43,7 @@ var routes = (
     <Route name="worlds" path="/worlds" handler={Empty}>
       <Route name="world-wrapper" path="/worlds/:worldId" handler={WorldWrapperPage}>
         <Route name="world-definition-editor" path="/worlds/:worldId/builder" handler={WorldDefinitionEditorPage} />
+        <Route name="world-details-editor" path="/worlds/:worldId/details" handler={WorldDetailsEditorPage} />
         <DefaultRoute name="world" handler={WorldPage} />
       </Route>
       <DefaultRoute name="browseworlds" handler={BrowseWorldsPage} />
