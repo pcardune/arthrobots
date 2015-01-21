@@ -19,6 +19,8 @@ var LogoutPage = require('./ui/pages/LogoutPage');
 var SignUpPage = require('./ui/pages/SignUpPage');
 var BrowseWorldsPage = require('./ui/pages/BrowseWorldsPage');
 var WorldPage = require('./ui/pages/WorldPage');
+var WorldWrapperPage = require('./ui/pages/WorldWrapperPage');
+var WorldDefinitionEditorPage = require('./ui/pages/WorldDefinitionEditorPage');
 var TrackPage = require('./ui/pages/TrackPage');
 var ArthrobotApp = require('./ui/ArthrobotApp');
 var LoginAnonymouslyPage = require('./ui/pages/LoginAnonymouslyPage');
@@ -38,7 +40,10 @@ var Empty = React.createClass({
 var routes = (
   <Route name="app" path="/" handler={ArthrobotApp}>
     <Route name="worlds" path="/worlds" handler={Empty}>
-      <Route name="world" path="/worlds/:worldId" handler={WorldPage} />
+      <Route name="world-wrapper" path="/worlds/:worldId" handler={WorldWrapperPage}>
+        <Route name="world-definition-editor" path="/worlds/:worldId/builder" handler={WorldDefinitionEditorPage} />
+        <DefaultRoute name="world" handler={WorldPage} />
+      </Route>
       <DefaultRoute name="browseworlds" handler={BrowseWorldsPage} />
     </Route>
     <Route name="profile" path="/profile/:userId" handler={ProfilePage} />
