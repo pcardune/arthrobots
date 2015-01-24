@@ -14,6 +14,17 @@ var WorldModel = Parse.Object.extend("WorldModel", {
       }
     });
   },
+
+  getSteps: function() {
+    var worldStepDefinitions = [this.get('definition')];
+    return worldStepDefinitions.concat(this.get('steps') || []);
+  },
+
+  setSteps: function(steps) {
+    this.set('definition', steps[0]);
+    this.set('steps', steps.slice(1));
+  },
+
   getNewWorld: function() {
     var world = new World();
     var parser = new WorldParser(this.get('definition').split('\n'), world);

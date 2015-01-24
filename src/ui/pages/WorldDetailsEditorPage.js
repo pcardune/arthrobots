@@ -17,6 +17,7 @@ var TrackDropdown = require('../TrackDropdown');
 var WorldModel = require('../../models/WorldModel');
 var WorldCanvas = require('../WorldCanvas');
 
+require('./WorldDetailsEditorPage.css');
 var WorldDetailsEditorPage = React.createClass({
 
   mixins: [Navigation, State],
@@ -140,7 +141,7 @@ var WorldDetailsEditorPage = React.createClass({
       </Modal>
       );
     return (
-      <div className="WorldPage">
+      <div className="WorldDetailsEditorPage">
         <div className="row">
           <div className="col-md-6">
             <form>

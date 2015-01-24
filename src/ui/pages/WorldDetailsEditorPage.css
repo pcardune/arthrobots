@@ -1,0 +1,9 @@
+.WorldDetailsEditorPage form {
+  background-color: #eee;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.WorldDetailsEditorPage .worldDescriptionInput {
+  min-height: 200px;
+}
