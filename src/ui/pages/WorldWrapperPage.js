@@ -18,38 +18,34 @@ var TrackBadge = require('../TrackBadge');
 var LoadingBlock = require('../LoadingBlock');
 
 var WorldModel = require('../../models/WorldModel');
+var WorldStore = require('../../stores/WorldStore');
 var TrackModel = require('../../models/TrackModel');
 
 var WorldWrapperPage = React.createClass({
 
   mixins: [State],
 
+  _getStateFromStores: function() {
+    return {
+      worldModel:WorldStore.getWorld(this.getParams().worldId)
+    };
+  },
+
   getInitialState: function() {
-    return {worldModel: null};
+    return this._getStateFromStores();
   },
 
   componentDidMount: function() {
-    this.loadWorld(this.getParams().worldId);
+    WorldStore.addChangeListener(this._onChange);
+    WorldModel.fetchWorld(this.getParams().worldId);
   },
 
-  loadWorld: function(worldId) {
-    if (!worldId) {
-      return;
-    }
-    var query = new Parse.Query(WorldModel);
-    this.setState({isLoading:true})
-    query.get(worldId, {
-      success: function(worldModel) {
-        this.setState({worldModel:worldModel});
-      }.bind(this),
-      error: function(object, error) {
-        alert("failed to load: "+error.code+" "+error.message);
-      }.bind(this)
-    });
+  componentWillUnmount: function() {
+    WorldStore.removeChangeListener(this._onChange);
   },
 
-  handleWorldChange: function(newWorld) {
-    this.setState({worldModel:newWorld});
+  _onChange: function() {
+    this.setState(this._getStateFromStores());
   },
 
   render: function() {
@@ -65,7 +61,7 @@ var WorldWrapperPage = React.createClass({
             <Tab to="world-definition-editor" params={{worldId:this.state.worldModel.id}}>Edit World</Tab>
           </Nav>
         </Navbar>
-        <RouteHandler world={this.state.worldModel} onWorldChange={this.handleWorldChange}/>
+        <RouteHandler world={this.state.worldModel}/>
       </div>
     );
   }

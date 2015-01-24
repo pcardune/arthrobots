@@ -18,6 +18,8 @@ var LoadingBlock = require('../LoadingBlock');
 
 var WorldModel = require('../../models/WorldModel');
 var TrackModel = require('../../models/TrackModel');
+var WorldStore = require('../../stores/WorldStore');
+var ViewActionCreators = require('../../actions/ViewActionCreators');
 
 var WorldList = React.createClass({
   render: function() {
@@ -46,35 +48,31 @@ var TrackBrowser = React.createClass({
     }
   },
 
-  getInitialState: function() {
-    return {
-      worldModels: null,
-    };
+  _getStateFromStores: function() {
+    return {worldModels:WorldStore.getWorldsForTrack(this.props.track.id)}
   },
 
-  loadWorldModels: function(filter) {
-    var query = new Parse.Query(WorldModel);
-    query.equalTo("track", this.props.track);
-    if (filter == "yours") {
-      query.equalTo("owner", Parse.User.current());
-    }
-    if (filter == "all") {
-      query.equalTo("public", true);
-    }
-    query.ascending("order");
-    query.include("owner");
-    query.include("track");
-    query.find({
-      success: function(worldModels) {
-        this.setState({
-          worldModels: worldModels
-        })
-      }.bind(this)
-    });
+  getInitialState: function() {
+    return this._getStateFromStores();
   },
 
   componentDidMount: function() {
-    this.loadWorldModels(this.props.filter);
+    WorldModel.fetchWorldsForTrack(this.props.track);
+    WorldStore.addChangeListener(this._onChange);
+    WorldStore.addNewWorldListener(this._onNewWorld);
+  },
+
+  componentWillUnmount: function() {
+    WorldStore.removeChangeListener(this._onChange);
+    WorldStore.removeNewWorldListener(this._onNewWorld);
+  },
+
+  _onNewWorld: function(world) {
+    this.transitionTo('world', {worldId: world.id});
+  },
+
+  _onChange: function() {
+    this.setState(this._getStateFromStores());
   },
 
   handleCreateNewWorld: function() {
@@ -82,17 +80,7 @@ var TrackBrowser = React.createClass({
     world.set('owner', Parse.User.current());
     world.set('name', this.refs.worldNameInput.getDOMNode().value);
     world.set('track', this.props.track);
-    world.save(null, {
-      success: function(world) {
-        // Execute any logic that should take place after the object is saved.
-        this.transitionTo('world', {worldId: world.id})
-      }.bind(this),
-      error: function(world, error) {
-        // Execute any logic that should take place if the save fails.
-        // error is a Parse.Error with an error code and message.
-        alert('Failed to create new world, with error code: ' + error.message);
-      }.bind(this)
-    });
+    WorldModel.createNewWorld(world);
   },
 
   render: function() {

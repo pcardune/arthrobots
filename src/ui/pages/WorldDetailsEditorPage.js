@@ -15,6 +15,7 @@ var CodeEditor = require('../CodeEditor');
 var TrackDropdown = require('../TrackDropdown');
 
 var WorldModel = require('../../models/WorldModel');
+var WorldStore = require('../../stores/WorldStore');
 var WorldCanvas = require('../WorldCanvas');
 
 require('./WorldDetailsEditorPage.css');
@@ -43,6 +44,21 @@ var WorldDetailsEditorPage = React.createClass({
 
   componentDidMount: function() {
     this.loadWorld(this.props.world);
+    WorldStore.addDestroyWorldListener(this._onDestroy);
+    WorldStore.addChangeListener(this._onChange);
+  },
+
+  componentWillUnmount: function() {
+    WorldStore.removeDestroyWorldListener(this._onDestroy);
+    WorldStore.removeChangeListener(this._onChange);
+  },
+
+  _onDestroy: function(world) {
+    this.transitionTo('worlds');
+  },
+
+  _onChange: function() {
+    this.setState({saving:false});
   },
 
   componentWillReceiveProps: function(nextProps) {
@@ -105,24 +121,12 @@ var WorldDetailsEditorPage = React.createClass({
     this.state.worldModel.set('track', this.refs.trackInput.getValue());
     this.state.worldModel.set('order', parseInt(this.refs.orderInput.getDOMNode().value));
     this.setState({saving: true});
-    this.state.worldModel.save(null, {
-      success: function() {
-        this.setState({saving: false, needsSave:false});
-        this.props.onWorldChange(this.state.worldModel);
-      }.bind(this)
-    });
+
+    WorldModel.saveWorld(this.state.worldModel);
   },
 
   handleDeleteWorld: function() {
-    this.state.worldModel.destroy({
-      success: function(world) {
-        this.transitionTo('worlds');
-      }.bind(this),
-      error: function(world, error) {
-        alert("There was an error while deleting the world: "+error.code+" "+error.message);
-      }.bind(this)
-    })
-    this.goBack();
+    WorldModel.destroyWorld(this.state.worldModel);
   },
 
   render: function() {
