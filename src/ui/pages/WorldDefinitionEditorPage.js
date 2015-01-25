@@ -9,12 +9,14 @@ var Navbar = require('react-bootstrap').Navbar;
 var Navigation = require('react-router').Navigation;
 var State = require('react-router').State;
 var React = require('react');
+var assign = require('object-assign');
 
 var Markdown = require('../Markdown');
 var CodeEditor = require('../CodeEditor');
 var TrackDropdown = require('../TrackDropdown');
 
 var WorldModel = require('../../models/WorldModel');
+var WorldStore = require('../../stores/WorldStore');
 var WorldCanvas = require('../WorldCanvas');
 
 require('./WorldDefinitionEditorPage.css');
@@ -24,41 +26,45 @@ var WorldDefinitionEditorPage = React.createClass({
 
   getDefaultProps: function() {
     return {
-      world: null,
-      onWorldChange: function() {}
+      world: null
+    };
+  },
+
+  _getStateFromStores: function(worldId) {
+    worldModel = WorldStore.getWorld(worldId || this.props.world.id);
+    return {
+      worldModel: worldModel,
+      worldSolution: worldModel.get('solution'),
+      worldStepDefinitions: worldModel.getSteps()
     };
   },
 
   getInitialState: function() {
-    return {
-      worldModel: null,
-      worldSolution: '',
-      needsSave: false,
-      worldStepDefinitions: [],
-      currentStep: 0
-    }
+    return assign(
+      this._getStateFromStores(),
+      {
+        needsSave: false,
+        currentStep: 0
+      });
   },
 
   componentDidMount: function() {
-    this.loadWorld(this.props.world);
+    WorldStore.addChangeListener(this._onChange);
+  },
+
+  componentWillUnmount: function() {
+    WorldStore.removeChangeListener(this._onChange);
+  },
+
+  _onChange: function() {
+    this.setState({saving: false, needsSave:false});
+    this.setState(this._getStateFromStores());
   },
 
   componentWillReceiveProps: function(nextProps) {
     if (this.props.world !== nextProps.world) {
-      this.loadWorld(nextProps.world);
+      this.setState(this._getStateFromStores(nextProps.world.id));
     }
-  },
-
-  loadWorld: function(worldModel) {
-    if (!worldModel) {
-      return;
-    }
-
-    this.setState({
-      worldModel: worldModel,
-      worldSolution: worldModel.get('solution'),
-      worldStepDefinitions: worldModel.getSteps()
-    });
   },
 
   handleChange: function() {
@@ -90,15 +96,12 @@ var WorldDefinitionEditorPage = React.createClass({
   },
 
   handleSave: function() {
-    this.state.worldModel.set('solution', this.refs.solutionInput.getValue());
-    this.state.worldModel.setSteps(this.state.worldStepDefinitions);
     this.setState({saving: true});
-    this.state.worldModel.save(null, {
-      success: function() {
-        this.setState({saving: false, needsSave:false});
-        this.props.onWorldChange(this.state.worldModel);
-      }.bind(this)
-    })
+    this.state.worldModel.setSteps(this.state.worldStepDefinitions);
+    WorldModel.saveWorld(
+      {solution: this.refs.solutionInput.getValue()},
+      this.state.worldModel
+    );
   },
 
   handleAddStep: function() {

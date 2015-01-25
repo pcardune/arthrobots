@@ -9,6 +9,7 @@ var Navbar = require('react-bootstrap').Navbar;
 var Navigation = require('react-router').Navigation;
 var State = require('react-router').State;
 var React = require('react');
+var assign = require('object-assign');
 
 var Markdown = require('../Markdown');
 var CodeEditor = require('../CodeEditor');
@@ -30,20 +31,26 @@ var WorldDetailsEditorPage = React.createClass({
     };
   },
 
-  getInitialState: function() {
+  getStateFromStores: function(worldId) {
+    var worldModel = WorldStore.getWorld(worldId || this.props.world.id);
     return {
-      worldModel: null,
-      worldDescription: '',
-      worldOrder: 0,
-      worldName: '',
-      worldPublic: null,
-      worldTrack: null,
-      needsSave: false
-    }
+      worldModel:worldModel,
+      worldName:worldModel.get('name'),
+      worldDescription:worldModel.get('description'),
+      worldPublic:worldModel.get('public'),
+      worldTrack:worldModel.get('track'),
+      worldOrder:worldModel.get('order'),
+    };
+  },
+
+  getInitialState: function() {
+    return assign(
+      this.getStateFromStores(),
+      {needsSave: false}
+    );
   },
 
   componentDidMount: function() {
-    this.loadWorld(this.props.world);
     WorldStore.addDestroyWorldListener(this._onDestroy);
     WorldStore.addChangeListener(this._onChange);
   },
@@ -63,23 +70,8 @@ var WorldDetailsEditorPage = React.createClass({
 
   componentWillReceiveProps: function(nextProps) {
     if (this.props.world !== nextProps.world) {
-      this.loadWorld(nextProps.world);
+      this.setState(this.getStateFromStores(nextProps.world.id));
     }
-  },
-
-  loadWorld: function(worldModel) {
-    if (!worldModel) {
-      return;
-    }
-
-    this.setState({
-      worldModel:worldModel,
-      worldName:worldModel.get('name'),
-      worldDescription:worldModel.get('description'),
-      worldPublic:worldModel.get('public'),
-      worldTrack:worldModel.get('track'),
-      worldOrder:worldModel.get('order'),
-    });
   },
 
   handleChange: function() {
@@ -115,14 +107,17 @@ var WorldDetailsEditorPage = React.createClass({
   },
 
   handleSave: function() {
-    this.state.worldModel.set('name', this.refs.nameInput.getDOMNode().value);
-    this.state.worldModel.set('description', this.refs.descriptionInput.getDOMNode().value);
-    this.state.worldModel.set('public', this.refs.publicCheckbox.getChecked());
-    this.state.worldModel.set('track', this.refs.trackInput.getValue());
-    this.state.worldModel.set('order', parseInt(this.refs.orderInput.getDOMNode().value));
     this.setState({saving: true});
-
-    WorldModel.saveWorld(this.state.worldModel);
+    WorldModel.saveWorld(
+      {
+        name: this.refs.nameInput.getDOMNode().value,
+        description: this.refs.descriptionInput.getDOMNode().value,
+        "public": this.refs.publicCheckbox.getChecked(),
+        track: this.refs.trackInput.getValue(),
+        order: parseInt(this.refs.orderInput.getDOMNode().value)
+      },
+      this.state.worldModel
+    );
   },
 
   handleDeleteWorld: function() {

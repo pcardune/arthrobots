@@ -69,8 +69,8 @@ assign(WorldModel, {
     });
   },
 
-  saveWorld: function(world) {
-    world.save(null, {
+  saveWorld: function(data, world) {
+    world.save(data, {
       success: function(world) {
         ServerActionCreators.receiveWorlds([world]);
       },
