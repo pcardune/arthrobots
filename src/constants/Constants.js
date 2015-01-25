@@ -9,7 +9,9 @@ var Constants = {
   ActionTypes: keyMirror({
     RECEIVE_CREATED_WORLD: null,
     RECEIVE_WORLDS: null,
-    WORLD_DESTROY: null
+    WORLD_DESTROY: null,
+
+    RECEIVE_TRACKS: null
   })
 };
 

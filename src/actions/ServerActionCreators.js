@@ -21,5 +21,12 @@ module.exports = {
       type:Constants.ActionTypes.WORLD_DESTROY,
       world:world
     });
+  },
+
+  receiveTracks: function(tracks) {
+    AppDispatcher.handleServerAction({
+      type:Constants.ActionTypes.RECEIVE_TRACKS,
+      tracks: tracks
+    });
   }
 };

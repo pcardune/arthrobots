@@ -15,7 +15,7 @@ var WorldStore = assign({}, EventEmitter.prototype, {
   getWorldsForTrack: function(trackId) {
     var worlds = [];
     for (var id in _worlds) {
-      world = _worlds[id]
+      var world = _worlds[id]
       if (world.getTrack().id == trackId) {
         worlds.push(world);
       }

@@ -5,31 +5,29 @@ var React = require('react');
 
 var WorldModel = require('../models/WorldModel');
 var TrackModel = require('../models/TrackModel');
+var TrackStore = require('../stores/TrackStore');
+
+var getStateFromStores = function() {
+  return {trackModels:TrackStore.getAllTracks()};
+};
 
 var TrackDropdown = React.createClass({
 
   getInitialState: function() {
-    return {
-      isLoading: true,
-      trackModels: []
-    }
-  },
-
-  loadTrackModels: function(filter) {
-    var query = new Parse.Query(TrackModel);
-    query.ascending("createdAt");
-    query.find({
-      success: function(trackModels) {
-        this.setState({
-          isLoading: false,
-          trackModels: trackModels
-        })
-      }.bind(this)
-    });
+    return getStateFromStores();
   },
 
   componentDidMount: function() {
-    this.loadTrackModels();
+    TrackStore.addChangeListener(this._onChange);
+    TrackModel.fetchTracks();
+  },
+
+  componentWillUnmount: function() {
+    TrackStore.removeChangeListener(this._onChange);
+  },
+
+  _onChange: function() {
+    this.setState(getStateFromStores());
   },
 
   getValue: function() {
