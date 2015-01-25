@@ -8,6 +8,7 @@ assign(TrackModel, {
   fetchTracks: function() {
     var query = new Parse.Query(TrackModel);
     query.ascending("createdAt");
+    query.include("owner");
     query.find({success: ServerActionCreators.receiveTracks});
   }
 })

@@ -10,7 +10,7 @@ var _tracks = {};
 
 var TrackStore = assign({}, EventEmitter.prototype, {
 
-  getAllTracks: function(trackId) {
+  getAllTracks: function() {
     var tracks = [];
     for (var id in _tracks) {
       var track = _tracks[id]
