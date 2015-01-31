@@ -26,6 +26,9 @@ var LoadingBlock = require('./LoadingBlock');
 var WorldModel = require('../models/WorldModel');
 var TrackModel = require('../models/TrackModel');
 var ProgramModel = require('../models/ProgramModel');
+
+var ProgramStore = require('../stores/ProgramStore');
+
 var ProgramParser = require('../core/ProgramParser');
 var Runner = require('../core/Runner');
 var WorldParser = require('../core/WorldParser');
@@ -59,7 +62,7 @@ var ProgramEditor = React.createClass({
     }
   },
 
-  handleSave: function(callback) {
+  _handleSave: function(callback) {
     var program = this.state.programModel;
     if (!program) {
       program = new ProgramModel();
@@ -75,51 +78,45 @@ var ProgramEditor = React.createClass({
       callback(program);
       return;
     }
-    program.set('code', code);
     this.setState({isSaving: true});
-    program.save(null, {
-      success: function(world) {
-        // Execute any logic that should take place after the object is saved.
-        this.setState({
-          programModel:program,
-          isSaving: false
-        });
-        callback(program);
-      }.bind(this),
-      error: function(gameScore, error) {
-        // Execute any logic that should take place if the save fails.
-        // error is a Parse.Error with an error code and message.
+    ProgramModel.saveProgram(
+      {code:code},
+      program,
+      function() {
         this.setState({isSaving: false});
-        alert('Failed to save program, with error code: ' + error.message);
+        callback();
       }.bind(this)
-    });
-  },
-
-  loadProgram: function(worldModel) {
-    if (worldModel) {
-      this.setState({isLoading: true});
-      worldModel.loadCurrentUserPrograms(function(programs){
-        this.setState({isLoading: false});
-        if (programs) {
-          var code = programs[0] ? programs[0].get('code') : '';
-          this.setState({
-            programModel: programs[0],
-            programCode: code,
-            codeIsJS: code.indexOf("(") > 0,
-            numTokens: new ProgramParser(code).getNumTokens()
-          });
-        }
-      }.bind(this))
-    }
+    );
   },
 
   componentDidMount: function() {
-    this.loadProgram(this.props.worldModel);
+    ProgramStore.addChangeListener(this._onChange);
+    ProgramModel.fetchPrograms();
+  },
+
+  componentWillUnmount: function() {
+    ProgramStore.removeChangeListener(this._onChange);
+  },
+
+  _getStateFromStores: function(worldId) {
+    var programModel = ProgramStore.getProgramForWorld(worldId);
+    var code = programModel ? programModel.get('code') : '';
+    return {
+      programModel: programModel,
+      programCode: code,
+      codeIsJS: code.indexOf("(") > 0,
+      numTokens: new ProgramParser(code).getNumTokens(),
+      isLoading: false
+    };
+  },
+
+  _onChange: function() {
+    this.setState(this._getStateFromStores(this.props.worldModel.id));
   },
 
   componentWillReceiveProps: function(nextProps) {
     if (nextProps.worldModel != this.props.worldModel) {
-      this.loadProgram(nextProps.worldModel);
+      this.setState(this._getStateFromStores(nextProps.worldModel.id));
       this.setState({isFinished: false, completedSteps: 0, runState:''});
     }
   },
@@ -163,7 +160,7 @@ var ProgramEditor = React.createClass({
 
   handleRun: function() {
     Parse.Analytics.track('runProgram', {world:this.props.worldModel.id});
-    this.handleSave(function(){
+    this._handleSave(function(){
       this.handleReset();
       var parser = new ProgramParser(this.state.programCode, this.refs.worldCanvas.world.robot);
       if (this.state.programCode.indexOf('(') > 0) {
@@ -329,7 +326,7 @@ var ProgramEditor = React.createClass({
           <MenuItem key="4" onClick={this.handleSpeedClick.bind(this, 'Very Fast')}>Very Fast</MenuItem>
         </DropdownButton>
         : null,
-        <Button key="6" onClick={this.handleRun} bsStyle="primary" className="pull-right">
+        <Button key="6" onClick={this.state.isSaving ? null : this.handleRun} bsStyle="primary" className="pull-right">
           {this.state.isSaving ? "Saving..." : "Save + Run"}
         </Button>,
         this.props.worldModel.get('solution') ?

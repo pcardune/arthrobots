@@ -10,8 +10,8 @@ var Constants = {
     RECEIVE_CREATED_WORLD: null,
     RECEIVE_WORLDS: null,
     WORLD_DESTROY: null,
-
-    RECEIVE_TRACKS: null
+    RECEIVE_TRACKS: null,
+    RECEIVE_PROGRAMS: null
   })
 };
 

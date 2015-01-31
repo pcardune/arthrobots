@@ -33,7 +33,7 @@
      };
      var Keys = ParseKeys;
      // uncomment the next line to hit the development app
-     // Keys = ParseDevKeys;
+     Keys = ParseDevKeys;
      Parse.initialize(Keys.APP_ID, Keys.JS_KEY);
      window.fbAsyncInit = function() {
          Parse.FacebookUtils.init({

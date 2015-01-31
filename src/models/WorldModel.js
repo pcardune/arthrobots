@@ -1,4 +1,5 @@
 var ProgramModel = require('./ProgramModel');
+var TrackModel = require('./TrackModel');
 var World = require('../core/World');
 var WorldParser = require('../core/WorldParser');
 var ServerActionCreators = require('../actions/ServerActionCreators');
@@ -103,8 +104,10 @@ assign(WorldModel, {
     });
   },
 
-  fetchWorldsForTrack: function(track) {
+  fetchWorldsForTrack: function(trackId) {
     var query = new Parse.Query(WorldModel);
+    var track = new TrackModel();
+    track.id = trackId;
     query.equalTo("track", track);
     query.include("owner");
     query.include("track");

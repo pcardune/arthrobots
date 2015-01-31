@@ -28,5 +28,12 @@ module.exports = {
       type:Constants.ActionTypes.RECEIVE_TRACKS,
       tracks: tracks
     });
+  },
+
+  receivePrograms: function(programs) {
+    AppDispatcher.handleServerAction({
+      type:Constants.ActionTypes.RECEIVE_PROGRAMS,
+      programs: programs
+    });
   }
 };

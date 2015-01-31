@@ -11,6 +11,6 @@ assign(TrackModel, {
     query.include("owner");
     query.find({success: ServerActionCreators.receiveTracks});
   }
-})
+});
 
 module.exports = TrackModel;

@@ -3,22 +3,14 @@ var State = require('react-router').State;
 var Button = require('react-bootstrap').Button;
 var Glyphicon = require('react-bootstrap').Glyphicon;
 var Link = require('react-router').Link;
-var ListGroup = require('react-bootstrap').ListGroup;
-var ListGroupItem = require('react-bootstrap').ListGroupItem;
-var Modal = require('react-bootstrap').Modal;
 var Jumbotron = require('react-bootstrap').Jumbotron;
-var ModalTrigger = require('react-bootstrap').ModalTrigger;
-var Nav = require('react-bootstrap').Nav;
-var Navbar = require('react-bootstrap').Navbar;
 var Navigation = require('react-router').Navigation;
-var NavItem = require('react-bootstrap').NavItem;
 var OverlayTrigger = require('react-bootstrap').OverlayTrigger;
 var Tooltip = require('react-bootstrap').Tooltip;
 var React = require('react');
+var assign = require('object-assign');
 
-var Tab = require('../Tab');
 var Markdown = require('../Markdown');
-var WorldCanvas = require('../WorldCanvas');
 var ProgramEditor = require('../ProgramEditor');
 var TrackBadge = require('../TrackBadge');
 var LoadingBlock = require('../LoadingBlock');
@@ -26,20 +18,27 @@ var LoadingBlock = require('../LoadingBlock');
 var WorldModel = require('../../models/WorldModel');
 var TrackModel = require('../../models/TrackModel');
 var ProgramModel = require('../../models/ProgramModel');
+var TrackStore = require('../../stores/TrackStore');
+var WorldStore = require('../../stores/WorldStore');
+var ProgramStore = require('../../stores/ProgramStore');
 
 require('./TrackPage.css');
 var TrackPage = React.createClass({
 
   mixins: [Navigation, State],
 
-  getInitialState: function() {
+  _getStateFromStores: function() {
     return {
-      trackModel: null,
-      worldModels: [],
-      programModels: [],
-      isLoading: true,
+      trackModel:TrackStore.getTrack(this.getParams().trackId),
+      worldModels:WorldStore.getWorldsForTrack(this.getParams().trackId),
+      programModels:ProgramStore.getAllPrograms()
+    }
+  },
+
+  getInitialState: function() {
+    return assign(this._getStateFromStores(), {
       trackComplete: false
-    };
+    });
   },
 
   getCurrentWorld: function() {
@@ -54,77 +53,51 @@ var TrackPage = React.createClass({
     return currentWorld;
   },
 
-  loadTrackAndWorlds: function() {
-    this.setState({isLoading: true});
-    var query = new Parse.Query(TrackModel);
-    this.setState(this.getInitialState());
-    query.get(this.getParams().trackId, {
-      success: function(trackModel) {
-        this.setState({
-          trackModel:trackModel
-        });
-
-        publicWorlds = new Parse.Query(WorldModel);
-        publicWorlds.equalTo('public', true);
-        privateWorlds = new Parse.Query(WorldModel);
-        privateWorlds.equalTo('owner', Parse.User.current());
-        var query = Parse.Query.or(publicWorlds, privateWorlds);
-        query.equalTo('track', trackModel);
-        query.ascending('order');
-        query.find({
-          success: function(worldModels) {
-            this.setState({
-              worldModels: worldModels
-            });
-
-            var programQuery = new Parse.Query(ProgramModel);
-            programQuery.equalTo('owner', Parse.User.current());
-            programQuery.matchesQuery('world', query);
-            programQuery.find({
-              success: function(programs) {
-                this.setState({
-                  programModels: programs,
-                  isLoading: false
-                });
-                var transitionedToWorld = false;
-                this.state.worldModels.every(function(world, worldIndex) {
-                  var worldIsFinished = false;
-                  programs.every(function(program) {
-                    if (program.get('world').id == world.id && program.get('finished')) {
-                      worldIsFinished = true;
-                      return false;
-                    }
-                    return true;
-                  }.bind(this));
-                  if (!worldIsFinished && !this.getQuery().worldId) {
-                    this.transitionTo('track', {trackId:this.getParams().trackId}, {worldId:world.id})
-                    transitionedToWorld = true;
-                    return false;
-                  }
-                  return true;
-                }.bind(this));
-                if (!transitionedToWorld && !this.getQuery().worldId) {
-                  this.transitionTo('track', {trackId:this.getParams().trackId}, {worldId:this.state.worldModels[0].id});
-                }
-              }.bind(this)
-            });
-
-          }.bind(this)
-        });
-      }.bind(this),
-      error: function(trackModel, error) {
-        alert("failed to fetch track:"+error.code+" "+error.message);
-      }.bind(this)
-    })
+  componentDidMount: function() {
+    WorldStore.addChangeListener(this._onChange);
+    TrackStore.addChangeListener(this._onChange);
+    ProgramStore.addChangeListener(this._onChange);
+    TrackModel.fetchTracks();
+    ProgramModel.fetchPrograms();
+    WorldModel.fetchWorldsForTrack(this.getParams().trackId);
   },
 
-  componentDidMount: function() {
-    this.loadTrackAndWorlds();
+  componentWillUnmount: function() {
+    WorldStore.removeChangeListener(this._onChange);
+    TrackStore.removeChangeListener(this._onChange);
+    ProgramStore.removeChangeListener(this._onChange);
+  },
+
+  _onChange: function() {
+    var state = this._getStateFromStores();
+    this.setState(state);
+
+    var transitionedToWorld = false;
+    state.worldModels.every(function(world, worldIndex) {
+      var worldIsFinished = false;
+      state.programModels.every(function(program) {
+        if (program.get('world').id == world.id && program.get('finished')) {
+          worldIsFinished = true;
+          return false;
+        }
+        return true;
+      }.bind(this));
+      if (!worldIsFinished && !this.getQuery().worldId) {
+        this.transitionTo('track', {trackId:this.getParams().trackId}, {worldId:world.id})
+        transitionedToWorld = true;
+        return false;
+      }
+      return true;
+    }.bind(this));
+    if (!transitionedToWorld && !this.getQuery().worldId && state.worldModels.length) {
+      this.transitionTo('track', {trackId:this.getParams().trackId}, {worldId:state.worldModels[0].id});
+    }
   },
 
   componentWillReceiveProps: function(nextProps) {
     if (this.getParams().trackId != this.state.trackModel.id) {
-      this.loadTrackAndWorlds();
+      WorldModel.fetchWorldsForTrack(this.getParams().trackId);
+      this.setState({trackComplete: false});
     }
   },
 
@@ -221,7 +194,7 @@ var TrackPage = React.createClass({
       var isActive = world.id == this.getCurrentWorld().id;
       var isFinished = false;
       this.state.programModels.forEach(function(program) {
-        if (program.get('world').id == world.id && program.get('finished')) {
+        if (program.get('world') && program.get('world').id == world.id && program.get('finished')) {
           isFinished = true;
         }
       }.bind(this));
