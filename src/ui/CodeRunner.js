@@ -71,6 +71,14 @@ var ProgramEditor = React.createClass({
     if (nextProps.world != this.props.world) {
       this.setState({isFinished: false, completedSteps: 0, runState:''});
     }
+    if (nextProps.initialCode != this.props.initialCode) {
+      var code = nextProps.initialCode;
+      this.setState({
+        programCode: code,
+        codeIsJS: code.indexOf("(") > 0,
+        numTokens: new ProgramParser(code).getNumTokens(),
+      });
+    }
   },
 
   handleReset: function() {
