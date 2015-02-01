@@ -1,11 +1,6 @@
 var keyMirror = require('keymirror');
 
 var Constants = {
-  PayloadSources: keyMirror({
-    VIEW_ACTION: null,
-    SERVER_ACTION: null
-  }),
-
   ActionTypes: keyMirror({
     LOAD_PROGRAMS: null,
     LOAD_PROGRAMS_SUCCESS: null,
@@ -38,7 +33,11 @@ var Constants = {
     SAVE_WORLD: null,
     SAVE_WORLD_SUCCESS: null,
     SAVE_WORLD_FAIL: null,
-    SAVE_WORLD_LOCAL: null
+    SAVE_WORLD_LOCAL: null,
+
+    LOAD_USERS: null,
+    LOAD_USERS_SUCCESS: null,
+    LOAD_USERS_FAIL: null
   })
 };
 

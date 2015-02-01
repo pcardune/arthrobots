@@ -16,6 +16,7 @@ var Button = ReactBootstrap.Button;
 var TrackStore = require('./stores/TrackStore');
 var WorldStore = require('./stores/WorldStore');
 var ProgramStore = require('./stores/ProgramStore');
+var UserStore = require('./stores/UserStore');
 
 var LandingPage = require('./ui/pages/LandingPage');
 var LoginPage = require('./ui/pages/LoginPage');
@@ -67,7 +68,8 @@ var routes = (
 var stores = {
   TrackStore: new TrackStore(),
   WorldStore: new WorldStore(),
-  ProgramStore: new ProgramStore()
+  ProgramStore: new ProgramStore(),
+  UserStore: new UserStore()
 };
 var actions = require('./actions/Actions');
 var flux = new Fluxxor.Flux(stores, actions);

@@ -16,7 +16,7 @@ var WorldList = require('./WorldList');
 
 var TrackBrowser = React.createClass({
 
-  mixins: [Navigation, State, FluxMixin, StoreWatchMixin("WorldStore")],
+  mixins: [Navigation, State, FluxMixin, StoreWatchMixin("WorldStore", "UserStore")],
 
   getDefaultProps: function() {
     return {
@@ -26,9 +26,16 @@ var TrackBrowser = React.createClass({
   },
 
   getStateFromFlux: function() {
-    var store = this.getFlux().store("WorldStore");
+    var worldStore = this.getFlux().store("WorldStore");
+    var userStore = this.getFlux().store("UserStore");
+    var worldModels = worldStore.getWorldsForTrack(this.props.track.id);
+    var users = {};
+    worldModels.forEach(function(world) {
+      users[world.get('owner').id] = userStore.getUser(world.get('owner').id);
+    });
     return {
-      worldModels:store.getWorldsForTrack(this.props.track.id)
+      worldModels: worldModels,
+      users: users
     };
   },
 
@@ -76,7 +83,7 @@ var TrackBrowser = React.createClass({
             <Button bsStyle="primary" className="pull-right">Create New World</Button>
           </ModalTrigger>
         </h2>
-        {this.state.worldModels ? <WorldList worlds={this.state.worldModels} /> : <LoadingBlock />}
+        {this.state.worldModels ? <WorldList worlds={this.state.worldModels} users={this.state.users}/> : <LoadingBlock />}
       </div>
     );
   }

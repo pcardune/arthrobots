@@ -47,25 +47,6 @@ module.exports = {
     });
   },
 
-  loadWorldsForTrack: function(trackId) {
-    this.dispatch(Constants.ActionTypes.LOAD_WORLDS);
-    var query = new Parse.Query(WorldModel);
-    var track = new TrackModel();
-    track.id = trackId;
-    query.equalTo("track", track);
-    query.include("owner");
-    query.include("track");
-    query.find({
-      success: function(worlds) {
-        this.dispatch(Constants.ActionTypes.LOAD_WORLDS_SUCCESS, {worlds: worlds});
-      }.bind(this),
-      error: function(error) {
-        console.error('Failed to get worlds, with error code: ' + error.message);
-        this.dispatch(Constants.ActionTypes.LOAD_WORLDS_FAIL, {error:error});
-      }.bind(this)
-    });
-  },
-
   loadTracksAndWorlds: function() {
     this.dispatch(Constants.ActionTypes.LOAD_TRACKS_AND_WORLDS);
     var query = new Parse.Query(TrackModel);
@@ -74,9 +55,19 @@ module.exports = {
       success: function(tracks) {
         var worldQuery = new Parse.Query(WorldModel);
         worldQuery.containedIn("track", tracks);
+        worldQuery.include('owner');
         worldQuery.find({
           success: function(worlds) {
+            var owners = worlds.map(function(world){
+              var owner = world.get('owner');
+              // defensively unset nested owner so call sites are forced to use UserStore.
+              var ownerPointer = new Parse.User();
+              ownerPointer.id = owner.id;
+              world.set('owner', ownerPointer);
+              return owner;
+            });
             this.dispatch(Constants.ActionTypes.LOAD_TRACKS_AND_WORLDS_SUCCESS, {tracks: tracks, worlds:worlds});
+            this.dispatch(Constants.ActionTypes.LOAD_USERS_SUCCESS, {users: owners});
           }.bind(this),
           error: function(error) {
             console.error('Failed to get worlds, with error code: ' + error.message);
