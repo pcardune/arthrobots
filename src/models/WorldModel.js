@@ -4,16 +4,17 @@ var World = require('../core/World');
 var WorldParser = require('../core/WorldParser');
 
 var WorldModel = Parse.Object.extend("WorldModel", {
-  loadCurrentUserPrograms: function(success) {
-    var query = new Parse.Query(ProgramModel);
-    query.equalTo("world", this);
-    query.equalTo("owner", Parse.User.current());
-    query.find({
-      success: success,
-      error: function() {
-        alert("there was an error loading programs:"+error.code+" "+error.message);
-      }
-    });
+
+  getName: function() {
+    return this.get('name');
+  },
+
+  getDescription: function() {
+    return this.get('description');
+  },
+
+  isPublic: function() {
+    return this.get('public');
   },
 
   getTrack: function() {

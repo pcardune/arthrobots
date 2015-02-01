@@ -32,20 +32,11 @@ var WorldDetailsEditorPage = React.createClass({
 
   getStateFromFlux: function() {
     var store = this.getFlux().store("WorldStore");
-    var worldModel = store.getWorld(this.props.world.id);
+    var world = store.getWorld(this.props.world.id);
     return {
-      worldModel:worldModel,
-      worldName:worldModel.get('name'),
-      worldDescription:worldModel.get('description'),
-      worldPublic:worldModel.get('public'),
-      worldTrack:worldModel.get('track'),
-      worldOrder:worldModel.get('order'),
+      world:world,
       saving: store.isLoading()
     };
-  },
-
-  getInitialState: function() {
-    return {needsSave: false};
   },
 
   componentDidMount: function() {
@@ -63,39 +54,7 @@ var WorldDetailsEditorPage = React.createClass({
   },
 
   handleChange: function() {
-    var name = this.refs.nameInput.getDOMNode().value;
-    var description = this.refs.descriptionInput.getDOMNode().value;
-    var isPublic = this.refs.publicCheckbox.getChecked();
-    var track = this.refs.trackInput.getValue();
-    var order = parseInt(this.refs.orderInput.getDOMNode().value);
-
-    var needsSave = (
-      name != this.state.worldModel.get('name') ||
-      description != this.state.worldModel.get('description') ||
-      isPublic != this.state.worldModel.get('public') ||
-      order != this.state.worldModel.get('order') ||
-      (track && track.id) != this.state.worldModel.get('track') && this.state.worldModel.get('track').id
-    );
-
-    this.setState({
-      worldName:name,
-      worldDescription:description,
-      worldPublic:isPublic,
-      worldTrack:track,
-      worldOrder:order,
-      needsSave: needsSave
-    })
-  },
-
-  handleChangeStep: function(index, event) {
-    this.state.worldStepDefinitions[index] = event.target.value;
-    var modelSteps = this.state.worldModel.get('steps');
-    this.setState({worldStepDefinitions:this.state.worldStepDefinitions});
-    this.handleChange();
-  },
-
-  handleSave: function() {
-    this.getFlux().actions.saveWorld(
+    this.getFlux().actions.saveWorldLocal(
       {
         name: this.refs.nameInput.getDOMNode().value,
         description: this.refs.descriptionInput.getDOMNode().value,
@@ -103,16 +62,20 @@ var WorldDetailsEditorPage = React.createClass({
         track: this.refs.trackInput.getValue(),
         order: parseInt(this.refs.orderInput.getDOMNode().value)
       },
-      this.state.worldModel
+      this.state.world
     );
   },
 
+  handleSave: function() {
+    this.getFlux().actions.saveWorld({}, this.state.world);
+  },
+
   handleDeleteWorld: function() {
-    this.getFlux().actions.destroyWorld(this.state.worldModel);
+    this.getFlux().actions.destroyWorld(this.state.world);
   },
 
   render: function() {
-    if (this.state.isLoading || !this.state.worldModel) {
+    if (this.state.isLoading || !this.state.world) {
       return <div>loading...</div>;
     }
 
@@ -131,22 +94,21 @@ var WorldDetailsEditorPage = React.createClass({
         <div className="row">
           <div className="col-md-6">
             <form>
-              {this.state.saving ? "Saving..." : null}
               <div className="form-group">
                 <label>World Name</label>
-                <input ref="nameInput" onChange={this.handleChange} type="text" className="form-control" placeholder="world name" defaultValue={this.state.worldName}/>
+                <input ref="nameInput" onChange={this.handleChange} type="text" className="form-control" placeholder="world name" defaultValue={this.state.world.getName()}/>
               </div>
               <div className="form-group">
                 <label>Track</label>
-                <TrackDropdown ref="trackInput" onChange={this.handleChange} defaultValue={this.state.worldTrack}/>
+                <TrackDropdown ref="trackInput" onChange={this.handleChange} defaultValue={this.state.world.getTrack()}/>
               </div>
               <div className="form-group">
                 <label>Level</label>
-                <input ref="orderInput" onChange={this.handleChange} type="text" className="form-control" defaultValue={this.state.worldOrder}/>
+                <input ref="orderInput" onChange={this.handleChange} type="text" className="form-control" defaultValue={this.state.world.getOrder()}/>
               </div>
               <div className="form-group">
                 <label>Description/Instructions</label>
-                <textarea ref="descriptionInput" onChange={this.handleChange} className="form-control worldDescriptionInput" defaultValue={this.state.worldDescription}></textarea>
+                <textarea ref="descriptionInput" onChange={this.handleChange} className="form-control worldDescriptionInput" defaultValue={this.state.world.getDescription()}></textarea>
               </div>
               <div className="form-group">
                 <label>Privacy</label>
@@ -154,18 +116,24 @@ var WorldDetailsEditorPage = React.createClass({
                   type="checkbox"
                   ref="publicCheckbox"
                   onClick={this.handleChange}
-                  defaultChecked={this.state.worldModel.get('public')}
+                  defaultChecked={this.state.world.isPublic()}
                   label="Visible to anyone"/>
               </div>
-              <Button onClick={this.handleSave} className="pull-right" disabled={!this.state.needsSave} bsStyle={this.state.needsSave ? "primary" : "default"}>Save</Button>
+              <Button
+                onClick={this.handleSave}
+                className="pull-right"
+                disabled={!this.state.world.needsSave}
+                bsStyle={this.state.needsSave ? "primary" : "default"}>
+                {this.state.saving ? "Saving..." : "Save"}
+              </Button>
               <ModalTrigger modal={deleteConfirmationModal}>
                 <Button onClick={this.handleDelete} bsStyle="danger">Delete</Button>
               </ModalTrigger>
             </form>
           </div>
           <div className="worldPane col-md-6">
-            <h3>Level {this.state.worldOrder} - {this.state.worldName}</h3>
-            <Markdown>{this.state.worldDescription}</Markdown>
+            <h3>Level {this.state.world.getOrder()} - {this.state.world.getName()}</h3>
+            <Markdown>{this.state.world.getDescription()}</Markdown>
           </div>
         </div>
       </div>
