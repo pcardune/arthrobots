@@ -10,19 +10,19 @@ var Navigation = require('react-router').Navigation;
 var State = require('react-router').State;
 var React = require('react');
 var assign = require('object-assign');
+var FluxMixin = require('fluxxor').FluxMixin(React);
+var StoreWatchMixin = require('fluxxor').StoreWatchMixin;
 
 var Markdown = require('../Markdown');
 var CodeEditor = require('../CodeEditor');
 var TrackDropdown = require('../TrackDropdown');
 
-var WorldModel = require('../../models/WorldModel');
-var WorldStore = require('../../stores/WorldStore');
 var WorldCanvas = require('../WorldCanvas');
 
 require('./WorldDefinitionEditorPage.css');
 var WorldDefinitionEditorPage = React.createClass({
 
-  mixins: [Navigation, State],
+  mixins: [Navigation, State, FluxMixin, StoreWatchMixin("WorldStore")],
 
   getDefaultProps: function() {
     return {
@@ -30,41 +30,26 @@ var WorldDefinitionEditorPage = React.createClass({
     };
   },
 
-  _getStateFromStores: function(worldId) {
-    worldModel = WorldStore.getWorld(worldId || this.props.world.id);
+  getStateFromFlux: function() {
+    var store = this.getFlux().store("WorldStore");
+    worldModel = store.getWorld(this.props.world.id);
     return {
       worldModel: worldModel,
       worldSolution: worldModel.get('solution'),
-      worldStepDefinitions: worldModel.getSteps()
+      worldStepDefinitions: worldModel.getSteps(),
+      saving: store.isLoading(),
+      needsSave: false
     };
   },
 
   getInitialState: function() {
-    return assign(
-      this._getStateFromStores(),
-      {
-        needsSave: false,
-        currentStep: 0
-      });
-  },
-
-  componentDidMount: function() {
-    WorldStore.addChangeListener(this._onChange);
-  },
-
-  componentWillUnmount: function() {
-    WorldStore.removeChangeListener(this._onChange);
+    return {
+      currentStep: 0
+    };
   },
 
   _onChange: function() {
-    this.setState({saving: false, needsSave:false});
-    this.setState(this._getStateFromStores());
-  },
-
-  componentWillReceiveProps: function(nextProps) {
-    if (this.props.world !== nextProps.world) {
-      this.setState(this._getStateFromStores(nextProps.world.id));
-    }
+    this.setState({needsSave:false});
   },
 
   handleChange: function() {
@@ -98,7 +83,7 @@ var WorldDefinitionEditorPage = React.createClass({
   handleSave: function() {
     this.setState({saving: true});
     this.state.worldModel.setSteps(this.state.worldStepDefinitions);
-    WorldModel.saveWorld(
+    this.getFlux().actions.saveWorld(
       {solution: this.refs.solutionInput.getValue()},
       this.state.worldModel
     );

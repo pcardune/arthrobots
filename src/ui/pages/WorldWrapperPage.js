@@ -12,6 +12,8 @@ var Navbar = require('react-bootstrap').Navbar;
 var Navigation = require('react-router').Navigation;
 var React = require('react');
 var RouteHandler = require('react-router').RouteHandler;
+var FluxMixin = require('fluxxor').FluxMixin(React);
+var StoreWatchMixin = require('fluxxor').StoreWatchMixin;
 
 var Tab = require('../Tab');
 var TrackBadge = require('../TrackBadge');
@@ -23,25 +25,17 @@ var TrackModel = require('../../models/TrackModel');
 
 var WorldWrapperPage = React.createClass({
 
-  mixins: [State],
+  mixins: [State, FluxMixin, StoreWatchMixin("WorldStore")],
 
-  _getStateFromStores: function() {
+  getStateFromFlux: function() {
+    var store = this.getFlux().store("WorldStore");
     return {
-      worldModel:WorldStore.getWorld(this.getParams().worldId)
+      worldModel: store.getWorld(this.getParams().worldId)
     };
   },
 
-  getInitialState: function() {
-    return this._getStateFromStores();
-  },
-
   componentDidMount: function() {
-    WorldStore.addChangeListener(this._onChange);
-    WorldModel.fetchWorld(this.getParams().worldId);
-  },
-
-  componentWillUnmount: function() {
-    WorldStore.removeChangeListener(this._onChange);
+    this.getFlux().actions.loadWorld(this.getParams().worldId);
   },
 
   _onChange: function() {
@@ -61,7 +55,7 @@ var WorldWrapperPage = React.createClass({
             <Tab to="world-definition-editor" params={{worldId:this.state.worldModel.id}}>Edit World</Tab>
           </Nav>
         </Navbar>
-        <RouteHandler world={this.state.worldModel}/>
+        <RouteHandler world={this.state.worldModel} {...this.props}/>
       </div>
     );
   }

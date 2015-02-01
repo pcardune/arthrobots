@@ -16,6 +16,8 @@ var React = require('react');
 var Glyphicon = require('react-bootstrap').Glyphicon;
 var OverlayTrigger = require('react-bootstrap').OverlayTrigger;
 var Tooltip = require('react-bootstrap').Tooltip;
+var FluxMixin = require('fluxxor').FluxMixin(React);
+var StoreWatchMixin = require('fluxxor').StoreWatchMixin;
 
 var Tab = require('./Tab');
 var Markdown = require('./Markdown');
@@ -37,6 +39,8 @@ var World = require('../core/World');
 require('./ProgramEditor.css')
 var ProgramEditor = React.createClass({
 
+  mixins: [FluxMixin, StoreWatchMixin("WorldStore")],
+
   getDefaultProps: function() {
     return {
       worldModel: null,
@@ -46,20 +50,28 @@ var ProgramEditor = React.createClass({
 
   getInitialState: function() {
     return {
-      isLoading: true,
       runState: "",
-      programModel: null,
-      programCode: '',
       completedSteps: 0,
       isFinished: false,
       speed: localStorage.getItem('speed') || 'Medium',
       errors: [],
       lastExecutedLine: null,
       showCheckpointAtIndex: null,
-      codeIsJS: false,
-      isSaving: false,
-      numTokens: 0
+      isSaving: false
     }
+  },
+
+  getStateFromFlux: function() {
+    var programStore = this.getFlux().store("ProgramStore");
+    var programModel = programStore.getProgramForWorld(this.props.worldModel.id);
+    var code = programModel ? programModel.get('code') : '';
+    return {
+      programModel: programModel,
+      programCode: code,
+      codeIsJS: code.indexOf("(") > 0,
+      numTokens: new ProgramParser(code).getNumTokens(),
+      isLoading: programStore.isLoading()
+    };
   },
 
   _handleSave: function(callback) {
@@ -79,7 +91,7 @@ var ProgramEditor = React.createClass({
       return;
     }
     this.setState({isSaving: true});
-    ProgramModel.saveProgram(
+    this.getFlux().actions.saveProgram(
       {code:code},
       program,
       function() {
@@ -90,33 +102,16 @@ var ProgramEditor = React.createClass({
   },
 
   componentDidMount: function() {
-    ProgramStore.addChangeListener(this._onChange);
-    ProgramModel.fetchPrograms();
-  },
-
-  componentWillUnmount: function() {
-    ProgramStore.removeChangeListener(this._onChange);
-  },
-
-  _getStateFromStores: function(worldId) {
-    var programModel = ProgramStore.getProgramForWorld(worldId);
-    var code = programModel ? programModel.get('code') : '';
-    return {
-      programModel: programModel,
-      programCode: code,
-      codeIsJS: code.indexOf("(") > 0,
-      numTokens: new ProgramParser(code).getNumTokens(),
-      isLoading: false
-    };
-  },
-
-  _onChange: function() {
-    this.setState(this._getStateFromStores(this.props.worldModel.id));
+    window.setTimeout(function() {
+      this.getFlux().actions.loadPrograms();
+    }.bind(this));
   },
 
   componentWillReceiveProps: function(nextProps) {
     if (nextProps.worldModel != this.props.worldModel) {
-      this.setState(this._getStateFromStores(nextProps.worldModel.id));
+      window.setTimeout(function() {
+        this.setState(this.getStateFromFlux());
+      }.bind(this));
       this.setState({isFinished: false, completedSteps: 0, runState:''});
     }
   },

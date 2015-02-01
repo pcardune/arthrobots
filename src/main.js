@@ -1,5 +1,5 @@
 /** @jsx React.DOM */
-
+var Fluxxor = require('fluxxor');
 var React = require('react');
 var Router = require('react-router');
 var Route = Router.Route;
@@ -12,6 +12,10 @@ var Link = Router.Link;
 var ReactBootstrap = require('react-bootstrap');
 var Panel = ReactBootstrap.Panel;
 var Button = ReactBootstrap.Button;
+
+var TrackStore = require('./stores/TrackStore');
+var WorldStore = require('./stores/WorldStore');
+var ProgramStore = require('./stores/ProgramStore');
 
 var LandingPage = require('./ui/pages/LandingPage');
 var LoginPage = require('./ui/pages/LoginPage');
@@ -34,7 +38,7 @@ var Empty = React.createClass({
   mixins: [State],
 
   render: function() {
-    return <RouteHandler/>;
+    return <RouteHandler {...this.props}/>;
   }
 });
 
@@ -60,7 +64,19 @@ var routes = (
   </Route>
 );
 
+var stores = {
+  TrackStore: new TrackStore(),
+  WorldStore: new WorldStore(),
+  ProgramStore: new ProgramStore()
+};
+var actions = require('./actions/Actions');
+var flux = new Fluxxor.Flux(stores, actions);
+flux.on("dispatch", function(type, payload) {
+  if (console && console.log) {
+    console.log("[Dispatch]", type, payload);
+  }
+});
 
 Router.run(routes, Router.HistoryLocation, function (Handler) {
-  React.render(<Handler/>, document.body);
+  React.render(<Handler flux={flux}/>, document.body);
 });

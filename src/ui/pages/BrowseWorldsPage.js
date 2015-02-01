@@ -7,29 +7,32 @@ var Navigation = require('react-router').Navigation;
 var React = require('react');
 var assign = require('object-assign');
 
+var FluxMixin = require('fluxxor').FluxMixin(React);
+var StoreWatchMixin = require('fluxxor').StoreWatchMixin;
+
 var LoadingBlock = require('../LoadingBlock');
 
 var TrackModel = require('../../models/TrackModel');
-var TrackStore = require('../../stores/TrackStore');
 
 var TrackBrowser = require('../TrackBrowser');
 
-var getStateFromStores = function() {
-  return {trackModels:TrackStore.getAllTracks()};
-};
-
 var BrowseWorldsPage = React.createClass({
 
-  mixins: [Navigation, State],
+  mixins: [Navigation, State, FluxMixin, StoreWatchMixin("TrackStore")],
 
   getInitialState: function() {
-    return assign(getStateFromStores(), {
+    return {
       filter: "yours"
-    });
+    };
   },
 
-  isLoading: function() {
-    return !this.state.trackModels.length;
+  getStateFromFlux: function() {
+    var store = this.getFlux().store("TrackStore");
+    return {
+      loadingTracks: store.isLoading(),
+      loadingTracksError: store.getError(),
+      trackModels: store.getAllTracks()
+    };
   },
 
   setFilter: function(filter) {
@@ -39,20 +42,11 @@ var BrowseWorldsPage = React.createClass({
   },
 
   componentDidMount: function() {
-    TrackStore.addChangeListener(this._onChange);
-    TrackModel.fetchTracks();
-  },
-
-  componentWillUnmount: function() {
-    TrackStore.removeChangeListener(this._onChange);
-  },
-
-  _onChange: function() {
-    this.setState(getStateFromStores());
+    this.getFlux().actions.loadTracksAndWorlds();
   },
 
   render: function() {
-    if (this.isLoading()) {
+    if (this.state.loadingTracks) {
       return <LoadingBlock />;
     }
 

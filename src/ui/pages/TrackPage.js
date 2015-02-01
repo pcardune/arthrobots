@@ -9,6 +9,8 @@ var OverlayTrigger = require('react-bootstrap').OverlayTrigger;
 var Tooltip = require('react-bootstrap').Tooltip;
 var React = require('react');
 var assign = require('object-assign');
+var FluxMixin = require('fluxxor').FluxMixin(React);
+var StoreWatchMixin = require('fluxxor').StoreWatchMixin;
 
 var Markdown = require('../Markdown');
 var ProgramEditor = require('../ProgramEditor');
@@ -25,20 +27,24 @@ var ProgramStore = require('../../stores/ProgramStore');
 require('./TrackPage.css');
 var TrackPage = React.createClass({
 
-  mixins: [Navigation, State],
+  mixins: [Navigation, State, FluxMixin, StoreWatchMixin("WorldStore", "TrackStore")],
 
-  _getStateFromStores: function() {
+  getStateFromFlux: function() {
+    var trackStore = this.getFlux().store("TrackStore");
+    var worldStore = this.getFlux().store("WorldStore");
+    var programStore = this.getFlux().store("ProgramStore");
     return {
-      trackModel:TrackStore.getTrack(this.getParams().trackId),
-      worldModels:WorldStore.getWorldsForTrack(this.getParams().trackId),
-      programModels:ProgramStore.getAllPrograms()
+      trackModel: trackStore.getTrack(this.getParams().trackId),
+      worldModels: worldStore.getWorldsForTrack(this.getParams().trackId),
+      programModels: programStore.getAllPrograms(),
+      isLoading: trackStore.isLoading() || worldStore.isLoading()
     }
   },
 
   getInitialState: function() {
-    return assign(this._getStateFromStores(), {
+    return {
       trackComplete: false
-    });
+    };
   },
 
   getCurrentWorld: function() {
@@ -54,24 +60,14 @@ var TrackPage = React.createClass({
   },
 
   componentDidMount: function() {
-    WorldStore.addChangeListener(this._onChange);
-    TrackStore.addChangeListener(this._onChange);
-    ProgramStore.addChangeListener(this._onChange);
-    TrackModel.fetchTracks();
-    ProgramModel.fetchPrograms();
-    WorldModel.fetchWorldsForTrack(this.getParams().trackId);
-  },
-
-  componentWillUnmount: function() {
-    WorldStore.removeChangeListener(this._onChange);
-    TrackStore.removeChangeListener(this._onChange);
-    ProgramStore.removeChangeListener(this._onChange);
+    this.getFlux().store("ProgramStore").on("change", this._onChange);
+    this.getFlux().store("WorldStore").on("change", this._onChange);
+    this.getFlux().actions.loadTracksAndWorlds();
+    this.getFlux().actions.loadPrograms();
   },
 
   _onChange: function() {
-    var state = this._getStateFromStores();
-    this.setState(state);
-
+    var state = this.getStateFromFlux();
     var transitionedToWorld = false;
     state.worldModels.every(function(world, worldIndex) {
       var worldIsFinished = false;

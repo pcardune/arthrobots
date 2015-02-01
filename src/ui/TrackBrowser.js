@@ -8,15 +8,15 @@ var React = require('react');
 
 var TrackBadge = require('./TrackBadge');
 var LoadingBlock = require('./LoadingBlock');
-
 var WorldModel = require('../models/WorldModel');
-var WorldStore = require('../stores/WorldStore');
+var FluxMixin = require('fluxxor').FluxMixin(React);
+var StoreWatchMixin = require('fluxxor').StoreWatchMixin;
 
 var WorldList = require('./WorldList');
 
 var TrackBrowser = React.createClass({
 
-  mixins: [Navigation, State],
+  mixins: [Navigation, State, FluxMixin, StoreWatchMixin("WorldStore")],
 
   getDefaultProps: function() {
     return {
@@ -25,39 +25,29 @@ var TrackBrowser = React.createClass({
     }
   },
 
-  _getStateFromStores: function() {
-    return {worldModels:WorldStore.getWorldsForTrack(this.props.track.id)}
-  },
-
-  getInitialState: function() {
-    return this._getStateFromStores();
+  getStateFromFlux: function() {
+    var store = this.getFlux().store("WorldStore");
+    return {
+      worldModels:store.getWorldsForTrack(this.props.track.id)
+    };
   },
 
   componentDidMount: function() {
-    WorldModel.fetchWorldsForTrack(this.props.track);
-    WorldStore.addChangeListener(this._onChange);
-    WorldStore.addNewWorldListener(this._onNewWorld);
+    this.getFlux().store("WorldStore").on("create_success", this._onNewWorld);
   },
 
   componentWillUnmount: function() {
-    WorldStore.removeChangeListener(this._onChange);
-    WorldStore.removeNewWorldListener(this._onNewWorld);
+    this.getFlux().store("WorldStore").removeListener("create_success", this._onNewWorld);
   },
 
   _onNewWorld: function(world) {
-    this.transitionTo('world', {worldId: world.id});
-  },
-
-  _onChange: function() {
-    this.setState(this._getStateFromStores());
+    window.setTimeout(function() {
+      this.transitionTo('world', {worldId: world.id});
+    }.bind(this));
   },
 
   handleCreateNewWorld: function() {
-    var world = new WorldModel();
-    world.set('owner', Parse.User.current());
-    world.set('name', this.refs.worldNameInput.getDOMNode().value);
-    world.set('track', this.props.track);
-    WorldModel.createNewWorld(world);
+    this.getFlux().actions.addWorld(this.refs.worldNameInput.getDOMNode().value, this.props.track.id);
   },
 
   render: function() {

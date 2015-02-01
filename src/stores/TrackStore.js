@@ -1,57 +1,61 @@
-var AppDispatcher = require('../dispatcher/AppDispatcher');
-var EventEmitter = require('events').EventEmitter;
 var Constants = require('../constants/Constants');
-var assign = require('object-assign');
-var TrackModel = require('../models/TrackModel');
+var Fluxxor = require('fluxxor');
 
 var CHANGE_EVENT = 'change';
 
-var _tracks = {};
+var TrackStore = Fluxxor.createStore({
+  initialize: function() {
+    this.loading = false;
+    this.error = null;
+    this.tracks = {};
+    this.bindActions(
+      Constants.ActionTypes.LOAD_TRACKS, this.onLoadTracks,
+      Constants.ActionTypes.LOAD_TRACKS_SUCCESS, this.onLoadTracksSuccess,
+      Constants.ActionTypes.LOAD_TRACKS_FAIL, this.onLoadTracksFail,
 
-var TrackStore = assign({}, EventEmitter.prototype, {
+      Constants.ActionTypes.LOAD_TRACKS_AND_WORLDS, this.onLoadTracks,
+      Constants.ActionTypes.LOAD_TRACKS_AND_WORLDS_SUCCESS, this.onLoadTracksSuccess,
+      Constants.ActionTypes.LOAD_TRACKS_AND_WORLDS_FAIL, this.onLoadTracksFail
+    );
+  },
+
+  onLoadTracks: function() {
+    this.loading = true;
+    this.emit(CHANGE_EVENT);
+  },
+
+  onLoadTracksSuccess: function(payload) {
+    this.loading = false;
+    this.error = null;
+    payload.tracks.forEach(function(track){
+      this.tracks[track.id] = track;
+    }.bind(this));
+    this.emit(CHANGE_EVENT);
+  },
+
+  onLoadTracksFail: function(payload) {
+    this.loading = false;
+    this.error = payload.error;
+    this.emit(CHANGE_EVENT);
+  },
+
+  isLoading: function() { return this.loading; },
+
+  getError: function() { return this.error; },
 
   getAllTracks: function() {
     var tracks = [];
-    for (var id in _tracks) {
-      var track = _tracks[id]
+    for (var id in this.tracks) {
+      var track = this.tracks[id]
       tracks.push(track);
     }
     tracks.sort(function (a, b) { return a.get('name') < b.get('name') ? -1 : 1; });
     return tracks;
   },
 
-  getTrack: function(trackId) {
-    return _tracks[trackId];
-  },
-
-  emitChange: function() {
-    this.emit(CHANGE_EVENT);
-  },
-
-  addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback);
-  },
-
-  removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
-  },
-
-  dispatcherIndex: AppDispatcher.register(function(payload) {
-    var action = payload.action;
-    var text;
-
-    switch(action.type) {
-      case Constants.ActionTypes.RECEIVE_TRACKS:
-        action.tracks.forEach(function(track) {
-          _tracks[track.id] = track;
-        });
-        TrackStore.emitChange();
-        break;
-    }
-
-    return true; // No errors. Needed by promise in Dispatcher.
-  })
-
+  getTrack: function(id) {
+    return this.tracks[id];
+  }
 });
 
 module.exports = TrackStore;

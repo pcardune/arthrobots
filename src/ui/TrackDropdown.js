@@ -2,10 +2,8 @@
 var Button = require('react-bootstrap').Button;
 var Input = require('react-bootstrap').Input;
 var React = require('react');
-
-var WorldModel = require('../models/WorldModel');
-var TrackModel = require('../models/TrackModel');
-var TrackStore = require('../stores/TrackStore');
+var FluxMixin = require('fluxxor').FluxMixin(React);
+var StoreWatchMixin = require('fluxxor').StoreWatchMixin;
 
 var getStateFromStores = function() {
   return {trackModels:TrackStore.getAllTracks()};
@@ -13,21 +11,19 @@ var getStateFromStores = function() {
 
 var TrackDropdown = React.createClass({
 
-  getInitialState: function() {
-    return getStateFromStores();
+  mixins: [FluxMixin, StoreWatchMixin("TrackStore")],
+
+  getStateFromFlux: function() {
+    var store = this.getFlux().store("TrackStore");
+    return {
+      trackModels: store.getAllTracks()
+    };
   },
 
   componentDidMount: function() {
-    TrackStore.addChangeListener(this._onChange);
-    TrackModel.fetchTracks();
-  },
-
-  componentWillUnmount: function() {
-    TrackStore.removeChangeListener(this._onChange);
-  },
-
-  _onChange: function() {
-    this.setState(getStateFromStores());
+    window.setTimeout(function() {
+      this.getFlux().actions.loadTracks();
+    }.bind(this));
   },
 
   getValue: function() {

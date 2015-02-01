@@ -10,6 +10,8 @@ var Navigation = require('react-router').Navigation;
 var State = require('react-router').State;
 var React = require('react');
 var assign = require('object-assign');
+var FluxMixin = require('fluxxor').FluxMixin(React);
+var StoreWatchMixin = require('fluxxor').StoreWatchMixin;
 
 var Markdown = require('../Markdown');
 var CodeEditor = require('../CodeEditor');
@@ -22,17 +24,15 @@ var WorldCanvas = require('../WorldCanvas');
 require('./WorldDetailsEditorPage.css');
 var WorldDetailsEditorPage = React.createClass({
 
-  mixins: [Navigation, State],
+  mixins: [Navigation, State, FluxMixin, StoreWatchMixin("WorldStore")],
 
   getDefaultProps: function() {
-    return {
-      world: null,
-      onWorldChange: function() {}
-    };
+    return {world: null};
   },
 
-  getStateFromStores: function(worldId) {
-    var worldModel = WorldStore.getWorld(worldId || this.props.world.id);
+  getStateFromFlux: function() {
+    var store = this.getFlux().store("WorldStore");
+    var worldModel = store.getWorld(this.props.world.id);
     return {
       worldModel:worldModel,
       worldName:worldModel.get('name'),
@@ -40,38 +40,26 @@ var WorldDetailsEditorPage = React.createClass({
       worldPublic:worldModel.get('public'),
       worldTrack:worldModel.get('track'),
       worldOrder:worldModel.get('order'),
+      saving: store.isLoading()
     };
   },
 
   getInitialState: function() {
-    return assign(
-      this.getStateFromStores(),
-      {needsSave: false}
-    );
+    return {needsSave: false};
   },
 
   componentDidMount: function() {
-    WorldStore.addDestroyWorldListener(this._onDestroy);
-    WorldStore.addChangeListener(this._onChange);
+    this.getFlux().store("WorldStore").on('destroy_success', this._onDestroy);
   },
 
   componentWillUnmount: function() {
-    WorldStore.removeDestroyWorldListener(this._onDestroy);
-    WorldStore.removeChangeListener(this._onChange);
+    this.getFlux().store("WorldStore").removeListener('destroy_success', this._onDestroy);
   },
 
   _onDestroy: function(world) {
-    this.transitionTo('worlds');
-  },
-
-  _onChange: function() {
-    this.setState({saving:false});
-  },
-
-  componentWillReceiveProps: function(nextProps) {
-    if (this.props.world !== nextProps.world) {
-      this.setState(this.getStateFromStores(nextProps.world.id));
-    }
+    window.setTimeout(function() {
+      this.transitionTo('worlds');
+    }.bind(this));
   },
 
   handleChange: function() {
@@ -107,8 +95,7 @@ var WorldDetailsEditorPage = React.createClass({
   },
 
   handleSave: function() {
-    this.setState({saving: true});
-    WorldModel.saveWorld(
+    this.getFlux().actions.saveWorld(
       {
         name: this.refs.nameInput.getDOMNode().value,
         description: this.refs.descriptionInput.getDOMNode().value,
@@ -121,7 +108,7 @@ var WorldDetailsEditorPage = React.createClass({
   },
 
   handleDeleteWorld: function() {
-    WorldModel.destroyWorld(this.state.worldModel);
+    this.getFlux().actions.destroyWorld(this.state.worldModel);
   },
 
   render: function() {

@@ -56,7 +56,7 @@ var ArthrobotApp = React.createClass({
 
         <div className="row">
           <div className="col-md-12 app-content">
-            <RouteHandler/>
+            <RouteHandler {...this.props}/>
           </div>
         </div>
         <div className="row footer">

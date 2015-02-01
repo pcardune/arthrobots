@@ -3,67 +3,75 @@ var EventEmitter = require('events').EventEmitter;
 var Constants = require('../constants/Constants');
 var assign = require('object-assign');
 var ProgramModel = require('../models/ProgramModel');
+var Fluxxor = require('fluxxor');
 
 var CHANGE_EVENT = 'change';
 
-var _programs = {};
+var ProgramStore = Fluxxor.createStore({
+  initialize: function() {
+    this.loading = false;
+    this.error = null;
+    this.programs = {};
+    this.bindActions(
+      Constants.ActionTypes.LOAD_PROGRAMS, this.onLoadPrograms,
+      Constants.ActionTypes.LOAD_PROGRAMS_SUCCESS, this.onLoadProgramsSuccess,
+      Constants.ActionTypes.LOAD_PROGRAMS_FAIL, this.onLoadProgramsFail,
 
-var ProgramStore = assign({}, EventEmitter.prototype, {
+      Constants.ActionTypes.SAVE_PROGRAM, this.onLoadPrograms,
+      Constants.ActionTypes.SAVE_PROGRAM_SUCCESS, this.onLoadProgramsSuccess,
+      Constants.ActionTypes.SAVE_PROGRAM_FAIL, this.onLoadProgramsFail
+    );
+  },
+
+  onLoadPrograms: function() {
+    this.loading = true;
+    this.emit(CHANGE_EVENT);
+  },
+
+  onLoadProgramsSuccess: function(payload) {
+    this.loading = false;
+    this.error = null;
+    payload.programs.forEach(function(program){
+      this.programs[program.id] = program;
+    }.bind(this));
+    this.emit(CHANGE_EVENT);
+  },
+
+  onLoadProgramsFail: function(payload) {
+    this.loading = false;
+    this.error = payload.error;
+    this.emit(CHANGE_EVENT);
+  },
+
+  isLoading: function() { return this.loading; },
+
+  getError: function() { return this.error; },
 
   getAllPrograms: function() {
     var programs = [];
-    for (var id in _programs) {
-      var program = _programs[id]
+    for (var id in this.programs) {
+      var program = this.programs[id]
       programs.push(program);
     }
-    programs.sort(function (a, b) { return a.get('name') < b.get('name') ? -1 : 1; });
+    programs.sort(function (a, b) { return a.createdAt < b.createdAt ? -1 : 1; });
     return programs;
   },
 
-  getProgram: function(programId) {
-    return _programs[programId];
+  getProgram: function(id) {
+    return this.programs[id];
   },
 
   getProgramForWorld: function(worldId) {
     programs = []
-    for (var id in _programs) {
-      var program = _programs[id];
+    for (var id in this.programs) {
+      var program = this.programs[id];
       if (program.get('world') && program.get('world').id == worldId) {
         programs.push(program);
       }
     }
     programs.sort(function(a, b) { return a.createdAt - b.createdAt; });
     return programs[0] || null;
-  },
-
-  emitChange: function() {
-    this.emit(CHANGE_EVENT);
-  },
-
-  addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback);
-  },
-
-  removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
-  },
-
-  dispatcherIndex: AppDispatcher.register(function(payload) {
-    var action = payload.action;
-    var text;
-
-    switch(action.type) {
-      case Constants.ActionTypes.RECEIVE_PROGRAMS:
-        action.programs.forEach(function(program) {
-          _programs[program.id] = program;
-        });
-        ProgramStore.emitChange();
-        break;
-    }
-
-    return true; // No errors. Needed by promise in Dispatcher.
-  })
-
+  }
 });
 
 module.exports = ProgramStore;
