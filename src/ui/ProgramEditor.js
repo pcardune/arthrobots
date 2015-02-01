@@ -45,7 +45,8 @@ var ProgramEditor = React.createClass({
   getDefaultProps: function() {
     return {
       worldModel: null,
-      onFinished: function(){}
+      onFinished: function(){},
+      onContinue: function(programModel){}
     };
   },
 
@@ -112,6 +113,10 @@ var ProgramEditor = React.createClass({
     }
   },
 
+  handleContinue: function() {
+    this.props.onContinue(this.state.programModel);
+  },
+
   render: function() {
     return (
       <CodeRunner
@@ -120,7 +125,8 @@ var ProgramEditor = React.createClass({
         isSaving={this.state.isSaving}
         initialCode={this.state.programModel ? this.state.programModel.get('code') : ''}
         onFinished={this.handleFinished}
-        onSaveAndRun={this.handleSaveAndRun}/>
+        onSaveAndRun={this.handleSaveAndRun}
+        onContinue={this.handleContinue}/>
     );
   }
 });
