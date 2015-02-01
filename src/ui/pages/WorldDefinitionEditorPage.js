@@ -69,10 +69,8 @@ var WorldDefinitionEditorPage = React.createClass({
     var worldStepDefinitions = this.state.worldModel.getSteps();
     worldStepDefinitions.push(worldStepDefinitions[worldStepDefinitions.length-1]);
     this.state.worldModel.setSteps(worldStepDefinitions);
-    this.setState({
-      currentStep: this.state.currentStep+1
-    });
-    this.handleSave();
+    this.getFlux().actions.saveWorldLocal({}, this.state.worldModel);
+    this.setState({currentStep: this.state.currentStep+1});
   },
 
   handleRemoveStep: function(index) {
@@ -82,10 +80,8 @@ var WorldDefinitionEditorPage = React.createClass({
     var worldStepDefinitions = this.state.worldModel.getSteps();
     worldStepDefinitions.splice(index, 1);
     this.state.worldModel.setSteps(worldStepDefinitions);
-    this.setState({
-      currentStep: this.state.currentStep - 1
-    });
-    this.handleSave();
+    this.getFlux().actions.saveWorldLocal({}, this.state.worldModel);
+    this.setState({currentStep: this.state.currentStep - 1});
   },
 
   handleNextStep: function() {
@@ -120,7 +116,7 @@ var WorldDefinitionEditorPage = React.createClass({
                 <Button className="pull-left" disabled={this.state.currentStep <= 0} onClick={this.handlePrevStep}>
                   <Glyphicon glyph="chevron-left" />
                 </Button>
-                Step {index}
+                Checkpoint {index}
                 <Button
                   className="pull-right"
                   disabled={this.state.currentStep >= this.state.worldModel.getSteps().length - 1}
@@ -128,16 +124,18 @@ var WorldDefinitionEditorPage = React.createClass({
                   <Glyphicon glyph="chevron-right" />
                 </Button>
               </h6>
-              {this.state.saving ? "Saving..." : null}
-              <Glyphicon onClick={this.handleRemoveStep.bind(this, index)} glyph="remove"/>
+
               <CodeEditor onChange={this.handleChangeStep.bind(this, index)} className="form-control" value={definition}/>
-              <div className="text-right">
-                <Button onClick={this.handleAddStep}>Add Step</Button>
+              <div className="buttons text-right">
+                <Button onClick={this.handleRemoveStep.bind(this, index)}>Remove</Button>
+                {' '}
+                <Button onClick={this.handleAddStep}>Add</Button>
+                {' '}
                 <Button
                   onClick={this.handleSave}
                   disabled={!this.state.worldModel.needsSave}
                   bsStyle={this.state.worldModel.needsSave ? "primary" : "default"}>
-                  Save
+                  {this.state.saving ? "Saving..." : "Save"}
                 </Button>
               </div>
             </form>

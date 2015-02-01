@@ -13,3 +13,7 @@
   text-align: center;
   line-height: 40px;
 }
+
+.WorldDefinitionEditorPage form .buttons {
+  margin-top: 5px;
+}
