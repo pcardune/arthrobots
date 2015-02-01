@@ -11,7 +11,11 @@ var UserStore = Fluxxor.createStore({
     this.bindActions(
       Constants.ActionTypes.LOAD_USERS, this.onLoadUsers,
       Constants.ActionTypes.LOAD_USERS_SUCCESS, this.onLoadUsersSuccess,
-      Constants.ActionTypes.LOAD_USERS_FAIL, this.onLoadUsersFail
+      Constants.ActionTypes.LOAD_USERS_FAIL, this.onLoadUsersFail,
+
+      Constants.ActionTypes.LOAD_LEADERBOARD, this.onLoadUsers,
+      Constants.ActionTypes.LOAD_LEADERBOARD_SUCCESS, this.onLoadUsersSuccess,
+      Constants.ActionTypes.LOAD_LEADERBOARD_FAIL, this.onLoadUsersFail
     );
   },
 
@@ -41,6 +45,17 @@ var UserStore = Fluxxor.createStore({
 
   getUser: function(id) {
     return this.users[id];
+  },
+
+  getLeaderboard: function() {
+    var users = [];
+    for (var id in this.users) {
+      users.push(this.users[id]);
+    }
+    users.sort(function(a, b) {
+      return b.get('programsFinished') - a.get('programsFinished');
+    });
+    return users.slice(0, 20);
   }
 });
 

@@ -37,7 +37,11 @@ var Constants = {
 
     LOAD_USERS: null,
     LOAD_USERS_SUCCESS: null,
-    LOAD_USERS_FAIL: null
+    LOAD_USERS_FAIL: null,
+
+    LOAD_LEADERBOARD: null,
+    LOAD_LEADERBOARD_SUCCESS: null,
+    LOAD_LEADERBOARD_FAIL: null
   })
 };
 

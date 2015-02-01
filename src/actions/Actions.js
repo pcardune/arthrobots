@@ -150,5 +150,20 @@ module.exports = {
     }
     world.needsSave = true;
     this.dispatch(Constants.ActionTypes.SAVE_WORLD_LOCAL, {world:world});
+  },
+
+  loadLeaderboard: function() {
+    this.dispatch(Constants.ActionTypes.LOAD_LEADERBOARD);
+    var query = new Parse.Query(Parse.User);
+    query.descending("programsFinished");
+    query.limit(20);
+    query.find({
+      success: function(users) {
+        this.dispatch(Constants.ActionTypes.LOAD_LEADERBOARD_SUCCESS, {users:users});
+      }.bind(this),
+      error: function(error) {
+        this.dispatch(Constants.ActionTypes.LOAD_LEADERBOARD_FAIL, {error:error});
+      }.bind(this)
+    });
   }
 };

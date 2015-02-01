@@ -4,10 +4,13 @@ var Link = require('react-router').Link;
 var RouteHandler = require('react-router').RouteHandler;
 var React = require('react');
 var gravatar = require('gravatar');
+var FluxMixin = require('fluxxor').FluxMixin(React);
+var StoreWatchMixin = require('fluxxor').StoreWatchMixin;
 
 var Navbar = require('react-bootstrap').Navbar;
 var Nav = require('react-bootstrap').Nav;
 var NavItem = require('react-bootstrap').NavItem;
+
 var LoadingBlock = require('../LoadingBlock');
 
 var FBUtils = require('../../FBUtils');
@@ -15,27 +18,18 @@ var FBUtils = require('../../FBUtils');
 require('./LeaderboardPage.css');
 var LeaderboardPage = React.createClass({
 
-  getInitialState: function() {
+  mixins: [FluxMixin, StoreWatchMixin("UserStore")],
+
+  getStateFromFlux: function() {
+    var store = this.getFlux().store("UserStore");
     return {
-      isLoading: true,
-      leaderboard: []
+      leaderboard: store.getLeaderboard(),
+      isLoading: store.isLoading()
     };
   },
 
-  loadLeaderboard: function() {
-    this.setState({isLoading: true});
-    var query = new Parse.Query(Parse.User);
-    query.descending("programsFinished");
-    query.limit(20);
-    query.find({
-      success: function(users) {
-        this.setState({isLoading:false, leaderboard:users});
-      }.bind(this)
-    });
-  },
-
   componentDidMount: function() {
-    this.loadLeaderboard();
+    this.getFlux().actions.loadLeaderboard();
   },
 
   render: function() {
