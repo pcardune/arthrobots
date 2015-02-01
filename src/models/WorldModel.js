@@ -2,8 +2,6 @@ var ProgramModel = require('./ProgramModel');
 var TrackModel = require('./TrackModel');
 var World = require('../core/World');
 var WorldParser = require('../core/WorldParser');
-var ServerActionCreators = require('../actions/ServerActionCreators');
-var assign = require('object-assign');
 
 var WorldModel = Parse.Object.extend("WorldModel", {
   loadCurrentUserPrograms: function(success) {
