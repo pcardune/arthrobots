@@ -139,6 +139,7 @@ module.exports = {
 
   saveWorld: function(data, world, callback) {
     this.dispatch(Constants.ActionTypes.SAVE_WORLD);
+    world.needsSave = false;
     world.save(data, {
       success: function(world) {
         this.dispatch(Constants.ActionTypes.SAVE_WORLD_SUCCESS, {worlds:[world]});
@@ -148,5 +149,15 @@ module.exports = {
         this.dispatch(Constants.ActionTypes.SAVE_WORLD_FAIL, {error:error});
       }.bind(this)
     });
+  },
+
+  saveWorldLocal: function(data, world) {
+    for (var key in data) {
+      if (data[key] !== world.get(key)) {
+        world.set(key, data[key]);
+      }
+    }
+    world.needsSave = true;
+    this.dispatch(Constants.ActionTypes.SAVE_WORLD_LOCAL, {world:world});
   }
 };

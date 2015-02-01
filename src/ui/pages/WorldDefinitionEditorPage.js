@@ -36,9 +36,7 @@ var WorldDefinitionEditorPage = React.createClass({
     return {
       worldModel: worldModel,
       worldSolution: worldModel.get('solution'),
-      worldStepDefinitions: worldModel.getSteps(),
-      saving: store.isLoading(),
-      needsSave: false
+      saving: store.isLoading()
     };
   },
 
@@ -48,29 +46,15 @@ var WorldDefinitionEditorPage = React.createClass({
     };
   },
 
-  handleChange: function() {
-    var modelSteps = this.state.worldModel.getSteps();
-    var needsSave = modelSteps.length !== this.state.worldStepDefinitions.length;
-    if (!needsSave) {
-      this.state.worldStepDefinitions.forEach(function(stepDefinition, index) {
-        if (stepDefinition !== modelSteps[index]) {
-          needsSave = true;
-        }
-      });
-    }
-
-    this.setState({needsSave: needsSave});
-  },
-
   handleChangeStep: function(index, event) {
-    this.state.worldStepDefinitions[index] = event.target.value;
-    this.setState({worldStepDefinitions:this.state.worldStepDefinitions});
-    this.handleChange();
+    var stepDefinitions = this.state.worldModel.getSteps();
+    stepDefinitions[index] = event.target.value;
+    this.state.worldModel.setSteps(stepDefinitions);
+    this.getFlux().actions.saveWorldLocal({}, this.state.worldModel);
   },
 
   handleSave: function() {
-    this.setState({saving: true});
-    this.state.worldModel.setSteps(this.state.worldStepDefinitions);
+    this.getFlux().actions.saveWorld({}, this.state.worldModel);
   },
 
   handleSaveAndRun: function(callback) {
@@ -82,13 +66,12 @@ var WorldDefinitionEditorPage = React.createClass({
   },
 
   handleAddStep: function() {
-    var worldStepDefinitions = this.state.worldStepDefinitions;
+    var worldStepDefinitions = this.state.worldModel.getSteps();
     worldStepDefinitions.push(worldStepDefinitions[worldStepDefinitions.length-1]);
+    this.state.worldModel.setSteps(worldStepDefinitions);
     this.setState({
-      worldStepDefinitions: worldStepDefinitions,
       currentStep: this.state.currentStep+1
     });
-    this.handleChange();
     this.handleSave();
   },
 
@@ -96,18 +79,17 @@ var WorldDefinitionEditorPage = React.createClass({
     if (index <= 0) {
       return;
     }
-    var worldStepDefinitions = this.state.worldStepDefinitions;
+    var worldStepDefinitions = this.state.worldModel.getSteps();
     worldStepDefinitions.splice(index, 1);
+    this.state.worldModel.setSteps(worldStepDefinitions);
     this.setState({
-      worldStepDefinitions:worldStepDefinitions,
       currentStep: this.state.currentStep - 1
     });
-    this.handleChange();
     this.handleSave();
   },
 
   handleNextStep: function() {
-    if (this.state.currentStep < this.state.worldStepDefinitions.length) {
+    if (this.state.currentStep < this.state.worldModel.getSteps().length) {
       this.setState({
         currentStep: this.state.currentStep + 1
       });
@@ -128,7 +110,7 @@ var WorldDefinitionEditorPage = React.createClass({
     }
 
     var index = this.state.currentStep;
-    var definition = this.state.worldStepDefinitions[this.state.currentStep];
+    var definition = this.state.worldModel.getSteps()[this.state.currentStep];
     return (
       <div className="WorldDefinitionEditorPage">
         <div className="row">
@@ -141,7 +123,7 @@ var WorldDefinitionEditorPage = React.createClass({
                 Step {index}
                 <Button
                   className="pull-right"
-                  disabled={this.state.currentStep >= this.state.worldStepDefinitions.length - 1}
+                  disabled={this.state.currentStep >= this.state.worldModel.getSteps().length - 1}
                   onClick={this.handleNextStep}>
                   <Glyphicon glyph="chevron-right" />
                 </Button>
@@ -151,7 +133,12 @@ var WorldDefinitionEditorPage = React.createClass({
               <CodeEditor onChange={this.handleChangeStep.bind(this, index)} className="form-control" value={definition}/>
               <div className="text-right">
                 <Button onClick={this.handleAddStep}>Add Step</Button>
-                <Button onClick={this.handleSave} disabled={!this.state.needsSave} bsStyle={this.state.needsSave ? "primary" : "default"}>Save</Button>
+                <Button
+                  onClick={this.handleSave}
+                  disabled={!this.state.worldModel.needsSave}
+                  bsStyle={this.state.worldModel.needsSave ? "primary" : "default"}>
+                  Save
+                </Button>
               </div>
             </form>
           </div>

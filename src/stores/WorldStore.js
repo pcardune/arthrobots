@@ -30,8 +30,14 @@ var WorldStore = Fluxxor.createStore({
 
       Constants.ActionTypes.SAVE_WORLD, this.onLoadWorlds,
       Constants.ActionTypes.SAVE_WORLD_SUCCESS, this.onLoadWorldsSuccess,
-      Constants.ActionTypes.SAVE_WORLD_FAIL, this.onLoadWorldsFail
+      Constants.ActionTypes.SAVE_WORLD_FAIL, this.onLoadWorldsFail,
+      Constants.ActionTypes.SAVE_WORLD_LOCAL, this.onSaveWorldLocal
     );
+  },
+
+  onSaveWorldLocal: function(payload) {
+    this.worlds[payload.world.id] = payload.world;
+    this.emit(CHANGE_EVENT);
   },
 
   onLoadWorlds: function() {

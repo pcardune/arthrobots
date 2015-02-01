@@ -37,7 +37,8 @@ var Constants = {
 
     SAVE_WORLD: null,
     SAVE_WORLD_SUCCESS: null,
-    SAVE_WORLD_FAIL: null
+    SAVE_WORLD_FAIL: null,
+    SAVE_WORLD_LOCAL: null
   })
 };
 
