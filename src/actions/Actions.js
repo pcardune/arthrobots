@@ -137,11 +137,12 @@ module.exports = {
     });
   },
 
-  saveWorld: function(data, world) {
+  saveWorld: function(data, world, callback) {
     this.dispatch(Constants.ActionTypes.SAVE_WORLD);
     world.save(data, {
       success: function(world) {
         this.dispatch(Constants.ActionTypes.SAVE_WORLD_SUCCESS, {worlds:[world]});
+        callback && callback();
       }.bind(this),
       error: function(world, error) {
         this.dispatch(Constants.ActionTypes.SAVE_WORLD_FAIL, {error:error});

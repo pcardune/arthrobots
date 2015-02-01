@@ -49,25 +49,17 @@ var WorldDefinitionEditorPage = React.createClass({
   },
 
   handleChange: function() {
-    var solution = this.refs.solutionInput.getValue();
-    var needsSave = solution != this.state.worldModel.get('solution');
-
+    var modelSteps = this.state.worldModel.getSteps();
+    var needsSave = modelSteps.length !== this.state.worldStepDefinitions.length;
     if (!needsSave) {
-      var modelSteps = this.state.worldModel.getSteps();
-      needsSave = modelSteps.length !== this.state.worldStepDefinitions.length;
-      if (!needsSave) {
-        this.state.worldStepDefinitions.forEach(function(stepDefinition, index) {
-          if (stepDefinition !== modelSteps[index]) {
-            needsSave = true;
-          }
-        });
-      }
+      this.state.worldStepDefinitions.forEach(function(stepDefinition, index) {
+        if (stepDefinition !== modelSteps[index]) {
+          needsSave = true;
+        }
+      });
     }
 
-    this.setState({
-      worldSolution:solution,
-      needsSave: needsSave
-    })
+    this.setState({needsSave: needsSave});
   },
 
   handleChangeStep: function(index, event) {
@@ -79,9 +71,13 @@ var WorldDefinitionEditorPage = React.createClass({
   handleSave: function() {
     this.setState({saving: true});
     this.state.worldModel.setSteps(this.state.worldStepDefinitions);
+  },
+
+  handleSaveAndRun: function(callback) {
     this.getFlux().actions.saveWorld(
-      {solution: this.refs.solutionInput.getValue()},
-      this.state.worldModel
+      {solution: this.refs.codeRunner.state.programCode},
+      this.state.worldModel,
+      callback
     );
   },
 
@@ -93,18 +89,21 @@ var WorldDefinitionEditorPage = React.createClass({
       currentStep: this.state.currentStep+1
     });
     this.handleChange();
+    this.handleSave();
   },
 
   handleRemoveStep: function(index) {
-    if (index > 0) {
-      var worldStepDefinitions = this.state.worldStepDefinitions;
-      worldStepDefinitions.splice(index, 1);
-      this.setState({
-        worldStepDefinitions:worldStepDefinitions,
-        currentStep: this.state.currentStep - 1
-      });
-      this.handleChange();
+    if (index <= 0) {
+      return;
     }
+    var worldStepDefinitions = this.state.worldStepDefinitions;
+    worldStepDefinitions.splice(index, 1);
+    this.setState({
+      worldStepDefinitions:worldStepDefinitions,
+      currentStep: this.state.currentStep - 1
+    });
+    this.handleChange();
+    this.handleSave();
   },
 
   handleNextStep: function() {
@@ -151,16 +150,12 @@ var WorldDefinitionEditorPage = React.createClass({
           </div>
           <div className="worldPane col-md-8">
             <CodeRunner
+              ref="codeRunner"
               world={this.state.worldModel}
-              initialCode={this.state.worldSolution}/>
-            <div key={index} className="row">
-              <div className="col-md-6">
-
-              </div>
-              <div className="col-md-6">
-                <WorldCanvas worldDefinition={definition} />
-              </div>
-            </div>
+              initialCode={this.state.worldSolution}
+              showStep={this.state.currentStep}
+              onSaveAndRun={this.handleSaveAndRun}
+              isSaving={this.state.saving}/>
           </div>
         </div>
       </div>

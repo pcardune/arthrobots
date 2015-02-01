@@ -44,9 +44,10 @@ var CodeRunner = React.createClass({
       world: null,
       initialCode: '',
       onFinished: function(){},
-      onSaveAndRun: function(){},
+      onSaveAndRun: function(callback){ callback() },
       onContinue: function(){},
-      isSaving: false
+      isSaving: false,
+      showStep: 0
     };
   },
 
@@ -284,12 +285,16 @@ var CodeRunner = React.createClass({
     if (this.props.world && this.props.world.get('steps')) {
       var completedSteps = [];
       for (var i = 0; i < this.props.world.get('steps').length; i++) {
+        var active = i < this.state.completedSteps;
+        if (this.props.showStep > 0 && i == this.props.showStep - 1) {
+          active = true;
+        }
         completedSteps.push(
           <div
             key={i}
             onMouseOver={this.handleMouseoverStep.bind(this, i)}
             onMouseOut={this.handleMouseoutStep.bind(this, i)}
-            className={"badge "+(i<this.state.completedSteps ? "active" : "")}>
+            className={"badge "+(active ? "active" : "")}>
             {i+1}
           </div>
         );
@@ -347,8 +352,11 @@ var CodeRunner = React.createClass({
         </div>
       </Modal>
     );
-
-    var worldCanvas = <WorldCanvas ref="worldCanvas" worldDefinition={this.props.world.get('definition')} />;
+    var definition = this.props.world.get('definition');
+    if (this.props.showStep > 0) {
+      definition = this.props.world.get('steps')[this.props.showStep - 1];
+    }
+    var worldCanvas = <WorldCanvas ref="worldCanvas" worldDefinition={definition} />;
     if (this.state.showCheckpointAtIndex != null) {
       worldCanvas = <WorldCanvas ref="stepCanvas" worldDefinition={this.props.world.get('steps')[this.state.showCheckpointAtIndex]} />;
     }
