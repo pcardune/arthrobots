@@ -134,13 +134,20 @@ var WorldDefinitionEditorPage = React.createClass({
         <div className="row">
           <div className="col-md-4">
             <form>
-              <Button disabled={this.state.currentStep <= 0} onClick={this.handlePrevStep}>Prev Step</Button>
-              <Button disabled={this.state.currentStep >= this.state.worldStepDefinitions.length - 1} onClick={this.handleNextStep}>Next Step</Button>
-              {this.state.saving ? "Saving..." : null}
               <h6>
+                <Button className="pull-left" disabled={this.state.currentStep <= 0} onClick={this.handlePrevStep}>
+                  <Glyphicon glyph="chevron-left" />
+                </Button>
                 Step {index}
-                <Glyphicon onClick={this.handleRemoveStep.bind(this, index)} className="pull-right" glyph="remove"/>
+                <Button
+                  className="pull-right"
+                  disabled={this.state.currentStep >= this.state.worldStepDefinitions.length - 1}
+                  onClick={this.handleNextStep}>
+                  <Glyphicon glyph="chevron-right" />
+                </Button>
               </h6>
+              {this.state.saving ? "Saving..." : null}
+              <Glyphicon onClick={this.handleRemoveStep.bind(this, index)} glyph="remove"/>
               <CodeEditor onChange={this.handleChangeStep.bind(this, index)} className="form-control" value={definition}/>
               <div className="text-right">
                 <Button onClick={this.handleAddStep}>Add Step</Button>
@@ -149,6 +156,7 @@ var WorldDefinitionEditorPage = React.createClass({
             </form>
           </div>
           <div className="worldPane col-md-8">
+            <h3>Edit Demo Solution</h3>
             <CodeRunner
               ref="codeRunner"
               world={this.state.worldModel}

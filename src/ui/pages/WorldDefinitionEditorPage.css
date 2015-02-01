@@ -6,3 +6,10 @@
 .WorldDefinitionEditorPage .glyphicon-remove {
   cursor: pointer;
 }
+
+.WorldDefinitionEditorPage form h6 {
+  font-size: 20px;
+  margin: 0;
+  text-align: center;
+  line-height: 40px;
+}
