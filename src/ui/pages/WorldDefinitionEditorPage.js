@@ -16,8 +16,8 @@ var StoreWatchMixin = require('fluxxor').StoreWatchMixin;
 var Markdown = require('../Markdown');
 var CodeEditor = require('../CodeEditor');
 var TrackDropdown = require('../TrackDropdown');
-
 var WorldCanvas = require('../WorldCanvas');
+var CodeRunner = require('../CodeRunner');
 
 require('./WorldDefinitionEditorPage.css');
 var WorldDefinitionEditorPage = React.createClass({
@@ -46,10 +46,6 @@ var WorldDefinitionEditorPage = React.createClass({
     return {
       currentStep: 0
     };
-  },
-
-  _onChange: function() {
-    this.setState({needsSave:false});
   },
 
   handleChange: function() {
@@ -93,7 +89,7 @@ var WorldDefinitionEditorPage = React.createClass({
     var worldStepDefinitions = this.state.worldStepDefinitions;
     worldStepDefinitions.push(worldStepDefinitions[worldStepDefinitions.length-1]);
     this.setState({
-      worldStepDefinitions:worldStepDefinitions,
+      worldStepDefinitions: worldStepDefinitions,
       currentStep: this.state.currentStep+1
     });
     this.handleChange();
@@ -139,32 +135,32 @@ var WorldDefinitionEditorPage = React.createClass({
         <div className="row">
           <div className="col-md-4">
             <form>
+              <Button disabled={this.state.currentStep <= 0} onClick={this.handlePrevStep}>Prev Step</Button>
+              <Button disabled={this.state.currentStep >= this.state.worldStepDefinitions.length - 1} onClick={this.handleNextStep}>Next Step</Button>
               {this.state.saving ? "Saving..." : null}
-              <div className="form-group">
-                <label>Reference Solution</label>
-                <CodeEditor ref="solutionInput" onChange={this.handleChange} defaultValue={this.state.worldSolution}/>
-              </div>
+              <h6>
+                Step {index}
+                <Glyphicon onClick={this.handleRemoveStep.bind(this, index)} className="pull-right" glyph="remove"/>
+              </h6>
+              <CodeEditor onChange={this.handleChangeStep.bind(this, index)} className="form-control" value={definition}/>
               <div className="text-right">
+                <Button onClick={this.handleAddStep}>Add Step</Button>
                 <Button onClick={this.handleSave} disabled={!this.state.needsSave} bsStyle={this.state.needsSave ? "primary" : "default"}>Save</Button>
               </div>
             </form>
           </div>
           <div className="worldPane col-md-8">
-            <Button disabled={this.state.currentStep <= 0} onClick={this.handlePrevStep}>Prev Step</Button>
-            <Button disabled={this.state.currentStep >= this.state.worldStepDefinitions.length - 1} onClick={this.handleNextStep}>Next Step</Button>
+            <CodeRunner
+              world={this.state.worldModel}
+              initialCode={this.state.worldSolution}/>
             <div key={index} className="row">
               <div className="col-md-6">
-                <h6>
-                  Step {index}
-                  <Glyphicon onClick={this.handleRemoveStep.bind(this, index)} className="pull-right" glyph="remove"/>
-                </h6>
-                <CodeEditor onChange={this.handleChangeStep.bind(this, index)} className="form-control" value={definition}/>
+
               </div>
               <div className="col-md-6">
                 <WorldCanvas worldDefinition={definition} />
               </div>
             </div>
-            <Button onClick={this.handleAddStep}>Add Step</Button>
           </div>
         </div>
       </div>

@@ -36,8 +36,8 @@ var Runner = require('../core/Runner');
 var WorldParser = require('../core/WorldParser');
 var World = require('../core/World');
 
-// require('./ProgramEditor.css')
-var ProgramEditor = React.createClass({
+require('./ProgramEditor.css');
+var CodeRunner = React.createClass({
 
   getDefaultProps: function() {
     return {
@@ -433,4 +433,4 @@ var ProgramEditor = React.createClass({
   }
 });
 
-module.exports = ProgramEditor;
+module.exports = CodeRunner;
