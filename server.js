@@ -1,11 +1,12 @@
 var express = require('express');
+var path = require('path');
 var rewrite = require("connect-url-rewrite");
 var app = express();
 
 app.set('port', (process.env.PORT || 8000));
 app.use(
   rewrite(["^\/[^\.]+$ /index.html"]),
-  express.static(__dirname)
+  express.static(path.join(__dirname, 'build'))
 );
 
 app.get('/', function(request, response) {

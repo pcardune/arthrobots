@@ -1,4 +1,13 @@
+var path = require('path');
+
 module.exports = {
+  cache: true,
+  entry: './src/main.js',
+  output: {
+    path: path.join(__dirname, 'build'),
+    publicPath: 'build/',
+    filename: 'bundle.js'
+  },
   module: {
     loaders: [
       { test: /\.css/, loader: "style-loader!css-loader" },
@@ -7,12 +16,13 @@ module.exports = {
       { test: /\.png/, loader: "url-loader?limit=10000&minetype=image/png" },
       { test: /\.js$/, loader: "jsx-loader" }
     ],
-    noParse: /parse-latest.js/
+    noParse: { test: /parse-latest.js/ }
   },
   resolve: {
     alias:{
       // this is to get showdown to load with webpack. See https://github.com/webpack/webpack/issues/411
       fs: require.resolve('./false.js')
     }
-  }
+  },
+  plugins:[]
 };
