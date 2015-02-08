@@ -1,3 +1,6 @@
+.TrackBadge {
+  background-color: #777;
+}
 .TrackBadge.red {
   background-color: red;
 }

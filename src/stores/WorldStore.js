@@ -106,7 +106,11 @@ var WorldStore = Fluxxor.createStore({
     var worlds = [];
     for (var id in this.worlds) {
       var world = this.worlds[id]
-      if (world.getTrack().id == trackId) {
+      if (trackId) {
+        if (world.getTrack() && world.getTrack().id == trackId) {
+          worlds.push(world);
+        }
+      } else if (world.getTrack() == null) {
         worlds.push(world);
       }
     }

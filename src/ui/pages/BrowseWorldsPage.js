@@ -54,6 +54,8 @@ var BrowseWorldsPage = React.createClass({
       return <TrackBrowser track={trackModel} filter={this.state.filter} />
     }.bind(this));
 
+    trackGroups.push(<TrackBrowser filter={this.state.filter} />);
+
     return (
       <div className="row loginPage">
         <div className="col-md-12">

@@ -101,9 +101,11 @@ module.exports = {
     var world = new WorldModel();
     world.set('owner', Parse.User.current());
     world.set('name', name);
-    var track = new TrackModel();
-    track.id = trackId
-    world.set('track', track);
+    if (trackId) {
+      var track = new TrackModel();
+      track.id = trackId
+      world.set('track', track);
+    }
     world.save(null, {
       success: function(world) {
         this.dispatch(Constants.ActionTypes.ADD_WORLD_SUCCESS, {world:world});

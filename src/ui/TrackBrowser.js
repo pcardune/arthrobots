@@ -21,7 +21,7 @@ var TrackBrowser = React.createClass({
   getDefaultProps: function() {
     return {
       filter: "yours",
-      track: null
+      track: {id:null}
     }
   },
 
