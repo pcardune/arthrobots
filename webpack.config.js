@@ -16,7 +16,7 @@ module.exports = {
       { test: /\.png/, loader: "url-loader?limit=10000&minetype=image/png" },
       { test: /\.js$/, loader: "jsx-loader" }
     ],
-    noParse: { test: /parse-latest.js/ }
+    noParse: /parse-latest.js/
   },
   resolve: {
     alias:{
