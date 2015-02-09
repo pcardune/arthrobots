@@ -43,14 +43,26 @@ var TrackStore = Fluxxor.createStore({
 
   getError: function() { return this.error; },
 
-  getAllTracks: function() {
+  getFilteredTracks: function(filter) {
     var tracks = [];
     for (var id in this.tracks) {
-      var track = this.tracks[id]
-      tracks.push(track);
+      var track = this.tracks[id];
+      if (filter === undefined || filter(track)) {
+        tracks.push(track);
+      }
     }
     tracks.sort(function (a, b) { return a.get('name') < b.get('name') ? -1 : 1; });
     return tracks;
+  },
+
+  getAllTracks: function() {
+    return this.getFilteredTracks()
+  },
+
+  getTracksForUser: function(user) {
+    return this.getFilteredTracks(function(track) {
+      return track.get('owner').id == user.id;
+    });
   },
 
   getTrack: function(id) {

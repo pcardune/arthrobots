@@ -5,12 +5,12 @@ var NavItem = require('react-bootstrap').NavItem;
 var Navbar = require('react-bootstrap').Navbar;
 var Navigation = require('react-router').Navigation;
 var React = require('react');
-var assign = require('object-assign');
 
 var FluxMixin = require('fluxxor').FluxMixin(React);
 var StoreWatchMixin = require('fluxxor').StoreWatchMixin;
 
 var LoadingBlock = require('../LoadingBlock');
+var Tab = require('../Tab');
 
 var TrackModel = require('../../models/TrackModel');
 
@@ -31,18 +31,18 @@ var BrowseWorldsPage = React.createClass({
     return {
       loadingTracks: store.isLoading(),
       loadingTracksError: store.getError(),
-      trackModels: store.getAllTracks()
+      trackModels: this.getQuery().filter == "yours" ?
+        store.getTracksForUser(Parse.User.current()) :
+        store.getAllTracks()
     };
-  },
-
-  setFilter: function(filter) {
-    if (filter != this.state.filter) {
-      this.setState({filter: filter});
-    }
   },
 
   componentDidMount: function() {
     this.getFlux().actions.loadTracksAndWorlds();
+  },
+
+  componentWillReceiveProps: function(nextProps) {
+    this.setState(this.getStateFromFlux());
   },
 
   render: function() {
@@ -51,26 +51,18 @@ var BrowseWorldsPage = React.createClass({
     }
 
     var trackGroups = this.state.trackModels.map(function(trackModel) {
-      return <TrackBrowser track={trackModel} filter={this.state.filter} />
+      return <TrackBrowser key={trackModel.id} track={trackModel} filter={this.getQuery().filter} />
     }.bind(this));
 
-    trackGroups.push(<TrackBrowser filter={this.state.filter} />);
+    trackGroups.push(<TrackBrowser key="nulltrack" filter={this.getQuery().filter} />);
 
     return (
       <div className="row loginPage">
         <div className="col-md-12">
           <Navbar fluid={true}>
             <Nav>
-              <NavItem
-                className={this.state.filter == "yours" ? "active" : null}
-                onClick={this.setFilter.bind(this, 'yours')}>
-                Your Worlds
-              </NavItem>
-              <NavItem
-                className={this.state.filter == "all" ? "active" : null}
-                onClick={this.setFilter.bind(this, 'all')}>
-                All Worlds
-              </NavItem>
+              <Tab to="worlds" query={{filter:"yours"}}>Your Worlds</Tab>
+              <Tab to="worlds" query={{filter:"all"}}>All Worlds</Tab>
             </Nav>
           </Navbar>
           {trackGroups}
