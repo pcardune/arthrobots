@@ -9,7 +9,7 @@ var Tab = React.createClass({
   mixins: [State],
 
   render: function() {
-    var isActive = this.isActive(this.props.to, this.getParams(), this.getQuery());
+    var isActive = this.isActive(this.props.to, this.props.params, this.props.query);
     var className = isActive ? 'active' : '';
     var link = <Link {...this.props} />;
     return <li className={className}>{link}</li>;
