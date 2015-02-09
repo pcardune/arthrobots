@@ -75,13 +75,19 @@ var TrackBrowser = React.createClass({
         </div>
       </Modal>
     );
+    var createWorldButton = null;
+    if (!this.props.track.id || this.props.track.get('owner').id == Parse.User.current().id) {
+      createWorldButton = (
+        <ModalTrigger modal={createWorldModal}>
+          <Button bsStyle="primary" className="pull-right">Create New World</Button>
+        </ModalTrigger>
+      );
+    }
     return (
       <div>
         <h2>
           <TrackBadge track={this.props.track} />
-          <ModalTrigger modal={createWorldModal}>
-            <Button bsStyle="primary" className="pull-right">Create New World</Button>
-          </ModalTrigger>
+          {createWorldButton}
         </h2>
         {this.state.worldModels ? <WorldList worlds={this.state.worldModels} users={this.state.users}/> : <LoadingBlock />}
       </div>
