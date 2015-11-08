@@ -27,7 +27,7 @@ module.exports = {
         callback();
       }.bind(this),
       error: function(program, error) {
-        this.dispatch(Constants.ActionTypes.SAVE_PROGRAM_FAIL);
+        this.dispatch(Constants.ActionTypes.SAVE_PROGRAM_FAIL, {error: error});
         console.error("There was an error while saving the program: "+error.code+" "+error.message);
       }.bind(this)
     });
