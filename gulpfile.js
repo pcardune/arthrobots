@@ -20,6 +20,8 @@ gulp.task('build', ['copy', 'webpack:build'], function() {});
 gulp.task('copy', function() {
   gulp.src('index.html')
     .pipe(gulp.dest('build'));
+  gulp.src('ABOUT.md')
+    .pipe(gulp.dest('build'));
 });
 
 gulp.task('webpack:build', function(callback) {
