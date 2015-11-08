@@ -42,6 +42,7 @@
   "author": "Paul Carduner",
   "license": "MIT",
   "engines": {
-    "node": "4.2.1"
+    "node": "4.2.1",
+    "npm": "2.14.7"
   }
 }
