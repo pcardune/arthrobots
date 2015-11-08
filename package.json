@@ -40,5 +40,8 @@
     "test": "jest"
   },
   "author": "Paul Carduner",
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": "4.2.1"
+  }
 }
