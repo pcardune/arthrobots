@@ -1,10 +1,10 @@
-/** @jsx React.DOM */
 
 var Button = require('react-bootstrap').Button;
 var Link = require('react-router').Link;
 var Navigation = require('react-router').Navigation;
 var State = require('react-router').State;
 var React = require('react');
+var ReactDOM = require('react-dom');
 var FBUtils = require('../../FBUtils');
 
 require('./SignUpPage.css');
@@ -21,11 +21,12 @@ var SignUpPage = React.createClass({
   },
 
   handleContinue: function() {
-    window.location = this.getQuery().next || "/";
+    window.location = this.props.location.query.next || "/";
   },
 
   handleSignUp: function() {
-    if (this.refs.password.getDOMNode().value != this.refs.passwordConfirm.getDOMNode().value) {
+    if (ReactDOM.findDOMNode(this.refs.password).value !=
+        ReactDOM.findDOMNode(this.refs.passwordConfirm).value) {
       this.setState({
         message:"The passwords do not match",
         messageType:"warning"
@@ -42,9 +43,9 @@ var SignUpPage = React.createClass({
       wasAnonymous = true;
     }
     var user = this.state.user || new Parse.User();
-    user.set("username", this.refs.username.getDOMNode().value);
-    user.set("password", this.refs.password.getDOMNode().value);
-    user.set("email", this.refs.email.getDOMNode().value);
+    user.set("username", ReactDOM.findDOMNode(this.refs.username).value);
+    user.set("password", ReactDOM.findDOMNode(this.refs.password).value);
+    user.set("email", ReactDOM.findDOMNode(this.refs.email).value);
 
     user.signUp(null, {
       success: function(user) {
@@ -141,7 +142,7 @@ var SignUpPage = React.createClass({
             <label>Confirm Password:</label>
             <input type="password" ref="passwordConfirm" className="form-control" placeholder="Confirm password" />
           </div>
-          <Button onClick={this.handleSignUp} bsStyle="primary">Sign Up</Button> or <Link to="login">Log In</Link>
+          <Button onClick={this.handleSignUp} bsStyle="primary">Sign Up</Button> or <Link to="/login">Log In</Link>
         </form>
       );
     }

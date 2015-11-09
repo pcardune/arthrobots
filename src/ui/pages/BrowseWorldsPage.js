@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 var State = require('react-router').State;
 var Nav = require('react-bootstrap').Nav;
 var NavItem = require('react-bootstrap').NavItem;
@@ -31,7 +30,7 @@ var BrowseWorldsPage = React.createClass({
     return {
       loadingTracks: store.isLoading(),
       loadingTracksError: store.getError(),
-      trackModels: this.getQuery().filter == "yours" ?
+      trackModels: this.props.location.query.filter == "yours" ?
         store.getTracksForUser(Parse.User.current()) :
         store.getAllTracks()
     };
@@ -51,18 +50,18 @@ var BrowseWorldsPage = React.createClass({
     }
 
     var trackGroups = this.state.trackModels.map(function(trackModel) {
-      return <TrackBrowser key={trackModel.id} track={trackModel} filter={this.getQuery().filter} />
+      return <TrackBrowser key={trackModel.id} track={trackModel} filter={this.props.location.query.filter} />
     }.bind(this));
 
-    trackGroups.push(<TrackBrowser key="nulltrack" filter={this.getQuery().filter} />);
+    trackGroups.push(<TrackBrowser key="nulltrack" filter={this.props.location.query.filter} />);
 
     return (
       <div className="row loginPage">
         <div className="col-md-12">
           <Navbar fluid={true}>
             <Nav>
-              <Tab to="worlds" query={{filter:"yours"}}>Your Worlds</Tab>
-              <Tab to="worlds" query={{filter:"all"}}>All Worlds</Tab>
+              <Tab to="/worlds" query={{filter:"yours"}}>Your Worlds</Tab>
+              <Tab to="/worlds" query={{filter:"all"}}>All Worlds</Tab>
             </Nav>
           </Navbar>
           {trackGroups}

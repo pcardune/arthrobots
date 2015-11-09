@@ -3,6 +3,7 @@ var path = require('path');
 module.exports = {
   cache: true,
   entry: './src/main.js',
+  devtool: 'source-map',
   output: {
     path: path.join(__dirname, 'build'),
     publicPath: 'build/',
@@ -14,7 +15,7 @@ module.exports = {
       { test: /\.gif/, loader: "url-loader?limit=10000&minetype=image/gif" },
       { test: /\.jpg/, loader: "url-loader?limit=10000&minetype=image/jpg" },
       { test: /\.png/, loader: "url-loader?limit=10000&minetype=image/png" },
-      { test: /\.js$/, loader: "jsx-loader" }
+      { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" }
     ],
     noParse: /parse-latest.js/
   },

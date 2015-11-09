@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 var Button = require('react-bootstrap').Button;
 var Glyphicon = require('react-bootstrap').Glyphicon;
 var Input = require('react-bootstrap').Input;

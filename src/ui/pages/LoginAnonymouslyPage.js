@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 var Button = require('react-bootstrap').Button;
 var Link = require('react-router').Link;
 var React = require('react');
@@ -42,7 +41,7 @@ var LoginAnonymouslyPage = React.createClass({
     } else {
       form = (
         <div>
-          <Button bsStyle="success" bsSize="large" onClick={this.handleLoginAnonymously}>Continue Anonymously</Button> or <Link to="signup">Sign Up</Link>
+          <Button bsStyle="success" bsSize="large" onClick={this.handleLoginAnonymously}>Continue Anonymously</Button> or <Link to="/signup">Sign Up</Link>
         </div>
       );
     }

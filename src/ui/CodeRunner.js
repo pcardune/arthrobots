@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 var Button = require('react-bootstrap').Button;
 var ButtonToolbar = require('react-bootstrap').ButtonToolbar;
 var DropdownButton = require('react-bootstrap').DropdownButton;
@@ -92,7 +91,7 @@ var CodeRunner = React.createClass({
     Parse.Analytics.track('runDemo', {world:this.props.world.id});
     this.handleReset();
     var demoSolution = this.props.world.get('solution');
-    program = new ProgramParser(demoSolution, this.refs.worldCanvas.world.robot).parse();
+    var program = new ProgramParser(demoSolution, this.refs.worldCanvas.world.robot).parse();
     this.runner = new Runner(program, this.refs.worldCanvas.renderer);
     this.setState({runState: "demo"});
     this.runner.run(
@@ -233,7 +232,7 @@ var CodeRunner = React.createClass({
   handleSpeedClick: function(speed) {
     this.setState({speed:speed});
     Parse.Analytics.track('setSpeed', {speed:speed, world:this.props.world.id});
-    this.refs.speedDrowndown.setDropdownState(false);
+    this.refs.speedDrowndown.setState({open:false});
     localStorage.setItem('speed', speed);
   },
 
@@ -268,7 +267,7 @@ var CodeRunner = React.createClass({
     } else if (this.state.runState == '') {
       buttons = [
         !this.state.codeIsJS ?
-        <DropdownButton key="5" title={"Speed: "+this.state.speed} ref="speedDrowndown">
+        <DropdownButton key="5" title={"Speed: "+this.state.speed} ref="speedDrowndown" id="speed-dropdown">
           <MenuItem key="1" onClick={this.handleSpeedClick.bind(this, 'Slow')}>Slow</MenuItem>
           <MenuItem key="2" onClick={this.handleSpeedClick.bind(this, 'Medium')}>Medium</MenuItem>
           <MenuItem key="3" onClick={this.handleSpeedClick.bind(this, 'Fast')}>Fast</MenuItem>
@@ -301,57 +300,57 @@ var CodeRunner = React.createClass({
       }
     }
 
-    var helpModal = (
-      <Modal title="Quick Reference">
-        <div className="modal-body">
-          <h4>Instructions</h4>
-          <pre>
-            move{'\n'}
-            turnleft{'\n'}
-            pickbeeper{'\n'}
-            putbeeper{'\n'}
-            turnoff{'\n'}
-          </pre>
-          <h4>Conditions</h4>
-          <pre>
-            front_is_clear{'\n'}
-            front_is_blocked{'\n'}
-            left_is_clear{'\n'}
-            left_is_blocked{'\n'}
-            right_is_clear{'\n'}
-            right_is_blocked{'\n'}
-            {'\n'}
-            next_to_a_beeper{'\n'}
-            not_next_to_a_beeper{'\n'}
-            any_beepers_in_beeper_bag{'\n'}
-            no_beepers_in_beeper_bag{'\n'}
-            {'\n'}
-            facing_north{'\n'}
-            not_facing_north{'\n'}
-            facing_south{'\n'}
-            not_facing_south{'\n'}
-            facing_east{'\n'}
-            not_facing_east{'\n'}
-            facing_west{'\n'}
-            not_facing_west{'\n'}
-          </pre>
-          <h4>Iteration</h4>
-          <pre>
-            {'do <positive_number>:\n'}
-            {'    <block>'}
-          </pre>
-          <pre>
-            {'while <test>:\n'}
-            {'    <block>'}
-          </pre>
-          <h4>Defining new instructions</h4>
-          <pre>
-            {'define <new_name>:\n'}
-            {'    <block>'}
-          </pre>
-        </div>
-      </Modal>
-    );
+    // var helpModal = (
+    //   <Modal title="Quick Reference">
+    //     <div className="modal-body">
+    //       <h4>Instructions</h4>
+    //       <pre>
+    //         move{'\n'}
+    //         turnleft{'\n'}
+    //         pickbeeper{'\n'}
+    //         putbeeper{'\n'}
+    //         turnoff{'\n'}
+    //       </pre>
+    //       <h4>Conditions</h4>
+    //       <pre>
+    //         front_is_clear{'\n'}
+    //         front_is_blocked{'\n'}
+    //         left_is_clear{'\n'}
+    //         left_is_blocked{'\n'}
+    //         right_is_clear{'\n'}
+    //         right_is_blocked{'\n'}
+    //         {'\n'}
+    //         next_to_a_beeper{'\n'}
+    //         not_next_to_a_beeper{'\n'}
+    //         any_beepers_in_beeper_bag{'\n'}
+    //         no_beepers_in_beeper_bag{'\n'}
+    //         {'\n'}
+    //         facing_north{'\n'}
+    //         not_facing_north{'\n'}
+    //         facing_south{'\n'}
+    //         not_facing_south{'\n'}
+    //         facing_east{'\n'}
+    //         not_facing_east{'\n'}
+    //         facing_west{'\n'}
+    //         not_facing_west{'\n'}
+    //       </pre>
+    //       <h4>Iteration</h4>
+    //       <pre>
+    //         {'do <positive_number>:\n'}
+    //         {'    <block>'}
+    //       </pre>
+    //       <pre>
+    //         {'while <test>:\n'}
+    //         {'    <block>'}
+    //       </pre>
+    //       <h4>Defining new instructions</h4>
+    //       <pre>
+    //         {'define <new_name>:\n'}
+    //         {'    <block>'}
+    //       </pre>
+    //     </div>
+    //   </Modal>
+    // );
     var definition = this.props.world.get('definition');
     if (this.props.showStep > 0) {
       definition = this.props.world.get('steps')[this.props.showStep - 1];
@@ -375,7 +374,7 @@ var CodeRunner = React.createClass({
       );
     }
 
-    var numTokensTooltip = <Tooltip>A measure of how long your program is.</Tooltip>
+    var numTokensTooltip = <Tooltip id="numTokensTooltip">A measure of how long your program is.</Tooltip>
     var numTokens = (
       <OverlayTrigger placement="top" overlay={numTokensTooltip}>
         <small>
@@ -392,9 +391,12 @@ var CodeRunner = React.createClass({
     } else {
       codeEditor = (
         <div>
-          <ModalTrigger modal={helpModal}>
-            <Glyphicon glyph="question-sign" className="helpButton"/>
-          </ModalTrigger>
+{
+// XXX: upgrade to new modal system
+//          <ModalTrigger modal={helpModal}>
+//            <Glyphicon glyph="question-sign" className="helpButton"/>
+//          </ModalTrigger>
+}
           <ButtonToolbar className="buttons">
             {buttons}
           </ButtonToolbar>

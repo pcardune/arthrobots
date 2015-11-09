@@ -1,13 +1,16 @@
-/** @jsx React.DOM */
 var Fluxxor = require('fluxxor');
 var React = require('react');
-var Router = require('react-router');
-var Route = Router.Route;
-var RouteHandler = Router.RouteHandler;
-var State = Router.State;
-var NotFoundRoute = Router.NotFoundRoute;
-var DefaultRoute = Router.DefaultRoute;
-var Link = Router.Link;
+var render = require('react-dom').render;
+var ReactRouter = require('react-router');
+var Router = ReactRouter.Router;
+var Route = ReactRouter.Route;
+var RouteHandler = ReactRouter.RouteHandler;
+var State = ReactRouter.State;
+var NotFoundRoute = ReactRouter.NotFoundRoute;
+var DefaultRoute = ReactRouter.DefaultRoute;
+var IndexRoute = ReactRouter.IndexRoute;
+var Link = ReactRouter.Link;
+import createBrowserHistory from 'history/lib/createBrowserHistory'
 
 var ReactBootstrap = require('react-bootstrap');
 var Panel = ReactBootstrap.Panel;
@@ -43,28 +46,6 @@ var Empty = React.createClass({
   }
 });
 
-var routes = (
-  <Route name="app" path="/" handler={ArthrobotApp}>
-    <Route name="worlds" path="/worlds" handler={Empty}>
-      <Route name="world-wrapper" path="/worlds/:worldId" handler={WorldWrapperPage}>
-        <Route name="world-definition-editor" path="/worlds/:worldId/builder" handler={WorldDefinitionEditorPage} />
-        <Route name="world-details-editor" path="/worlds/:worldId/details" handler={WorldDetailsEditorPage} />
-        <DefaultRoute name="world" handler={WorldPage} />
-      </Route>
-      <DefaultRoute name="browseworlds" handler={BrowseWorldsPage} />
-    </Route>
-    <Route name="profile" path="/profile/:userId" handler={ProfilePage} />
-    <Route name="track" path="/tracks/:trackId" handler={TrackPage} />
-    <Route name="login" handler={LoginPage} />
-    <Route name="login-anonymously" handler={LoginAnonymouslyPage} />
-    <Route name="logout" handler={LogoutPage} />
-    <Route name="signup" handler={SignUpPage} />
-    <Route name="leaderboard" handler={LeaderboardPage} />
-    <Route name="about" handler={AboutPage} />
-    <DefaultRoute name="landing" handler={LandingPage}/>
-  </Route>
-);
-
 var stores = {
   TrackStore: new TrackStore(),
   WorldStore: new WorldStore(),
@@ -79,6 +60,27 @@ flux.on("dispatch", function(type, payload) {
   }
 });
 
-Router.run(routes, Router.HistoryLocation, function (Handler) {
-  React.render(<Handler flux={flux}/>, document.body);
-});
+render(
+  <Router history={createBrowserHistory()} createElement={function(Component, props) {return <Component flux={flux} {...props}/>}}>
+    <Route path="/" component={ArthrobotApp}>
+      <Route path="worlds" component={Empty}>
+        <Route path="/worlds/:worldId" component={WorldWrapperPage}>
+          <Route path="/worlds/:worldId/builder" component={WorldDefinitionEditorPage} />
+          <Route path="/worlds/:worldId/details" component={WorldDetailsEditorPage} />
+          <IndexRoute component={WorldPage} />
+        </Route>
+        <IndexRoute component={BrowseWorldsPage} />
+      </Route>
+      <Route path="/profile/:userId" component={ProfilePage} />
+      <Route path="/tracks/:trackId" component={TrackPage} />
+      <Route path="login" component={LoginPage} />
+      <Route path="login-anonymously" component={LoginAnonymouslyPage} />
+      <Route path="logout" component={LogoutPage} />
+      <Route path="signup" component={SignUpPage} />
+      <Route path="leaderboard" component={LeaderboardPage} />
+      <Route path="about" component={AboutPage} />
+      <IndexRoute component={LandingPage}/>
+    </Route>
+  </Router>,
+  document.getElementById("appcontainer")
+);

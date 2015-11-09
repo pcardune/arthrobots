@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 var Link = require('react-router').Link;
 var ListGroup = require('react-bootstrap').ListGroup;
 var React = require('react');

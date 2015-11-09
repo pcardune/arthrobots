@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 var Button = require('react-bootstrap').Button;
 var Input = require('react-bootstrap').Input;
 var React = require('react');

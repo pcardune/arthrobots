@@ -1,5 +1,3 @@
-/** @jsx React.DOM */
-
 
 var ProgressBar = require('react-bootstrap').ProgressBar;
 var React = require('react');

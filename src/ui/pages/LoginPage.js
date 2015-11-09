@@ -1,7 +1,7 @@
-/** @jsx React.DOM */
 var Button = require('react-bootstrap').Button;
 var Link = require('react-router').Link;
 var React = require('react');
+var ReactDOM = require('react-dom');
 var Navigation = require('react-router').Navigation;
 var State = require('react-router').State;
 var FBUtils = require('../../FBUtils');
@@ -17,7 +17,7 @@ var LoginPage = React.createClass({
   },
 
   goToNextUrl: function() {
-    window.location = this.getQuery().next || "/";
+    window.location = this.props.location.query.next || "/";
   },
 
   handleFBLogin: function() {
@@ -38,8 +38,8 @@ var LoginPage = React.createClass({
       messageType:"info"
     });
     Parse.User.logIn(
-      this.refs.username.getDOMNode().value,
-      this.refs.password.getDOMNode().value,
+      ReactDOM.findDOMNode(this.refs.username).value,
+      ReactDOM.findDOMNode(this.refs.password).value,
       {
         success: function(user) {
           this.setState({
@@ -59,7 +59,7 @@ var LoginPage = React.createClass({
   },
 
   componentDidMount: function() {
-    this.refs.username.getDOMNode().focus();
+    ReactDOM.findDOMNode(this.refs.username).focus();
   },
 
   handleKeyPress: function(event) {
@@ -99,7 +99,7 @@ var LoginPage = React.createClass({
               </div>
               <Button onClick={this.handleLogin}>
                 Log In
-              </Button> or <Link to="signup">Sign Up</Link>
+              </Button> or <Link to="/signup">Sign Up</Link>
             </form>
           </div>
         </div>

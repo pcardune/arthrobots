@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 var Button = require('react-bootstrap').Button;
 var ButtonToolbar = require('react-bootstrap').ButtonToolbar;
 var Panel = require('react-bootstrap').Panel
@@ -97,7 +96,7 @@ var ProfilePage = React.createClass({
   loadUser: function() {
     var query = new Parse.Query(Parse.User);
     this.setState({isLoading: true});
-    query.equalTo('objectId', this.getParams().userId);
+    query.equalTo('objectId', this.props.params.userId);
     query.find({
       success: function(users) {
         if (users.length) {
@@ -133,8 +132,7 @@ var ProfilePage = React.createClass({
           <TrackBadge key={program.id} track={program.get('world').get('track')} />
           &nbsp;
           <Link
-            to="track"
-            params={{trackId:program.get('world').get('track').id}}
+            to={`/tracks/${program.get('world').get('track').id}`}
             query={{worldId:program.get('world').id}}>
             {program.get('world').get('name')}
           </Link>

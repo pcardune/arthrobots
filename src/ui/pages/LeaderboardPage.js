@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 
 var Link = require('react-router').Link;
 var RouteHandler = require('react-router').RouteHandler;
@@ -40,7 +39,7 @@ var LeaderboardPage = React.createClass({
       return (
         <tr>
           <td>
-            <Link to="profile" params={{userId:user.id}}>
+            <Link to={`/profile/${user.id}`}>
               <img className="gravatar" src={FBUtils.getProfilePic(user)}/>
               {FBUtils.getUserName(user)}
             </Link>

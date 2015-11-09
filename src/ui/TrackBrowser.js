@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+var ReactDOM = require('react-dom');
 var State = require('react-router').State;
 var Button = require('react-bootstrap').Button;
 var Modal = require('react-bootstrap').Modal;
@@ -54,7 +54,7 @@ var TrackBrowser = React.createClass({
   },
 
   handleCreateNewWorld: function() {
-    this.getFlux().actions.addWorld(this.refs.worldNameInput.getDOMNode().value, this.props.track.id);
+    this.getFlux().actions.addWorld(ReactDOM.findDOMNode(this.refs.worldNameInput).value, this.props.track.id);
   },
 
   render: function() {

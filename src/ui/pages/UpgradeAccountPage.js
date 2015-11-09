@@ -1,9 +1,9 @@
-/** @jsx React.DOM */
 
 var Button = require('react-bootstrap').Button;
 var Link = require('react-router').Link;
 var Navigation = require('react-router').Navigation;
 var React = require('react');
+var ReactDOM = require('react-dom');
 
 var UpgradeAccountPage = React.createClass({
   mixins: [Navigation],
@@ -21,7 +21,8 @@ var UpgradeAccountPage = React.createClass({
   },
 
   handleSignUp: function() {
-    if (this.refs.password.getDOMNode().value != this.refs.passwordConfirm.getDOMNode().value) {
+    if (ReactDOM.findDOMNode(this.refs.password).value !=
+        ReactDOM.findDOMNode(this.refs.passwordConfirm).value) {
       this.setState({
         message:"The passwords do not match",
         messageType:"warning"
@@ -34,9 +35,9 @@ var UpgradeAccountPage = React.createClass({
     });
 
     var user = this.state.user;
-    user.set("username", this.refs.username.getDOMNode().value);
-    user.set("password", this.refs.password.getDOMNode().value);
-    user.set("email", this.refs.email.getDOMNode().value);
+    user.set("username", ReactDOM.findDOMNode(this.refs.username).value);
+    user.set("password", ReactDOM.findDOMNode(this.refs.password).value);
+    user.set("email", ReactDOM.findDOMNode(this.refs.email).value);
     user.setACL(new Parse.ACL(user));
 
     user.signUp(null, {

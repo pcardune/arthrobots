@@ -62,7 +62,7 @@ var ProgramStore = Fluxxor.createStore({
   },
 
   getProgramForWorld: function(worldId) {
-    programs = []
+    var programs = []
     for (var id in this.programs) {
       var program = this.programs[id];
       if (program.get('world') && program.get('world').id == worldId) {

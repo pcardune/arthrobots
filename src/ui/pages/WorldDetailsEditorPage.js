@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+var ReactDOM = require('react-dom');
 var Button = require('react-bootstrap').Button;
 var Glyphicon = require('react-bootstrap').Glyphicon;
 var Input = require('react-bootstrap').Input;
@@ -56,8 +56,8 @@ var WorldDetailsEditorPage = React.createClass({
   handleChange: function() {
     this.getFlux().actions.saveWorldLocal(
       {
-        name: this.refs.nameInput.getDOMNode().value,
-        description: this.refs.descriptionInput.getDOMNode().value,
+        name: ReactDOM.findDOMNode(this.refs.nameInput).value,
+        description: ReactDOM.findDOMNode(this.refs.descriptionInput).value,
         "public": this.refs.publicCheckbox.getChecked(),
         track: this.refs.trackInput.getValue(),
         order: parseInt(this.refs.orderInput.getDOMNode().value)

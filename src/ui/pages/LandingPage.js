@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 var Button = require('react-bootstrap').Button;
 var ButtonToolbar = require('react-bootstrap').ButtonToolbar;
 var Jumbotron = require('react-bootstrap').Jumbotron;
@@ -56,7 +55,7 @@ var LandingPage = React.createClass({
   },
 
   handleRun: function() {
-    parser = new ProgramParser(this.props.exampleProgram, this.refs.worldCanvas.world.robot);
+    var parser = new ProgramParser(this.props.exampleProgram, this.refs.worldCanvas.world.robot);
     var program = parser.parse();
 
     //define a runner to run the program.
@@ -87,8 +86,8 @@ var LandingPage = React.createClass({
     if (Parse.User.current()) {
       buttonToolbar = (
         <ButtonToolbar>
-          <Link to="track" params={{trackId:'yh1vdAIkHs'}} className="btn btn-success" bsSize="large">Beginner</Link>
-          <Link to="track" params={{trackId:'02eHrPIc55'}} className="btn btn-danger" bsSize="large">Advanced</Link>
+          <Link to="/tracks/yh1vdAIkHs" className="btn btn-success" bsSize="large">Beginner</Link>
+          <Link to="/tracks/02eHrPIc55" className="btn btn-danger" bsSize="large">Advanced</Link>
         </ButtonToolbar>
       );
     } else {
@@ -106,7 +105,8 @@ var LandingPage = React.createClass({
             <WorldCanvas className="pull-right" worldDefinition={this.props.exampleWorld} ref="worldCanvas"/>
             <h1>Arthrobots</h1>
             <p>Robots, exploring a world, completely at your command!</p>
-            <p>Choose your level: {buttonToolbar}</p>
+            <p>Choose your level: </p>
+            {buttonToolbar}
           </Jumbotron>
         </div>
       </div>

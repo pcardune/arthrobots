@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 
 var Link = require('react-router').Link;
 var RouteHandler = require('react-router').RouteHandler;
@@ -8,6 +7,7 @@ var gravatar = require('gravatar');
 var Navbar = require('react-bootstrap').Navbar;
 var Nav = require('react-bootstrap').Nav;
 var NavItem = require('react-bootstrap').NavItem;
+var NavBrand = require('react-bootstrap').NavBrand;
 
 var FBUtils = require('../FBUtils');
 
@@ -25,29 +25,29 @@ var ArthrobotApp = React.createClass({
       if (!user.get('email') && !user.get('authData')) {
         anonUserNotice = (
           <div className="text-center alert alert-danger">
-          You are logged in anonymously! <Link to="signup" query={{next:window.location.pathname+window.location.search}} className="btn btn-primary">Create an Account</Link> to save your progress.
+          You are logged in anonymously! <Link to="/signup" query={{next:window.location.pathname+window.location.search}} className="btn btn-primary">Create an Account</Link> to save your progress.
           </div>
         );
       }
       navbar = [
-        <Link key="1" to="profile" params={{userId:user.id}}><img className="gravatar" src={FBUtils.getProfilePic(user)} /></Link>,
-        <Tab key="2" to="logout">Logout</Tab>
+        <Link key="1" to="/profile" params={{userId:user.id}}><img className="gravatar" src={FBUtils.getProfilePic(user)} /></Link>,
+        <Tab key="2" to="/logout">Logout</Tab>
       ];
     } else {
       navbar = [
-        <Tab key="1" to="signup" query={{next:window.location.pathname+window.location.search}}><strong>Sign Up</strong></Tab>,
-        <Tab key="2" to="login" query={{next:window.location.pathname+window.location.search}}>Log In</Tab>
+        <Tab key="1" to="/signup" query={{next:window.location.pathname+window.location.search}}><strong>Sign Up</strong></Tab>,
+        <Tab key="2" to="/login" query={{next:window.location.pathname+window.location.search}}>Log In</Tab>
       ];
     }
-    var brand = <Link to="landing">Arthrobots</Link>;
     return (
       <div className="container ArthrobotApp">
         {anonUserNotice}
-        <Navbar brand={brand} fluid={true} className="navbar-inverse">
+        <Navbar fluid={true} className="navbar-inverse">
+          <NavBrand><Link to="/">Arthrobots</Link></NavBrand>
           <Nav>
-            <Tab to="landing">Home</Tab>
-            <Tab to="leaderboard">Leaderboard</Tab>
-            <Tab to="about">About</Tab>
+            <Tab to="/">Home</Tab>
+            <Tab to="/leaderboard">Leaderboard</Tab>
+            <Tab to="/about">About</Tab>
           </Nav>
           <Nav className="navbar-right">
             {navbar}
@@ -56,7 +56,7 @@ var ArthrobotApp = React.createClass({
 
         <div className="row">
           <div className="col-md-12 app-content">
-            <RouteHandler {...this.props}/>
+            {this.props.children}
           </div>
         </div>
         <div className="row footer">

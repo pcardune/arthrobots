@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 var State = require('react-router').State;
 var Button = require('react-bootstrap').Button;
 var Link = require('react-router').Link;
@@ -30,12 +29,12 @@ var WorldWrapperPage = React.createClass({
   getStateFromFlux: function() {
     var store = this.getFlux().store("WorldStore");
     return {
-      worldModel: store.getWorld(this.getParams().worldId)
+      worldModel: store.getWorld(this.props.params.worldId)
     };
   },
 
   componentDidMount: function() {
-    this.getFlux().actions.loadWorld(this.getParams().worldId);
+    this.getFlux().actions.loadWorld(this.props.params.worldId);
   },
 
   _onChange: function() {
@@ -50,9 +49,9 @@ var WorldWrapperPage = React.createClass({
       <div>
         <Navbar brand={this.state.worldModel.getTitle()} fluid={true}>
           <Nav>
-            <Tab to="world" params={{worldId:this.state.worldModel.id}}>Preview</Tab>
-            <Tab to="world-details-editor" params={{worldId:this.state.worldModel.id}}>Edit Details</Tab>
-            <Tab to="world-definition-editor" params={{worldId:this.state.worldModel.id}}>Edit World</Tab>
+            <Tab to="/world" params={{worldId:this.state.worldModel.id}}>Preview</Tab>
+            <Tab to="/world-details-editor" params={{worldId:this.state.worldModel.id}}>Edit Details</Tab>
+            <Tab to="/world-definition-editor" params={{worldId:this.state.worldModel.id}}>Edit World</Tab>
           </Nav>
         </Navbar>
         <RouteHandler world={this.state.worldModel} {...this.props}/>

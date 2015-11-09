@@ -1,10 +1,9 @@
-/** @jsx React.DOM */
 var State = require('react-router').State;
 var Button = require('react-bootstrap').Button;
 var Glyphicon = require('react-bootstrap').Glyphicon;
 var Link = require('react-router').Link;
 var Jumbotron = require('react-bootstrap').Jumbotron;
-var Navigation = require('react-router').Navigation;
+var History = require('react-router').History;
 var OverlayTrigger = require('react-bootstrap').OverlayTrigger;
 var Tooltip = require('react-bootstrap').Tooltip;
 var React = require('react');
@@ -27,15 +26,15 @@ var ProgramStore = require('../../stores/ProgramStore');
 require('./TrackPage.css');
 var TrackPage = React.createClass({
 
-  mixins: [Navigation, State, FluxMixin, StoreWatchMixin("WorldStore", "TrackStore")],
+  mixins: [State, FluxMixin, StoreWatchMixin("WorldStore", "TrackStore")],
 
   getStateFromFlux: function() {
     var trackStore = this.getFlux().store("TrackStore");
     var worldStore = this.getFlux().store("WorldStore");
     var programStore = this.getFlux().store("ProgramStore");
     return {
-      trackModel: trackStore.getTrack(this.getParams().trackId),
-      worldModels: worldStore.getWorldsForTrack(this.getParams().trackId),
+      trackModel: trackStore.getTrack(this.props.params.trackId),
+      worldModels: worldStore.getWorldsForTrack(this.props.params.trackId),
       programModels: programStore.getAllPrograms(),
       isLoading: trackStore.isLoading() || worldStore.isLoading()
     }
@@ -50,7 +49,7 @@ var TrackPage = React.createClass({
   getCurrentWorld: function() {
     var currentWorld = null;
     this.state.worldModels.every(function(world) {
-      if (this.getQuery().worldId == world.id) {
+      if (this.props.location.query.worldId == world.id) {
         currentWorld = world;
         return false;
       }
@@ -78,21 +77,21 @@ var TrackPage = React.createClass({
         }
         return true;
       }.bind(this));
-      if (!worldIsFinished && !this.getQuery().worldId) {
-        this.transitionTo('track', {trackId:this.getParams().trackId}, {worldId:world.id})
+      if (!worldIsFinished && !this.props.location.query.worldId) {
+        this.props.history.pushState(null, `/tracks/${this.props.params.trackId}`, {worldId:world.id})
         transitionedToWorld = true;
         return false;
       }
       return true;
     }.bind(this));
-    if (!transitionedToWorld && !this.getQuery().worldId && state.worldModels.length) {
-      this.transitionTo('track', {trackId:this.getParams().trackId}, {worldId:state.worldModels[0].id});
+    if (!transitionedToWorld && !this.props.location.query.worldId && state.worldModels.length) {
+      this.props.history.pushState(null, `/tracks/${this.props.params.trackId}`, {worldId:state.worldModels[0].id});
     }
   },
 
   componentWillReceiveProps: function(nextProps) {
-    if (this.getParams().trackId != this.state.trackModel.id) {
-      WorldModel.fetchWorldsForTrack(this.getParams().trackId);
+    if (this.props.params.trackId != this.state.trackModel.id) {
+      WorldModel.fetchWorldsForTrack(this.props.params.trackId);
       this.setState({trackComplete: false});
     }
   },
@@ -100,7 +99,7 @@ var TrackPage = React.createClass({
   handleContinue: function(programModel) {
     var currentWorldIndex = null;
     this.state.worldModels.every(function(world, index) {
-      if (this.getQuery().worldId == world.id) {
+      if (this.props.location.query.worldId == world.id) {
         currentWorldIndex = index;
         this.state.programModels.some(function(program, index) {
           if (program.id == programModel.id) {
@@ -115,7 +114,7 @@ var TrackPage = React.createClass({
     }.bind(this));
     var nextWorld = this.state.worldModels[currentWorldIndex + 1];
     if (nextWorld) {
-      this.transitionTo('track', {trackId:this.getParams().trackId}, {worldId:nextWorld.id});
+      this.props.history.pushState(null, `/tracks/${this.props.params.trackId}`, {worldId:nextWorld.id});
     } else {
       this.setState({trackComplete: true});
     }
@@ -138,7 +137,7 @@ var TrackPage = React.createClass({
   },
 
   handleNextTrack: function() {
-    this.transitionTo('track', {trackId:this.state.trackModel.get('nextTrack').id});
+    this.props.history.pushState(null, `/tracks/${this.state.trackModel.get('nextTrack').id}`);
   },
 
   renderComplete: function() {
@@ -198,8 +197,8 @@ var TrackPage = React.createClass({
         <li
           key={world.id}
           className={(isActive ? "active":"") + (isFinished ? " finished" : "")}>
-          <OverlayTrigger placement="bottom" overlay={<Tooltip>{world.getTitle()}</Tooltip>}>
-            <Link to="track" params={{trackId:this.getParams().trackId}} query={{worldId:world.id}}>
+          <OverlayTrigger placement="bottom" overlay={<Tooltip id={`world-${world.id}`}>{world.getTitle()}</Tooltip>}>
+            <Link to={`/tracks/${this.props.params.trackId}`} query={{worldId:world.id}}>
               {isFinished ? <Glyphicon glyph="star"/> : <Glyphicon glyph="star-empty"/>}
             </Link>
           </OverlayTrigger>

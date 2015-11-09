@@ -141,7 +141,7 @@ ProgramParser.prototype.getToken = function() {
 };
 
 ProgramParser.prototype.getNumTokens = function() {
-  count = 0;
+  var count = 0;
   while (this.getToken() != TOKENS.EOF) {
     count += 1;
   }
@@ -217,7 +217,7 @@ ProgramParser.prototype.parseElif = function(ifStatement) {
     throw new Error("Expected a conditional expression after an elif");
   }
   var conditionIdentifier = this.identifier;
-  elifLine = this.currentLine;
+  var elifLine = this.currentLine;
   this.parseNewBlock();
   var expressions = this.parseBlock();
   ifStatement.elifs.push(new lang.If(elifLine, this.builtins[conditionIdentifier], this.builtins, expressions));
