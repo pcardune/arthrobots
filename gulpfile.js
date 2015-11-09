@@ -62,6 +62,7 @@ gulp.task("webpack-dev-server", function(callback) {
 
     new WebpackDevServer(compiler, {
         // server and middleware options
+        historyApiFallback: true
     }).listen(8000, "localhost", function(err) {
         if(err) {
           throw new gutil.PluginError("webpack-dev-server", err);
