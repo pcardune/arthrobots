@@ -28,6 +28,7 @@
     "react": "0.14.2",
     "react-bootstrap": "0.27.3",
     "react-code-mirror": "3.0.6",
+    "react-dom": "0.14.2",
     "react-router": "1.0.0-rc4",
     "showdown": "1.3.0",
     "style-loader": "0.13.0",
@@ -51,7 +52,11 @@
     "plugins": [
       "transform-react-jsx"
     ],
-    "presets": ["es2015"],
-    "ignore": ["src/core/Class.js"]
+    "presets": [
+      "es2015"
+    ],
+    "ignore": [
+      "src/core/Class.js"
+    ]
   }
 }
