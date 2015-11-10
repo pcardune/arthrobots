@@ -30,7 +30,7 @@ var ArthrobotApp = React.createClass({
         );
       }
       navbar = [
-        <Link key="1" to="/profile" params={{userId:user.id}}><img className="gravatar" src={FBUtils.getProfilePic(user)} /></Link>,
+        <Link key="1" to={`/profile/${user.id}`}><img className="gravatar" src={FBUtils.getProfilePic(user)} /></Link>,
         <Tab key="2" to="/logout">Logout</Tab>
       ];
     } else {
