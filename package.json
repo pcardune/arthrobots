@@ -26,6 +26,7 @@
     "keymirror": "0.1.1",
     "object-assign": "4.0.1",
     "react": "0.14.2",
+    "react-addons-test-utils": "0.14.2",
     "react-bootstrap": "0.27.3",
     "react-code-mirror": "3.0.6",
     "react-dom": "0.14.2",
@@ -61,12 +62,22 @@
     ]
   },
   "jest": {
+    "testPathDirs": ["<rootDir>/src"],
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
-    "testFileExtensions": ["es6", "js"],
-    "moduleFileExtensions": ["js", "json", "es6"],
+    "testFileExtensions": [
+      "es6",
+      "js"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "es6"
+    ],
     "unmockedModulePathPatterns": [
       "<rootDir>/node_modules/react",
-      "<rootDir>/node_modules/react-dom"
+      "<rootDir>/node_modules/react-dom",
+      "<rootDir>/node_modules/react-addons-test-utils",
+      "<rootDir>/node_modules/fbjs"
     ]
   }
 }

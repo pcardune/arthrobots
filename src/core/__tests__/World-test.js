@@ -2,18 +2,16 @@ jest.dontMock('../Class');
 jest.dontMock('../Robot');
 jest.dontMock('../World');
 
-describe('World', function() {
+var World = require('../World');
+var keysOf = function(obj){
+  var keys = [];
+  for (key in obj){
+    keys.push(key);
+  }
+  return keys;
+}
 
-  beforeEach(function(){
-    World = require('../World');
-    keysOf = function(obj){
-      var keys = [];
-      for (key in obj){
-        keys.push(key);
-      }
-      return keys;
-     }
-  });
+describe('World', function() {
 
   it("should be constructed with some defaults", function() {
     var w = new World();

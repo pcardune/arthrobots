@@ -2,21 +2,19 @@ jest.dontMock('../Class');
 jest.dontMock('../World');
 jest.dontMock('../Robot');
 
-describe('Robot', function() {
+var Robot = require('../Robot');
+var World = require('../World');
+window.alert = jest.genMockFunction();
+var keysOf = function(obj){
+  var keys = [];
+  var key;
+  for (key in obj){
+    keys.push(key);
+  }
+  return keys;
+};
 
-  beforeEach(function(){
-    Robot = require('../Robot');
-    World = require('../World');
-    window.alert = jest.genMockFunction();
-    keysOf = function(obj){
-      var keys = [];
-      var key;
-      for (key in obj){
-        keys.push(key);
-      }
-      return keys;
-     };
-  });
+describe('Robot', function() {
 
   it("testMove", function() {
     var w = new World();
