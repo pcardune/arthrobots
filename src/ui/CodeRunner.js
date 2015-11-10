@@ -32,7 +32,6 @@ var ProgramStore = require('../stores/ProgramStore');
 
 var ProgramParser = require('../core/ProgramParser');
 var Runner = require('../core/Runner');
-var WorldParser = require('../core/WorldParser');
 var World = require('../core/World');
 
 require('./ProgramEditor.css');

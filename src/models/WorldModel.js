@@ -1,7 +1,7 @@
 var ProgramModel = require('./ProgramModel');
 var TrackModel = require('./TrackModel');
 var World = require('../core/World');
-var WorldParser = require('../core/WorldParser');
+import WorldParser from '../core/WorldParser'
 
 var WorldModel = Parse.Object.extend("WorldModel", {
 
