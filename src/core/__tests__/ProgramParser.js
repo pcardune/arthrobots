@@ -185,7 +185,7 @@ describe('lang parser', function() {
     try{
       parser.parse();
     } catch (e){
-      expect(e.message).toBe("Expected number after do on line 0");
+      expect(e.message).toBe("Expected number after do. line: 1");
     }
   });
 });

@@ -17,6 +17,13 @@ export var TOKENS = {
   EOF: 'eof'
 }
 
+class ParseError {
+  constructor(lineNumber, description) {
+    this.message = `${description} line: ${lineNumber+1}`
+    this.lineNumber = lineNumber
+    this.description = description
+  }
+}
 
 export default function ProgramParser(code, builtins) {
   this.code = code;
@@ -150,24 +157,24 @@ ProgramParser.prototype.getNumTokens = function() {
 
 ProgramParser.prototype.parseNewBlock = function() {
   if (this.getToken() != TOKENS.COLON) {
-    throw new Error("Expected a colon on line "+this.currentLine);
+    throw new ParseError(this.currentLine, "Expected a colon.");
   }
   if (this.getToken() != TOKENS.NEWLINE) {
-    throw new Error("Expected a newline on line "+this.currentLine);
+    throw new ParseError(this.currentLine, "Expected a newline.");
   }
   var token;
   while ((token = this.getToken()) == TOKENS.NEWLINE) {
     continue
   }
   if (token != TOKENS.INDENT) {
-    throw new Error("Expected an indented block on line "+this.currentLine);
+    throw new ParseError(this.currentLine, "Expected an indented block.");
   }
 };
 
 ProgramParser.prototype.parseDefine = function() {
   var identifier = this.getToken();
   if (identifier != TOKENS.IDENTIFIER) {
-    throw new Error("Expected a function name after define");
+    throw new ParseError(this.currentLine, "Expected a function name after define.");
   }
   var funcName = this.identifier;
   var funcLine = this.currentLine;
@@ -179,7 +186,7 @@ ProgramParser.prototype.parseDefine = function() {
 ProgramParser.prototype.parseDo = function() {
   var numberToken = this.getToken();
   if (numberToken != TOKENS.NUMBER) {
-    throw new Error("Expected number after do on line "+this.currentLine);
+    throw new ParseError(this.currentLine, "Expected number after do.");
   }
   var number = this.number;
   var doLine = this.currentLine;
@@ -199,7 +206,7 @@ ProgramParser.prototype.parseIdentifier = function() {
 ProgramParser.prototype.parseIf = function() {
   var identifierToken = this.getToken();
   if (identifierToken != TOKENS.IDENTIFIER) {
-    throw new Error("Expected a conditional expression after an if");
+    throw new ParseError(this.currentLine, "Expected a conditional expression after an if.");
   }
   var conditionIdentifier = this.identifier;
   var ifLine = this.currentLine;
@@ -210,11 +217,11 @@ ProgramParser.prototype.parseIf = function() {
 
 ProgramParser.prototype.parseElif = function(ifStatement) {
   if (!ifStatement || !ifStatement.elifs) {
-    throw new Error("elif statement can only come after an if statement");
+    throw new ParseError(this.currentLine, "elif statement can only come after an if statement.");
   }
   var identifierToken = this.getToken();
   if (identifierToken != TOKENS.IDENTIFIER) {
-    throw new Error("Expected a conditional expression after an elif");
+    throw new ParseError(this.currentLine, "Expected a conditional expression after an elif.");
   }
   var conditionIdentifier = this.identifier;
   var elifLine = this.currentLine;
@@ -225,7 +232,7 @@ ProgramParser.prototype.parseElif = function(ifStatement) {
 
 ProgramParser.prototype.parseElse = function(ifStatement) {
   if (!ifStatement || !ifStatement.elseBlock) {
-    throw new Error("elif statement can only come after an if statement");
+    throw new ParseError(this.currentLine, "elif statement can only come after an if statement.");
   }
   this.parseNewBlock();
   var expressions = this.parseBlock();
@@ -235,7 +242,7 @@ ProgramParser.prototype.parseElse = function(ifStatement) {
 ProgramParser.prototype.parseWhile = function() {
   var identifierToken = this.getToken();
   if (identifierToken != TOKENS.IDENTIFIER) {
-    throw new Error("Expected a conditional expression after a while");
+    throw new ParseError(this.currentLine, "Expected a conditional expression after a while.");
   }
   var conditionIdentifier = this.identifier;
   var line = this.currentLine;
