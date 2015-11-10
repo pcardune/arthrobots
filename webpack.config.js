@@ -3,7 +3,7 @@ var webpack = require('webpack');
 
 module.exports = {
   cache: true,
-  context: __dirname + "/src",
+  context: path.join(__dirname, "src"),
   entry: './main.js',
   devtool: 'source-map',
   output: {
@@ -12,6 +12,9 @@ module.exports = {
     filename: 'bundle.js'
   },
   module: {
+//    preLoaders: [
+//      { test: /\.js$/, exclude: /node_modules/, loader: "eslint-loader" }
+//    ],
     loaders: [
       { test: /\.css/, loader: "style-loader!css-loader" },
       { test: /\.gif/, loader: "url-loader?limit=10000&mimetype=image/gif" },
@@ -43,5 +46,8 @@ module.exports = {
   ],
   devServer: {
     historyApiFallback: true
+  },
+  eslint: {
+    configFile: path.join(__dirname, '.eslintrc')
   }
 };
