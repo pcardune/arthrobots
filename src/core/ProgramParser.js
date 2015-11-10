@@ -1,7 +1,7 @@
 
 var lang = require('./lang');
 
-var TOKENS = {
+export var TOKENS = {
   IDENTIFIER: 'identifier',
   DEFINE: 'define',
   IF: 'if',
@@ -18,7 +18,7 @@ var TOKENS = {
 }
 
 
-var ProgramParser = function(code, builtins) {
+export default function ProgramParser(code, builtins) {
   this.code = code;
   this.builtins = builtins;
   this.charIndex = 0;
@@ -310,5 +310,3 @@ ProgramParser.prototype.wrapJSForEval = function() {
   js += ")";
   return js;
 };
-
-module.exports = ProgramParser;
