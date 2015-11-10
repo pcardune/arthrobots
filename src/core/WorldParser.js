@@ -1,5 +1,4 @@
 var Class = require('./Class');
-var LangParser = require('./parser');
 
 /**
  * regex for any coordinate (x, y, direction) specification for an object.
@@ -22,8 +21,15 @@ var BEEPERS = /^\s*(\w+)\s+(\d+)\s+(\d+)\s+(\d+)\s*$/;
 /**
  * @constant
  */
-var EMPTY_LINE = LangParser.EMPTY_LINE;
+var EMPTY_LINE = /^\s*$/;
 
+var removeComment = function(line){
+  var commentStart = line.indexOf('#');
+  if (commentStart >= 0){
+    line = line.slice(0, commentStart);
+  }
+  return line;
+}
 
 var WorldParser = Class.extend(
   /**
@@ -56,7 +62,7 @@ var WorldParser = Class.extend(
     parse: function (){
       var name,xCoord,yCoord,count;
       for (var i =0; i < this.lines.length; i++){
-        var line = LangParser.removeComment(this.lines[i]);
+        var line = removeComment(this.lines[i]);
         if (line.match(EMPTY_LINE)){
           continue;
         }
