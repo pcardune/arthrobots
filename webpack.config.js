@@ -1,21 +1,24 @@
 var path = require('path');
+var webpack = require('webpack');
 
 module.exports = {
   cache: true,
-  entry: './src/main.js',
+  context: __dirname + "/src",
+  entry: './main.js',
   devtool: 'source-map',
   output: {
     path: path.join(__dirname, 'build'),
-    publicPath: 'build/',
+    publicPath: '/',
     filename: 'bundle.js'
   },
   module: {
     loaders: [
       { test: /\.css/, loader: "style-loader!css-loader" },
-      { test: /\.gif/, loader: "url-loader?limit=10000&minetype=image/gif" },
-      { test: /\.jpg/, loader: "url-loader?limit=10000&minetype=image/jpg" },
-      { test: /\.png/, loader: "url-loader?limit=10000&minetype=image/png" },
-      { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" }
+      { test: /\.gif/, loader: "url-loader?limit=10000&mimetype=image/gif" },
+      { test: /\.jpg/, loader: "url-loader?limit=10000&mimetype=image/jpg" },
+      { test: /\.png/, loader: "url-loader?limit=10000&mimetype=image/png" },
+      { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" },
+      { test: /\.md$/, loader: "url-loader?limit=10000&mimetype=text/markdown&name=[name]-[hash].[ext]" }
     ],
     noParse: /parse-latest.js/
   },
@@ -25,5 +28,20 @@ module.exports = {
       fs: require.resolve('./false.js')
     }
   },
-  plugins:[]
+  plugins:[
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production')
+      }
+    }),
+    new webpack.optimize.DedupePlugin(),
+    new webpack.optimize.UglifyJsPlugin({
+      compressor: {
+        warnings: false
+      }
+    })
+  ],
+  devServer: {
+    historyApiFallback: true
+  }
 };

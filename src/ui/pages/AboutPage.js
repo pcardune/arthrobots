@@ -5,6 +5,8 @@ var Markdown = require('../Markdown');
 var LoadingBlock = require('../LoadingBlock');
 
 require('./LeaderboardPage.css');
+var aboutUrl = require('../../../ABOUT.md');
+
 var AboutPage = React.createClass({
 
   getInitialState: function() {
@@ -14,7 +16,7 @@ var AboutPage = React.createClass({
   },
 
   componentDidMount: function() {
-    $.get('/ABOUT.md', function(content) {
+    $.get(aboutUrl, function(content) {
       this.setState({content:content});
     }.bind(this))
   },
