@@ -23,6 +23,11 @@ describe('lang parser', function() {
     parser = getParser([
       'move',
       'move'])
+    expect(parser.getNumTokens()).toBe(3);
+
+    parser = getParser([
+      'move',
+      'move'])
     expect(parser.getToken()).toBe(TOKENS.IDENTIFIER);
     expect(parser.getToken()).toBe(TOKENS.NEWLINE);
     expect(parser.getToken()).toBe(TOKENS.IDENTIFIER);
@@ -212,4 +217,117 @@ describe('lang parser', function() {
       expect(e.message).toBe('Unrecognized conditional expression "not". line: 3');
     }
   })
-});
+
+  it("should throw an error for missing conditions after if/elif/while", function() {
+    var parser = getParser([
+      'if:',
+      '  move'])
+    try { parser.parse() }
+    catch (e) {
+      expect(e.message).toBe('Expected a conditional expression after an if. line: 1')
+    }
+
+    parser = getParser([
+      'if facing_north:',
+      '  move',
+      'elif:',
+      '  move'])
+    try { parser.parse() }
+    catch (e) {
+      expect(e.message).toBe('Expected a conditional expression after an elif. line: 3')
+    }
+
+    parser = getParser([
+      'while:',
+      '  move'])
+    try { parser.parse() }
+    catch (e) {
+      expect(e.message).toBe('Expected a conditional expression after a while. line: 1')
+    }
+  })
+
+  it("should throw an error when elif or else is in the wrong order", function() {
+    var parser = getParser([
+      'elif:',
+      '  move'])
+    try { parser.parse() }
+    catch (e) {
+      expect(e.message).toBe('elif statement can only come after an if statement. line: 1')
+    }
+
+    var parser = getParser([
+      'else:',
+      '  move'])
+    try { parser.parse() }
+    catch (e) {
+      expect(e.message).toBe('else statement can only come after an if statement. line: 1')
+    }
+  })
+
+  it("should throw an error for missing function names after define", function() {
+    var parser = getParser([
+      'define:',
+      '  move'])
+    try { parser.parse() }
+    catch (e) {
+      expect(e.message).toBe('Expected a function name after define. line: 1')
+    }
+  })
+
+  it("should throw an error for missing colons and indents for new blocks", function() {
+    var parser = getParser([
+      'define foo',
+      '  move'])
+    try { parser.parse() }
+    catch (e) {
+      expect(e.message).toBe('Expected a colon. line: 1')
+    }
+
+    var parser = getParser([
+      'define foo bar',
+      '  move'])
+    try { parser.parse() }
+    catch (e) {
+      expect(e.message).toBe('Expected a colon. line: 1')
+    }
+
+    var parser = getParser([
+      'define foo: move'])
+    try { parser.parse() }
+    catch (e) {
+      expect(e.message).toBe('Expected a newline. line: 1')
+    }
+
+    var parser = getParser([
+      'define foo:',
+      'move'])
+    try { parser.parse() }
+    catch (e) {
+      expect(e.message).toBe('Expected an indented block. line: 2')
+    }
+  })
+
+  it("should allow multiple newlines at the beginning of a block", function() {
+    var parser = getParser([
+      'define foo:',
+      '  ',
+      '',
+      '  move'])
+    expect(parser.getNumTokens()).toBe(8)
+  })
+
+  it("should ignore comments", function() {
+    var parser = getParser([
+      'define foo:',
+      '  # this is the foo function',
+      '  move'])
+    expect(parser.getNumTokens()).toBe(7)
+  })
+
+  it("should be able to compile to a js script by calling wrapJSForEval", function() {
+    var parser = getParser(['move();'])
+    var js = parser.wrapJSForEval()
+    expect(js).toBe(`(function(init,toString,move,turnleft,pickbeeper,putbeeper,turnoff,facing_north,facing_south,facing_east,facing_west,any_beepers_in_beeper_bag,next_to_a_beeper,front_is_blocked,left_is_blocked,right_is_blocked,not_facing_north,not_facing_south,not_facing_east,not_facing_west,no_beepers_in_beeper_bag,not_next_to_a_beeper,front_is_clear,left_is_clear,right_is_clear){
+move();})(robot.init,robot.toString,robot.move,robot.turnleft,robot.pickbeeper,robot.putbeeper,robot.turnoff,robot.facing_north,robot.facing_south,robot.facing_east,robot.facing_west,robot.any_beepers_in_beeper_bag,robot.next_to_a_beeper,robot.front_is_blocked,robot.left_is_blocked,robot.right_is_blocked,robot.not_facing_north,robot.not_facing_south,robot.not_facing_east,robot.not_facing_west,robot.no_beepers_in_beeper_bag,robot.not_next_to_a_beeper,robot.front_is_clear,robot.left_is_clear,robot.right_is_clear)`)
+  })
+})

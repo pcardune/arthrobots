@@ -157,13 +157,17 @@ export default class ProgramParser {
   }
 
   parseNewBlock() {
-    if (this.getToken() != TOKENS.COLON) {
-      throw new ParseError(this.currentLine, "Expected a colon.")
+    var token = this.getToken()
+    if (token != TOKENS.COLON) {
+      if (token == TOKENS.NEWLINE) {
+        throw new ParseError(this.currentLine-1, "Expected a colon.")
+      } else {
+        throw new ParseError(this.currentLine, "Expected a colon.")
+      }
     }
     if (this.getToken() != TOKENS.NEWLINE) {
       throw new ParseError(this.currentLine, "Expected a newline.")
     }
-    var token
     while ((token = this.getToken()) == TOKENS.NEWLINE) {
       continue
     }
@@ -239,7 +243,7 @@ export default class ProgramParser {
 
   parseElse(ifStatement) {
     if (!ifStatement || !ifStatement.elseBlock) {
-      throw new ParseError(this.currentLine, "elif statement can only come after an if statement.")
+      throw new ParseError(this.currentLine, "else statement can only come after an if statement.")
     }
     this.parseNewBlock()
     var expressions = this.parseBlock()

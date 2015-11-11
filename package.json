@@ -78,6 +78,10 @@
       "<rootDir>/node_modules/react-dom",
       "<rootDir>/node_modules/react-addons-test-utils",
       "<rootDir>/node_modules/fbjs"
-    ]
+    ],
+    "collectCoverage": true,
+    "collectCoverageOnlyFrom": {
+      "src/core/ProgramParser.js": true
+    }
   }
 }
