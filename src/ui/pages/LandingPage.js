@@ -6,7 +6,7 @@ var Navigation = require('react-router').Navigation;
 var React = require('react');
 
 var World = require('../../core/World');
-var ProgramParser = require('../../core/ProgramParser');
+import ProgramParser from '../../core/ProgramParser'
 var Runner = require('../../core/Runner');
 var CanvasRenderer = require('../../core/CanvasRenderer');
 
