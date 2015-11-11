@@ -188,4 +188,28 @@ describe('lang parser', function() {
       expect(e.message).toBe("Expected number after do. line: 1");
     }
   });
+
+  it("should throw an error for invalid if conditions", function() {
+    var parser = getParser([
+      'if not-a-valid-condition:',
+      '  move'])
+    try {
+      parser.parse();
+    } catch (e) {
+      expect(e.message).toBe('Unrecognized conditional expression "not". line: 1');
+    }
+  })
+
+  it("should throw an error for invalid elif conditions", function() {
+    var parser = getParser([
+      'if facing_north:',
+      '  move',
+      'elif not-a-valid-condition:',
+      '  move'])
+    try {
+      parser.parse();
+    } catch (e) {
+      expect(e.message).toBe('Unrecognized conditional expression "not". line: 3');
+    }
+  })
 });

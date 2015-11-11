@@ -209,6 +209,9 @@ ProgramParser.prototype.parseIf = function() {
     throw new ParseError(this.currentLine, "Expected a conditional expression after an if.");
   }
   var conditionIdentifier = this.identifier;
+  if (!this.builtins[this.identifier]) {
+    throw new ParseError(this.currentLine, `Unrecognized conditional expression "${this.identifier}".`)
+  }
   var ifLine = this.currentLine;
   this.parseNewBlock();
   var expressions = this.parseBlock();
@@ -224,6 +227,9 @@ ProgramParser.prototype.parseElif = function(ifStatement) {
     throw new ParseError(this.currentLine, "Expected a conditional expression after an elif.");
   }
   var conditionIdentifier = this.identifier;
+  if (!this.builtins[this.identifier]) {
+    throw new ParseError(this.currentLine, `Unrecognized conditional expression "${this.identifier}".`)
+  }
   var elifLine = this.currentLine;
   this.parseNewBlock();
   var expressions = this.parseBlock();
