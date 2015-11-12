@@ -2,7 +2,7 @@ jest.dontMock('../Class');
 jest.dontMock('../World');
 jest.dontMock('../Robot');
 
-var Robot = require('../Robot');
+var Robot = require('../Robot').default;
 var World = require('../World');
 window.alert = jest.genMockFunction();
 var keysOf = function(obj){

@@ -1,5 +1,5 @@
 var Class = require('./Class');
-var Robot = require('./Robot');
+import Robot from './Robot'
 
 var World = Class.extend(
   /** @lends World# */

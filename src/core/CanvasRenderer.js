@@ -1,6 +1,6 @@
 var Class = require('./Class');
 
-var Robot = require('./Robot');
+import Robot from './Robot'
 
 var CanvasRenderer = Class.extend(
   /** @lends gvr.renderer.Renderer# */

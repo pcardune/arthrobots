@@ -1,11 +1,11 @@
 jest.dontMock('../Class');
-jest.dontMock('../robot');
+jest.dontMock('../Robot');
 jest.dontMock('../World');
 jest.dontMock('../WorldParser');
 
 const World = require('../World');
 var gvr = {
-  robot:require('../robot')
+  robot:require('../Robot').default
 }
 const WorldParser = require('../WorldParser').default;
 gvr.debug = jest.genMockFunction();
