@@ -3,10 +3,10 @@ var Button = require('react-bootstrap').Button;
 var Glyphicon = require('react-bootstrap').Glyphicon;
 var Input = require('react-bootstrap').Input;
 var Modal = require('react-bootstrap').Modal;
-var ModalTrigger = require('react-bootstrap').ModalTrigger;
 var Nav = require('react-bootstrap').Nav;
 var Navbar = require('react-bootstrap').Navbar;
 var Navigation = require('react-router').Navigation;
+var History = require('react-router').History;
 var State = require('react-router').State;
 var React = require('react');
 var assign = require('object-assign');
@@ -24,7 +24,7 @@ var WorldCanvas = require('../WorldCanvas');
 require('./WorldDetailsEditorPage.css');
 var WorldDetailsEditorPage = React.createClass({
 
-  mixins: [Navigation, State, FluxMixin, StoreWatchMixin("WorldStore")],
+  mixins: [History, Navigation, State, FluxMixin, StoreWatchMixin("WorldStore")],
 
   getDefaultProps: function() {
     return {world: null};
@@ -49,7 +49,7 @@ var WorldDetailsEditorPage = React.createClass({
 
   _onDestroy: function(world) {
     window.setTimeout(function() {
-      this.transitionTo('worlds');
+      this.history.pushState(null, '/worlds');
     }.bind(this));
   },
 
@@ -60,7 +60,7 @@ var WorldDetailsEditorPage = React.createClass({
         description: ReactDOM.findDOMNode(this.refs.descriptionInput).value,
         "public": this.refs.publicCheckbox.getChecked(),
         track: this.refs.trackInput.getValue(),
-        order: parseInt(this.refs.orderInput.getDOMNode().value)
+        order: parseInt(ReactDOM.findDOMNode(this.refs.orderInput).value)
       },
       this.state.world
     );
@@ -74,23 +74,29 @@ var WorldDetailsEditorPage = React.createClass({
     this.getFlux().actions.destroyWorld(this.state.world);
   },
 
+  openDeleteWorldConfirmModal: function() {
+    this.setState({showDeleteWorldConfirmModal: true});
+  },
+
+  hideDeleteWorldConfirmModal: function() {
+    this.setState({showDeleteWorldConfirmModal: false});
+  },
+
   render: function() {
     if (this.state.isLoading || !this.state.world) {
       return <div>loading...</div>;
     }
 
-    var deleteConfirmationModal = (
-      <Modal title="Delete World?" animation={false}>
-        <div className="modal-body">
-          Are you sure you want to delete this world? This cannot be undone.
-        </div>
-        <div className="modal-footer">
-          <Button bsStyle="danger" onClick={this.handleDeleteWorld}>Delete World</Button>
-        </div>
-      </Modal>
-      );
     return (
       <div className="WorldDetailsEditorPage">
+        <Modal title="Delete World?" animation={false} show={this.state.showDeleteWorldConfirmModal} onHide={this.hideDeleteWorldConfirmModal}>
+          <div className="modal-body">
+            Are you sure you want to delete this world? This cannot be undone.
+          </div>
+          <div className="modal-footer">
+            <Button bsStyle="danger" onClick={this.handleDeleteWorld}>Delete World</Button>
+          </div>
+        </Modal>
         <div className="row">
           <div className="col-md-6">
             <form>
@@ -126,9 +132,7 @@ var WorldDetailsEditorPage = React.createClass({
                 bsStyle={this.state.needsSave ? "primary" : "default"}>
                 {this.state.saving ? "Saving..." : "Save"}
               </Button>
-              <ModalTrigger modal={deleteConfirmationModal}>
-                <Button onClick={this.handleDelete} bsStyle="danger">Delete</Button>
-              </ModalTrigger>
+              <Button onClick={this.openDeleteWorldConfirmModal} bsStyle="danger">Delete</Button>
             </form>
           </div>
           <div className="worldPane col-md-6">

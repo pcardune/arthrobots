@@ -31,7 +31,7 @@ var WorldDefinitionEditorPage = React.createClass({
 
   getStateFromFlux: function() {
     var store = this.getFlux().store("WorldStore");
-    worldModel = store.getWorld(this.props.world.id);
+    var worldModel = store.getWorld(this.props.world.id);
     return {
       worldModel: worldModel,
       worldSolution: worldModel.get('solution'),

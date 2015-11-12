@@ -2,8 +2,8 @@ var ReactDOM = require('react-dom');
 var State = require('react-router').State;
 var Button = require('react-bootstrap').Button;
 var Modal = require('react-bootstrap').Modal;
-var ModalTrigger = require('react-bootstrap').ModalTrigger;
 var Navigation = require('react-router').Navigation;
+var History = require('react-router').History;
 var React = require('react');
 
 var TrackBadge = require('./TrackBadge');
@@ -16,13 +16,19 @@ var WorldList = require('./WorldList');
 
 var TrackBrowser = React.createClass({
 
-  mixins: [Navigation, State, FluxMixin, StoreWatchMixin("WorldStore", "UserStore")],
+  mixins: [Navigation, History, State, FluxMixin, StoreWatchMixin("WorldStore", "UserStore")],
 
   getDefaultProps: function() {
     return {
       filter: "yours",
       track: {id:null}
     }
+  },
+
+  getInitialState: function() {
+    return {
+      showCreateWorldModal: false
+    };
   },
 
   getStateFromFlux: function() {
@@ -49,7 +55,7 @@ var TrackBrowser = React.createClass({
 
   _onNewWorld: function(world) {
     window.setTimeout(function() {
-      this.transitionTo('world', {worldId: world.id});
+      this.history.pushState(null, `/worlds/${world.id}`);
     }.bind(this));
   },
 
@@ -57,34 +63,44 @@ var TrackBrowser = React.createClass({
     this.getFlux().actions.addWorld(ReactDOM.findDOMNode(this.refs.worldNameInput).value, this.props.track.id);
   },
 
+  openCreateWorldModal: function() {
+    this.setState({showCreateWorldModal: true});
+  },
+
+  closeCreateWorldModal: function() {
+    this.setState({showCreateWorldModal: false});
+  },
+
   render: function() {
-    var createWorldModal = (
-      <Modal title="Create World" animation={false}>
-        <div className="modal-body">
-          <div className="form-group">
-            <label>World Name</label>
-            <input ref="worldNameInput" type="text" className="form-control" placeholder="World Name" />
-          </div>
-          <div className="form-group">
-            <label>Track</label>
-            <div><TrackBadge track={this.props.track}/></div>
-          </div>
-          <div className="modal-footer">
-            <Button onClick={this.handleCreateNewWorld} bsStyle="primary">Create World</Button>
-          </div>
-        </div>
-      </Modal>
-    );
     var createWorldButton = null;
     if (!this.props.track.id || this.props.track.get('owner').id == Parse.User.current().id) {
       createWorldButton = (
-        <ModalTrigger modal={createWorldModal}>
-          <Button bsStyle="primary" className="pull-right">Create New World</Button>
-        </ModalTrigger>
+        <Button bsStyle="primary" className="pull-right" onClick={this.openCreateWorldModal}>
+          Create New World
+        </Button>
       );
     }
     return (
       <div>
+        <Modal
+          title="Create World"
+          animation={false}
+          show={this.state.showCreateWorldModal}
+          onHide={this.closeCreateWorldModal}>
+          <div className="modal-body">
+            <div className="form-group">
+              <label>World Name</label>
+              <input ref="worldNameInput" type="text" className="form-control" placeholder="World Name" />
+            </div>
+            <div className="form-group">
+              <label>Track</label>
+              <div><TrackBadge track={this.props.track}/></div>
+            </div>
+            <div className="modal-footer">
+              <Button onClick={this.handleCreateNewWorld} bsStyle="primary">Create World</Button>
+            </div>
+          </div>
+        </Modal>
         <h2>
           <TrackBadge track={this.props.track} />
           {createWorldButton}

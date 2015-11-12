@@ -13,9 +13,9 @@ var WorldList = React.createClass({
 
   render: function() {
     var worldLinks = this.props.worlds.map(function(worldModel) {
-      user = this.props.users[worldModel.get('owner').id];
+      var user = this.props.users[worldModel.get('owner').id];
       return (
-        <Link key={worldModel.id} className="list-group-item" to="world" params={{worldId:worldModel.id}}>
+        <Link key={worldModel.id} className="list-group-item" to={`/worlds/${worldModel.id}`}>
           <h4>
             {worldModel.getTitle()} by {user ? FBUtils.getUserName(user) : null}
           </h4>

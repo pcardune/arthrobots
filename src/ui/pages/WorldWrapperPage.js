@@ -8,6 +8,7 @@ var ModalTrigger = require('react-bootstrap').ModalTrigger;
 var Nav = require('react-bootstrap').Nav;
 var NavItem = require('react-bootstrap').NavItem;
 var Navbar = require('react-bootstrap').Navbar;
+var NavBrand = require('react-bootstrap').NavBrand;
 var Navigation = require('react-router').Navigation;
 var React = require('react');
 var RouteHandler = require('react-router').RouteHandler;
@@ -47,14 +48,15 @@ var WorldWrapperPage = React.createClass({
     }
     return (
       <div>
-        <Navbar brand={this.state.worldModel.getTitle()} fluid={true}>
+        <Navbar fluid={true}>
+          <NavBrand>{this.state.worldModel.getTitle()}</NavBrand>
           <Nav>
-            <Tab to="/world" params={{worldId:this.state.worldModel.id}}>Preview</Tab>
-            <Tab to="/world-details-editor" params={{worldId:this.state.worldModel.id}}>Edit Details</Tab>
-            <Tab to="/world-definition-editor" params={{worldId:this.state.worldModel.id}}>Edit World</Tab>
+            <Tab to={`/worlds/${this.state.worldModel.id}`}>Preview</Tab>
+            <Tab to={`/worlds/${this.state.worldModel.id}/details`}>Edit Details</Tab>
+            <Tab to={`/worlds/${this.state.worldModel.id}/builder`}>Edit World</Tab>
           </Nav>
         </Navbar>
-        <RouteHandler world={this.state.worldModel} {...this.props}/>
+        {React.cloneElement(this.props.children, {world: this.state.worldModel})}
       </div>
     );
   }

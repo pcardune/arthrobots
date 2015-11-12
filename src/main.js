@@ -42,7 +42,7 @@ var Empty = React.createClass({
   mixins: [State],
 
   render: function() {
-    return <RouteHandler {...this.props}/>;
+    return this.props.children;
   }
 });
 
