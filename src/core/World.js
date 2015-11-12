@@ -140,12 +140,12 @@ export default class World {
         return false
       }
       for (let key in this.beepers) {
-        if ((world.beepers[key] || 0) != (this.beepers[key] || 0)) {
+        if ((world.beepers[key] || 0) != this.beepers[key]) {
           return false
         }
       }
       for (let key in world.beepers) {
-        if ((world.beepers[key] || 0) != (this.beepers[key] || 0)) {
+        if (world.beepers[key] != (this.beepers[key] || 0)) {
           return false
         }
       }

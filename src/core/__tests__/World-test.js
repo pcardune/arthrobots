@@ -26,6 +26,8 @@ describe('World', function() {
     expect(w.getBeepers(5,5)).toBe(0);
     w.setBeepers(5,5,10);
     expect(w.getBeepers(5,5)).toBe(10);
+    w.setBeepers(5,5,null);
+    expect(w.getBeepers(5,5)).toBe(0);
   });
 
   it("should be able to set and get walls", function(){
@@ -83,6 +85,27 @@ describe('World', function() {
     expect(coords.x).toBe(coords2.x);
     expect(coords.y).toBe(coords2.y);
     expect(coords.direction).toBe(coords2.direction);
+  });
+
+  it("should be able to compare to worlds to confirm they are the same", function() {
+    var w1 = new World();
+    var w2 = new World();
+    expect(w1.isEqualTo(w2)).toBe(true);
+    w1.robot.x = 3;
+    expect(w1.isEqualTo(w2)).toBe(false);
+    w2.robot.x = 3;
+    expect(w1.isEqualTo(w2)).toBe(true);
+
+    w1.setBeepers(5,5,10);
+    expect(w1.isEqualTo(w2)).toBe(false);
+    w2.setBeepers(5,5,10);
+    expect(w1.isEqualTo(w2)).toBe(true);
+
+    w2.setBeepers(3,3,10);
+    expect(w1.isEqualTo(w2)).toBe(false);
+    w1.setBeepers(3,3,10);
+    expect(w1.isEqualTo(w2)).toBe(true);
+
   });
 
 });
