@@ -6,7 +6,6 @@ jest.dontMock('../ProgramParser');
 
 var World = require('../World').default;
 var Robot = require('../Robot').default;
-var gvr = {lang:require('../lang')}
 var TOKENS = require('../ProgramParser').TOKENS;
 var ProgramParser = require('../ProgramParser').default;
 var getParser = function(code) {

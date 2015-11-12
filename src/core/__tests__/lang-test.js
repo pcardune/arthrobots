@@ -1,7 +1,7 @@
 jest.dontMock('../Class');
 jest.dontMock('../lang');
 
-var gvr = {lang:require('../lang')};
+var lang = require('../lang')
 
 describe('lang Expression', function() {
 
@@ -18,7 +18,7 @@ describe('lang Expression', function() {
       function func(){
         calledWith = this;
       }
-      var expression = gvr.lang.newExpression(1, func, scope);
+      var expression = new lang.Expression(1, func, scope);
       var next = expression.step({}, {});
       expect(calledWith).toBe(scope);
       expect(next.length).toBe(0);
@@ -30,8 +30,8 @@ describe('lang Expression', function() {
    */
   it('should work with blocks', function(){
     var log = [];
-    var block = new gvr.lang.Block([
-      gvr.lang.newExpression(1, function(){ log.push(1); }, this)
+    var block = new lang.Block([
+      new lang.Expression(1, function(){ log.push(1); }, this)
     ]);
     // step over the block once, it will finish
     var next = block.step({}, {});
@@ -50,11 +50,11 @@ describe('lang Expression', function() {
 
   xit("should work with blocks that have multiple expressions", function() {
     var log = [];
-    var block = new gvr.lang.Block(
+    var block = new lang.Block(
       [
-        gvr.lang.newExpression(1, function(){ log.push("one"); }, this),
-        gvr.lang.newExpression(2, function(){ log.push("two"); }, this),
-        gvr.lang.newExpression(3, function(){ log.push("three"); }, this)
+        new lang.Expression(1, function(){ log.push("one"); }, this),
+        new lang.Expression(2, function(){ log.push("two"); }, this),
+        new lang.Expression(3, function(){ log.push("three"); }, this)
       ]);
     // execute the first step
     var next = block.step({}, {});
@@ -82,8 +82,8 @@ describe('lang Expression', function() {
     function condition(){
       return nextCond;
     }
-    var ifExpr = gvr.lang.newIf(1, condition, {},
-      [gvr.lang.newExpression(2, function(){ log.push("one"); }, this)]
+    var ifExpr = new lang.If(1, condition, {},
+      [new lang.Expression(2, function(){ log.push("one"); }, this)]
     );
     var next = ifExpr.step({}, {});
     expect(next.length).toBe(1);
@@ -104,8 +104,8 @@ describe('lang Expression', function() {
     function condition(){
       return nextCond;
     }
-    var ifExpr = gvr.lang.newIf(1, condition, {}, [gvr.lang.newExpression(2, function(){ log.push("one"); }, this)]);
-    ifExpr.elseBlock.expressions.push(gvr.lang.newExpression(2, function(){ log.push("two"); }, this));
+    var ifExpr = new lang.If(1, condition, {}, [new lang.Expression(2, function(){ log.push("one"); }, this)]);
+    ifExpr.elseBlock.expressions.push(new lang.Expression(2, function(){ log.push("two"); }, this));
     var next = ifExpr.step({}, {});
     expect(next.length).toBe(1);
     expect(log.length).toBe(1);
@@ -124,14 +124,14 @@ describe('lang Expression', function() {
     var a = true;
     var b = true;
     var c = true;
-    var ifExpr = gvr.lang.newIf(      1, function(){return a;}, {}, [
-             gvr.lang.newExpression(2, function(){ log.push("a"); }, this)]);
+    var ifExpr = new lang.If(      1, function(){return a;}, {}, [
+             new lang.Expression(2, function(){ log.push("a"); }, this)]);
     ifExpr.elifs.push(
-           gvr.lang.newIf(      3, function(){return b;}, {}, [
-             gvr.lang.newExpression(4, function(){ log.push("b"); }, this)]));
+           new lang.If(      3, function(){return b;}, {}, [
+             new lang.Expression(4, function(){ log.push("b"); }, this)]));
     ifExpr.elifs.push(
-           gvr.lang.newIf(      5, function(){return c;}, {}, [
-             gvr.lang.newExpression(6, function(){ log.push("c"); }, this)]));
+           new lang.If(      5, function(){return c;}, {}, [
+             new lang.Expression(6, function(){ log.push("c"); }, this)]));
     // testing if catch
     var next = ifExpr.step({}, {});
     expect(next.length).toBe(1);
@@ -153,7 +153,7 @@ describe('lang Expression', function() {
     expect(log.length).toBe(3);
     expect(log[2],"c");
     ifExpr.elseBlock.expressions.push(
-             gvr.lang.newExpression(7, function(){ log.push("else"); }, this));
+             new lang.Expression(7, function(){ log.push("else"); }, this));
     // testing else catch
     next = ifExpr.step({}, {});
     expect(log.length).toBe(4);

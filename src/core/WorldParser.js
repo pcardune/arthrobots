@@ -29,7 +29,7 @@ var removeComment = function(line){
   return line
 }
 
-class WorldParser {
+export default class WorldParser {
   /**
    * @class parse lines into a world.
    * @constructs
@@ -94,5 +94,3 @@ class WorldParser {
     }
   }
 }
-
-export default WorldParser

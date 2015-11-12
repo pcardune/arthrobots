@@ -81,7 +81,11 @@
     ],
     "collectCoverage": true,
     "collectCoverageOnlyFrom": {
-      "src/core/ProgramParser.js": true
+      "src/core/ProgramParser.js": true,
+      "src/core/Robot.js": true,
+      "src/core/World.js": true,
+      "src/core/WorldParser.js": true,
+      "src/core/lang.js": true
     }
   }
 }

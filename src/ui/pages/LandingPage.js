@@ -7,7 +7,7 @@ var React = require('react');
 
 import World from '../../core/World'
 import ProgramParser from '../../core/ProgramParser'
-var Runner = require('../../core/Runner');
+import Runner from '../../core/Runner'
 var CanvasRenderer = require('../../core/CanvasRenderer');
 
 var WorldCanvas = require('../WorldCanvas');

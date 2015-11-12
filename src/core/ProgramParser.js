@@ -1,5 +1,5 @@
 
-var lang = require('./lang')
+import * as lang from './lang'
 
 export const TOKENS = {
   IDENTIFIER: 'identifier',
@@ -307,7 +307,7 @@ export default class ProgramParser {
 
   wrapJSForEval() {
     var js = "(function("
-    for (var key in this.builtins) {
+    for (let key in this.builtins) {
       if (typeof this.builtins[key] == "function") {
         js += key+','
       }
@@ -318,7 +318,7 @@ export default class ProgramParser {
     js += "){\n"
     js += this.code
     js += "})("
-    for (var key in this.builtins) {
+    for (let key in this.builtins) {
       if (typeof this.builtins[key] == "function") {
         js += 'robot.'+key+','
       }

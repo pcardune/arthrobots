@@ -30,7 +30,7 @@ var ProgramModel = require('../models/ProgramModel');
 var ProgramStore = require('../stores/ProgramStore');
 
 import ProgramParser from '../core/ProgramParser'
-var Runner = require('../core/Runner');
+import Runner from '../core/Runner'
 import World from '../core/World'
 
 require('./ProgramEditor.css')
