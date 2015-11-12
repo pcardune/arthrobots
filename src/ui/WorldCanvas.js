@@ -1,6 +1,6 @@
 var ReactDOM = require('react-dom');
 var React = require('react');
-var World = require('../core/World');
+import World from '../core/World'
 import WorldParser from '../core/WorldParser'
 var CanvasRenderer = require('../core/CanvasRenderer');
 

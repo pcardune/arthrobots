@@ -1,20 +1,17 @@
-var Class = require('./Class');
 import Robot from './Robot'
 
-var World = Class.extend(
-  /** @lends World# */
-  {
+export default class World {
     /**
      * @class Represents the state of the world that GvR lives in.
      * @constructs
      */
-    init: function(){
+    constructor(){
       /**
        * The robot within the world. Currently only one robot at a time
        * is supported.
        * @type Robot
        */
-      this.robot = new Robot(this);
+      this.robot = new Robot(this)
 
       /**
        * The walls in the world.  This is represented as an object
@@ -27,7 +24,7 @@ var World = Class.extend(
        *  "2,1": {NORTH: true,  EAST: false}}
        * @type Object
        */
-      this.walls = {};
+      this.walls = {}
 
       /**
        * The beepers in the world.  This is represented as an object
@@ -35,21 +32,21 @@ var World = Class.extend(
        * at that location.
        * @type Object
        */
-      this.beepers = {};
-    },
+      this.beepers = {}
+    }
     /**
      * Sets the number of beepers at a particular location in the world.
      * @param x The x coordinate
      * @param y The y coordinate
      * @param numBeepers the number of beepers at the given coordinates.
      */
-    setBeepers: function(x, y, numBeepers){
+    setBeepers(x, y, numBeepers){
       if (numBeepers !== null){
-        this.beepers[''+x+','+y] = numBeepers;
+        this.beepers[''+x+','+y] = numBeepers
       } else {
-        delete this.beepers[''+x+','+y];
+        delete this.beepers[''+x+','+y]
       }
-    },
+    }
 
     /**
      * Get the number of beepers at the given coordinate
@@ -57,9 +54,9 @@ var World = Class.extend(
      * @param y The y coordinate
      * @returns int
      */
-    getBeepers: function(x, y){
-      return this.beepers[''+x+','+y] || 0;
-    },
+    getBeepers(x, y){
+      return this.beepers[''+x+','+y] || 0
+    }
 
     /**
      * Normalize wall coordinates by direction.  Will return the correct
@@ -67,16 +64,16 @@ var World = Class.extend(
      * @private
      * @returns Object of the form of {x:x, y:y, direction:direction}
      */
-    getWallCoordinates: function(x, y, direction){
+    getWallCoordinates(x, y, direction){
       if (direction === Robot.WEST){
-        direction = Robot.EAST;
-        x -= 1;
+        direction = Robot.EAST
+        x -= 1
       } else if (direction === Robot.SOUTH){
-        direction = Robot.NORTH;
-        y -= 1;
+        direction = Robot.NORTH
+        y -= 1
       }
-      return {x:x, y:y, direction:direction};
-    },
+      return {x:x, y:y, direction:direction}
+    }
 
     /**
      * Sets the number of walls at a particular coordinate.
@@ -90,7 +87,7 @@ var World = Class.extend(
      * @example
      * calling
      *
-     *      world.setWall(2, 2, "NORTH", 3);
+     *      world.setWall(2, 2, "NORTH", 3)
      *
      * is equivalent to
      *
@@ -98,18 +95,18 @@ var World = Class.extend(
      *      world.setWall(2+i, 2, "NORTH", 1);
      *      }
      */
-    setWall: function(x, y, direction, count){
-      var coords = this.getWallCoordinates(x, y, direction);
-      var key = ''+coords.x+','+coords.y;
+    setWall(x, y, direction, count){
+      var coords = this.getWallCoordinates(x, y, direction)
+      var key = ''+coords.x+','+coords.y
       if (!this.walls[key]){
-        this.walls[key] = {NORTH:false, EAST:false};
+        this.walls[key] = {NORTH:false, EAST:false}
       }
-      this.walls[key][coords.direction] = true;
+      this.walls[key][coords.direction] = true
       if (count !== null && count > 1){
-        var offset = Robot.OFFSET[direction];
-        this.setWall(x+offset.y, y+offset.x, direction, count-1);
+        var offset = Robot.OFFSET[direction]
+        this.setWall(x+offset.y, y+offset.x, direction, count-1)
       }
-    },
+    }
 
 
     /**
@@ -120,40 +117,38 @@ var World = Class.extend(
      *          It is a good idea to use the constants defined in {@link gvr.robot}
      * @returns Boolean
      */
-    getWall: function(x, y, direction){
-      var coords = this.getWallCoordinates(x, y, direction);
-      var wall = this.walls[''+coords.x+','+coords.y];
+    getWall(x, y, direction){
+      var coords = this.getWallCoordinates(x, y, direction)
+      var wall = this.walls[''+coords.x+','+coords.y]
       return (wall && wall[coords.direction]) ||
         (coords.x === 0 && coords.direction === Robot.EAST) ||
         (coords.y === 0 && coords.direction === Robot.NORTH) ||
-        false;
-    },
+        false
+    }
 
     /**
      * Return whether or not this world looks the same as another world. Right now it only checks
      * robot and beepers.
      */
-    isEqualTo: function(world) {
+    isEqualTo(world) {
       var robotsEqual = (
         world.robot.x == this.robot.x &&
         world.robot.y == this.robot.y &&
         world.robot.direction == this.robot.direction
-      );
+      )
       if (!robotsEqual) {
-        return false;
+        return false
       }
-      for (var key in this.beepers) {
+      for (let key in this.beepers) {
         if ((world.beepers[key] || 0) != (this.beepers[key] || 0)) {
-          return false;
+          return false
         }
       }
-      for (var key in world.beepers) {
+      for (let key in world.beepers) {
         if ((world.beepers[key] || 0) != (this.beepers[key] || 0)) {
-          return false;
+          return false
         }
       }
-      return true;
+      return true
     }
-  });
-
-module.exports = World;
+}

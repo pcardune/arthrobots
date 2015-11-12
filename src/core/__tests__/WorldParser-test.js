@@ -3,7 +3,7 @@ jest.dontMock('../Robot');
 jest.dontMock('../World');
 jest.dontMock('../WorldParser');
 
-const World = require('../World');
+const World = require('../World').default;
 var gvr = {
   robot:require('../Robot').default
 }

@@ -4,7 +4,7 @@ jest.dontMock('../World');
 jest.dontMock('../lang');
 jest.dontMock('../ProgramParser');
 
-var World = require('../World');
+var World = require('../World').default;
 var Robot = require('../Robot').default;
 var gvr = {lang:require('../lang')}
 var TOKENS = require('../ProgramParser').TOKENS;

@@ -2,7 +2,7 @@ jest.dontMock('../Class');
 jest.dontMock('../Robot');
 jest.dontMock('../World');
 
-var World = require('../World');
+var World = require('../World').default;
 var keysOf = function(obj){
   var keys = [];
   for (key in obj){

@@ -31,7 +31,7 @@ var ProgramStore = require('../stores/ProgramStore');
 
 import ProgramParser from '../core/ProgramParser'
 var Runner = require('../core/Runner');
-var World = require('../core/World');
+import World from '../core/World'
 
 require('./ProgramEditor.css')
 var ProgramEditor = React.createClass({
