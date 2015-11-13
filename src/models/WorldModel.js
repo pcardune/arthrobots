@@ -1,3 +1,4 @@
+import Parse from 'parse'
 var ProgramModel = require('./ProgramModel');
 var TrackModel = require('./TrackModel');
 import World from '../core/World'

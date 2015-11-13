@@ -1,3 +1,4 @@
+import Parse from 'parse'
 
 var UserUtils = {
 	createAnonymousUser: function(callback) {

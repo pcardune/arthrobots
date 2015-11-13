@@ -1,3 +1,4 @@
+import Parse from 'parse'
 var ReactDOM = require('react-dom');
 var State = require('react-router').State;
 var Button = require('react-bootstrap').Button;

@@ -25,6 +25,7 @@
     "jest-cli": "~0.7.1",
     "keymirror": "0.1.1",
     "object-assign": "4.0.1",
+    "parse": "^1.6.9",
     "react": "0.14.2",
     "react-addons-test-utils": "0.14.2",
     "react-bootstrap": "0.27.3",
@@ -62,7 +63,9 @@
     ]
   },
   "jest": {
-    "testPathDirs": ["<rootDir>/src"],
+    "testPathDirs": [
+      "<rootDir>/src"
+    ],
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
     "testFileExtensions": [
       "es6",

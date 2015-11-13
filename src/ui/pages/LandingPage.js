@@ -1,3 +1,4 @@
+import Parse from 'parse'
 var Button = require('react-bootstrap').Button;
 var ButtonToolbar = require('react-bootstrap').ButtonToolbar;
 var Jumbotron = require('react-bootstrap').Jumbotron;

@@ -1,3 +1,4 @@
+import Parse from 'parse'
 
 var Link = require('react-router').Link;
 var RouteHandler = require('react-router').RouteHandler;

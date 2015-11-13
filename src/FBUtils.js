@@ -1,5 +1,5 @@
 var gravatar = require('gravatar');
-
+import Parse from 'parse'
 var FBUtils = {
   getProfilePic: function(user) {
     var fbProfile = user.get('fbProfile');

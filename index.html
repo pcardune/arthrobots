@@ -18,32 +18,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/4.7.0/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/4.7.0/theme/solarized.min.css">
     <script type="text/javascript" src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-    <script src="//www.parsecdn.com/js/parse-1.3.2.min.js"></script>
   </head>
-
   <body>
     <script>
-     var ParseKeys = {
-         APP_ID: 'MdChOQB40vX9zT4MhQwVsdBc10uKnXfZ6LHaBTrV',
-         JS_KEY: 'LCUFVocN8uiuS7YJwBy7o9aCOZkcMPkdfHz0bnY1'
-     };
-     var ParseDevKeys = {
-         APP_ID: 'lYyZHcOlfD0AX9V8JWmj8R7uudQhWPJz9pBHjMKf',
-         JS_KEY: 'JAlWS3ZUnB2i7BueFJrulvowMiq9zklawQ4l2McV'
-     };
-     var Keys = ParseKeys;
-     // uncomment the next line to hit the development app
-     // Keys = ParseDevKeys;
-     Parse.initialize(Keys.APP_ID, Keys.JS_KEY);
-     window.fbAsyncInit = function() {
-         Parse.FacebookUtils.init({
-             appId      : '366410923540952',
-             xfbml      : true,
-             version    : 'v2.2',
-             cookie     : true
-         });
-     };
-
      (function(d, s, id){
          var js, fjs = d.getElementsByTagName(s)[0];
          if (d.getElementById(id)) {return;}

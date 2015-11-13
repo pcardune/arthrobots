@@ -1,3 +1,4 @@
+import Parse from 'parse'
 var State = require('react-router').State;
 var Nav = require('react-bootstrap').Nav;
 var NavItem = require('react-bootstrap').NavItem;

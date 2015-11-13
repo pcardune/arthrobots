@@ -1,3 +1,4 @@
+import Parse from 'parse'
 
 var Button = require('react-bootstrap').Button;
 var Link = require('react-router').Link;
