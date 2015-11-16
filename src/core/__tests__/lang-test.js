@@ -6,6 +6,9 @@ var lang = require('../lang')
 
 describe('lang Expression', function() {
 
+  let from = {line: 0, ch: 0}
+  let to = {line: 0, ch: 1}
+
   /**
    * The most atomic part of a code execution path is an
    * expression. An expression simply calls a passed in function with a
@@ -19,7 +22,7 @@ describe('lang Expression', function() {
       function func(){
         calledWith = this
       }
-      var expression = new lang.Expression(1, func, scope)
+      var expression = new lang.Expression(from, to, func, scope)
       var next = expression.step({}, {})
       expect(calledWith).toBe(scope)
       expect(next.length).toBe(0)
@@ -32,7 +35,7 @@ describe('lang Expression', function() {
   it('should work with blocks', function(){
     var log = []
     var block = new lang.Block([
-      new lang.Expression(1, function(){ log.push(1) }, this)
+      new lang.Expression(from, to, function(){ log.push(1) }, this)
     ])
     // step over the block once, it will finish
     var next = block.step({}, {})
@@ -53,9 +56,9 @@ describe('lang Expression', function() {
     var log = []
     var block = new lang.Block(
       [
-        new lang.Expression(1, function(){ log.push("one") }, this),
-        new lang.Expression(2, function(){ log.push("two") }, this),
-        new lang.Expression(3, function(){ log.push("three") }, this)
+        new lang.Expression(from, to, function(){ log.push("one") }, this),
+        new lang.Expression(from, to, function(){ log.push("two") }, this),
+        new lang.Expression(from, to, function(){ log.push("three") }, this)
       ])
     // execute the first step
     var next = block.step({}, {})
@@ -85,8 +88,8 @@ describe('lang Expression', function() {
     function condition(){
       return nextCond
     }
-    var ifExpr = new lang.If(1, condition, {},
-      [new lang.Expression(2, function(){ log.push("one") }, this)]
+    var ifExpr = new lang.If(from, to, condition, {},
+      [new lang.Expression(from, to, function(){ log.push("one") }, this)]
     )
     var next = ifExpr.step({}, {})
     expect(next.length).toBe(1)
@@ -107,10 +110,10 @@ describe('lang Expression', function() {
     function condition(){
       return nextCond
     }
-    var ifExpr = new lang.If(1, condition, {}, [
-      new lang.Expression(2, function(){ log.push("one") }, this)])
+    var ifExpr = new lang.If(from, to, condition, {}, [
+      new lang.Expression(from, to, function(){ log.push("one") }, this)])
     ifExpr.elseBlock.expressions.push(
-      new lang.Expression(2, function(){ log.push("two") }, this))
+      new lang.Expression(from, to, function(){ log.push("two") }, this))
     var next = ifExpr.step({}, {})
     expect(next.length).toBe(1)
     expect(log.length).toBe(1)
@@ -131,14 +134,14 @@ describe('lang Expression', function() {
     var aExpr = jest.genMockFunction()
     var bExpr = jest.genMockFunction()
     var cExpr = jest.genMockFunction()
-    var ifExpr = new lang.If(1, function(){return a}, {}, [
-      new lang.Expression(2, aExpr, this)])
+    var ifExpr = new lang.If(from, to, function(){return a}, {}, [
+      new lang.Expression(from, to, aExpr, this)])
     ifExpr.elifs.push(
-      new lang.If(3, function(){return b}, {}, [
-        new lang.Expression(4, bExpr, this)]))
+      new lang.If(from, to, function(){return b}, {}, [
+        new lang.Expression(from, to, bExpr, this)]))
     ifExpr.elifs.push(
-      new lang.If(5, function(){return c}, {}, [
-        new lang.Expression(6, cExpr, this)]))
+      new lang.If(from, to, function(){return c}, {}, [
+        new lang.Expression(from, to, cExpr, this)]))
     // testing if catch
     var next = ifExpr.step({}, {})
     expect(next.length).toBe(1)
@@ -165,7 +168,7 @@ describe('lang Expression', function() {
     expect(cExpr.mock.calls.length).toBe(1)
     var elseExpr = jest.genMockFunction()
     ifExpr.elseBlock.expressions.push(
-      new lang.Expression(7, elseExpr, this))
+      new lang.Expression(from, to, elseExpr, this))
     // testing else catch
     next = ifExpr.step({}, {})
     expect(aExpr.mock.calls.length).toBe(1)
@@ -177,8 +180,8 @@ describe('lang Expression', function() {
   it('should work with while statements', function() {
     var whileIsTrue = true
     var expr = jest.genMockFunction()
-    var whileExpr = new lang.While(1, function(){return whileIsTrue}, {}, [
-      new lang.Expression(2, expr, this)])
+    var whileExpr = new lang.While(from, to, function(){return whileIsTrue}, {}, [
+      new lang.Expression(from, to, expr, this)])
 
     var next = whileExpr.step({}, {})
     expect(next.length).toBe(2)
@@ -196,8 +199,8 @@ describe('lang Expression', function() {
 
   it('should work with do statements', function() {
     var expr = jest.genMockFunction()
-    var doExpr = new lang.Do(1, 3, [
-      new lang.Expression(2, expr, this)])
+    var doExpr = new lang.Do(from, to, 3, [
+      new lang.Expression(from, to, expr, this)])
 
     var next = doExpr.step({}, {})
     expect(next.length).toBe(2)
@@ -220,8 +223,8 @@ describe('lang Expression', function() {
   })
 
   it('should work with define statements', function() {
-    var defineExpr = new lang.Define(1, 'foo', [
-      new lang.Expression(2, jest.genMockFunction(), this)])
+    var defineExpr = new lang.Define(from, to, 'foo', [
+      new lang.Expression(from, to, jest.genMockFunction(), this)])
 
     var globals = {}
     var next = defineExpr.step(globals, {})
@@ -231,7 +234,7 @@ describe('lang Expression', function() {
 
   it('should work with function calls', function() {
     var globals = {}
-    var functionCallExpr = new lang.FunctionCall(3, 'foo')
+    var functionCallExpr = new lang.FunctionCall(from, to, 'foo')
     try {
       functionCallExpr.step(globals, {})
     } catch (e) {
@@ -239,8 +242,8 @@ describe('lang Expression', function() {
     }
 
     var expr = jest.genMockFunction()
-    globals.foo = new lang.Define(1, 'foo', [
-      new lang.Expression(2, expr, this)])
+    globals.foo = new lang.Define(from, to, 'foo', [
+      new lang.Expression(from, to, expr, this)])
     functionCallExpr.step(globals, {})
     expect(expr.mock.calls.length).toBe(1)
   })

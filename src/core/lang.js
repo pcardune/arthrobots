@@ -28,16 +28,21 @@ class BaseExpression {
    * @param line the line number associated with this expression.
    * @param name the name of this expression. (mostly for debugging)
    */
-  constructor(line, name){
+  constructor(from, to, name){
     /**
      * the line number associated with this expression.
      */
-    this.line = line
-    this.lastExecutedLine = line
+    this.from = from
+    this.to = to
+    this.lastExecutedLine = from.line
     /**
      * the name of this expression. (mostly for debugging)
      */
     this.name = name
+  }
+
+  get line() {
+    return this.from.line
   }
 }
 
@@ -51,8 +56,8 @@ export class Expression extends BaseExpression {
    * @param callable The callable function that constitutes execution of this expression.
    * @param scope The scope with which to call the callable function.
    */
-  constructor(line, callable, scope){
-    super(line, "expr")
+  constructor(from, to, callable, scope){
+    super(from, to, "expr")
     /**
      * A callable that executes this expression.
      */
@@ -81,11 +86,17 @@ export class Block {
    * @param expressions A list of {@link BaseExpression} objects to step over.
    */
   constructor(expressions){
-    this.name="block"
+    this.from = {line: 0, ch: 0}
+    this.to = {line: 0, ch: 0}
+    this.name = "block"
     /**
      * A list of expressions that are part of the block
      */
     this.expressions = expressions
+    if (expressions.length) {
+      Object.assign(this.from, expressions[0].from)
+      Object.assign(this.to, expressions[expressions.length - 1].to)
+    }
   }
 
   /**
@@ -123,8 +134,8 @@ export class If extends BaseExpression {
    * @param expressions A list of expressions with which to
    *          create a {@link Block} object
    */
-  constructor(line, callable, scope, expressions){
-    super(line, "if")
+  constructor(from, to, callable, scope, expressions){
+    super(from, to, "if")
 
     /**
      * The callable that returns a boolean value
@@ -204,8 +215,8 @@ export class While extends BaseExpression {
      * @param expressions A list of expressions with which to
      *          create a {@link Block} object
      */
-    constructor(line, callable, scope, expressions){
-      super(line, "while")
+    constructor(from, to, callable, scope, expressions){
+      super(from, to, "while")
       /** A callable that returns a boolean value. */
       this.callable = callable
       /** the scope with which to call the callable */
@@ -241,8 +252,8 @@ export class Do extends BaseExpression {
    * @param expressions A list of expressions with which to
    *          create a {@link Block} object
    */
-  constructor(line, count, expressions){
-    super(line, "do")
+  constructor(from, to, count, expressions){
+    super(from, to, "do")
 
     /**
      * The number of times to step into the block
@@ -290,8 +301,8 @@ export class Define extends BaseExpression {
    * @param expressions A list of expressions with which to
    *          create a {@link Block} object
    */
-  constructor(line, name, expressions){
-    super(line, name)
+  constructor(from, to, name, expressions){
+    super(from, to, name)
     /**
      * The block to step into when this definition is called.
      * @type Block
@@ -320,8 +331,8 @@ export class FunctionCall extends BaseExpression {
    * @param line See {@link BaseExpression#line}
    * @param fname See {@link FunctionCall#fname}
    */
-  constructor(line, fname){
-    super(line, "call")
+  constructor(from, to, fname){
+    super(from, to, "call")
     /**
      * The name of the function to call
      * @type String

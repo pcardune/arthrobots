@@ -82,7 +82,7 @@ describe('lang parser', function() {
     var block = getParser(['move']).parse()
     expect(block.expressions.length).toBe(1)
     expect(block.expressions[0].callable).toBe(new Robot().move)
-    expect(block.expressions[0].line).toBe(0)
+    expect(block.expressions[0].from.line).toBe(0)
   })
 
   it("testDo", function(){
@@ -91,7 +91,7 @@ describe('lang parser', function() {
       '  move']).parse()
     expect(block.expressions.length).toBe(1)
     expect(block.expressions[0].callable).toBe(new Robot()["do"])
-    expect(block.expressions[0].line).toBe(0)
+    expect(block.expressions[0].from.line).toBe(0)
     expect(block.expressions[0].block.expressions.length).toBe(1)
     expect(block.expressions[0].count).toBe(3)
     expect(block.expressions[0].block.expressions[0].callable).toBe(new Robot().move)
@@ -103,10 +103,10 @@ describe('lang parser', function() {
     expect(block.expressions.length).toBe(1)
     expect(block.expressions[0].name).toBe('if')
     expect(block.expressions[0].callable).toBe(new Robot().front_is_clear)
-    expect(block.expressions[0].line).toBe(0)
+    expect(block.expressions[0].from.line).toBe(0)
     expect(block.expressions[0].block.expressions.length).toBe(1)
     expect(block.expressions[0].block.expressions[0].callable).toBe(new Robot().move)
-    expect(block.expressions[0].block.expressions[0].line).toBe(1)
+    expect(block.expressions[0].block.expressions[0].from.line).toBe(1)
   })
 
   it("testElse", function(){
@@ -117,13 +117,13 @@ describe('lang parser', function() {
     expect(block.expressions.length).toBe(1)
     expect(block.expressions[0].name).toBe('if')
     expect(block.expressions[0].callable).toBe(new Robot().front_is_clear)
-    expect(block.expressions[0].line).toBe(0)
+    expect(block.expressions[0].from.line).toBe(0)
     expect(block.expressions[0].block.expressions.length).toBe(1)
     expect(block.expressions[0].block.expressions[0].callable).toBe(new Robot().move)
-    expect(block.expressions[0].block.expressions[0].line).toBe(1)
+    expect(block.expressions[0].block.expressions[0].from.line).toBe(1)
     expect(block.expressions[0].elseBlock.expressions.length).toBe(1)
     expect(block.expressions[0].elseBlock.expressions[0].callable).toBe(new Robot().turnleft)
-    expect(block.expressions[0].elseBlock.expressions[0].line).toBe(3)
+    expect(block.expressions[0].elseBlock.expressions[0].from.line).toBe(3)
   })
 
   it("testElif", function(){
@@ -138,9 +138,9 @@ describe('lang parser', function() {
     expect(block.expressions.length).toBe(1)
     expect(block.expressions[0].elifs.length).toBe(2)
     expect(block.expressions[0].elifs[0].callable).toBe(new Robot().facing_north)
-    expect(block.expressions[0].elifs[0].line).toBe(2)
+    expect(block.expressions[0].elifs[0].from.line).toBe(2)
     expect(block.expressions[0].elifs[1].callable).toBe(new Robot().facing_south)
-    expect(block.expressions[0].elifs[1].line).toBe(4)
+    expect(block.expressions[0].elifs[1].from.line).toBe(4)
   })
 
   it("testWhile", function(){
@@ -150,10 +150,10 @@ describe('lang parser', function() {
     expect(block.expressions.length).toBe(1)
     expect(block.expressions[0].name).toBe('while')
     expect(block.expressions[0].callable).toBe(new Robot().front_is_clear)
-    expect(block.expressions[0].line).toBe(0)
+    expect(block.expressions[0].from.line).toBe(0)
     expect(block.expressions[0].block.expressions.length).toBe(1)
     expect(block.expressions[0].block.expressions[0].callable).toBe(new Robot().move)
-    expect(block.expressions[0].block.expressions[0].line).toBe(1)
+    expect(block.expressions[0].block.expressions[0].from.line).toBe(1)
   })
 
   it("testDefine", function(){
@@ -163,9 +163,9 @@ describe('lang parser', function() {
       '    turnleft']).parse()
     expect(block.expressions.length).toBe(1)
     expect(block.expressions[0].name).toBe('turnright')
-    expect(block.expressions[0].line).toBe(0)
+    expect(block.expressions[0].from.line).toBe(0)
     expect(block.expressions[0].block.expressions.length).toBe(1)
-    expect(block.expressions[0].block.expressions[0].line).toBe(1)
+    expect(block.expressions[0].block.expressions[0].from.line).toBe(1)
     expect(block.expressions[0].block.expressions[0].count).toBe(3)
     expect(block.expressions[0].block.expressions[0].block.expressions[0].callable).toBe(new Robot().turnleft)
   })

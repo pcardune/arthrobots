@@ -249,39 +249,56 @@ export default class ProgramParser {
     }
   }
 
-  parseDefine() {
+  parseDefine(startToken) {
     var identifier = this.getToken().token
     if (identifier != TOKENS.IDENTIFIER) {
       throw new ParseError(this.lineIndex, "Expected a function name after define.")
     }
     var funcName = this.identifier
-    var funcLine = this.lineIndex
     this.parseNewBlock()
     var expressions = this.parseBlock()
-    return new lang.Define(funcLine, funcName, expressions)
+    return new lang.Define(
+      startToken.from,
+      expressions[expressions.length - 1].to,
+      funcName,
+      expressions
+    )
   }
 
-  parseDo() {
+  parseDo(startToken) {
     var numberToken = this.getToken().token
     if (numberToken != TOKENS.NUMBER) {
       throw new ParseError(this.lineIndex, "Expected number after do.")
     }
     var number = this.number
-    var doLine = this.lineIndex
     this.parseNewBlock()
     var expressions = this.parseBlock()
-    return new lang.Do(doLine, number, expressions)
+    return new lang.Do(
+      startToken.from,
+      expressions[expressions.length - 1].to,
+      number,
+      expressions
+    )
   }
 
-  parseIdentifier() {
+  parseIdentifier(startToken) {
     if (this.builtins[this.identifier]) {
-      return new lang.Expression(this.lineIndex, this.builtins[this.identifier], this.builtins)
+      return new lang.Expression(
+        startToken.from,
+        startToken.to,
+        this.builtins[this.identifier],
+        this.builtins
+      )
     } else {
-      return new lang.FunctionCall(this.lineIndex, this.identifier)
+      return new lang.FunctionCall(
+        startToken.from,
+        startToken.to,
+        this.identifier
+      )
     }
   }
 
-  parseIf() {
+  parseIf(startToken) {
     var identifierToken = this.getToken().token
     if (identifierToken != TOKENS.IDENTIFIER) {
       throw new ParseError(this.lineIndex, "Expected a conditional expression after an if.")
@@ -290,13 +307,18 @@ export default class ProgramParser {
     if (!this.builtins[this.identifier]) {
       throw new ParseError(this.lineIndex, `Unrecognized conditional expression "${this.identifier}".`)
     }
-    var ifLine = this.lineIndex
     this.parseNewBlock()
     var expressions = this.parseBlock()
-    return new lang.If(ifLine, this.builtins[conditionIdentifier], this.builtins, expressions)
+    return new lang.If(
+      startToken.from,
+      expressions[expressions.length - 1].to,
+      this.builtins[conditionIdentifier],
+      this.builtins,
+      expressions
+    )
   }
 
-  parseElif(ifStatement) {
+  parseElif(startToken, ifStatement) {
     if (!ifStatement || !ifStatement.elifs) {
       throw new ParseError(this.lineIndex, "elif statement can only come after an if statement.")
     }
@@ -308,13 +330,18 @@ export default class ProgramParser {
     if (!this.builtins[this.identifier]) {
       throw new ParseError(this.lineIndex, `Unrecognized conditional expression "${this.identifier}".`)
     }
-    var elifLine = this.lineIndex
     this.parseNewBlock()
     var expressions = this.parseBlock()
-    ifStatement.elifs.push(new lang.If(elifLine, this.builtins[conditionIdentifier], this.builtins, expressions))
+    ifStatement.elifs.push(new lang.If(
+      startToken.from,
+      expressions[expressions.length - 1].to,
+      this.builtins[conditionIdentifier],
+      this.builtins,
+      expressions
+    ))
   }
 
-  parseElse(ifStatement) {
+  parseElse(startToken, ifStatement) {
     if (!ifStatement || !ifStatement.elseBlock) {
       throw new ParseError(this.lineIndex, "else statement can only come after an if statement.")
     }
@@ -323,44 +350,49 @@ export default class ProgramParser {
     ifStatement.elseBlock = new lang.Block(expressions)
   }
 
-  parseWhile() {
+  parseWhile(startToken) {
     var identifierToken = this.getToken().token
     if (identifierToken != TOKENS.IDENTIFIER) {
       throw new ParseError(this.lineIndex, "Expected a conditional expression after a while.")
     }
     var conditionIdentifier = this.identifier
-    var line = this.lineIndex
     this.parseNewBlock()
     var expressions = this.parseBlock()
-    return new lang.While(line, this.builtins[conditionIdentifier], this.builtins, expressions)
+    return new lang.While(
+      startToken.from,
+      expressions[expressions.length - 1].to,
+      this.builtins[conditionIdentifier],
+      this.builtins,
+      expressions
+    )
   }
 
   parseBlock() {
     var expressions = []
     var currentToken
-    while ((currentToken = this.getToken().token) != TOKENS.EOF) {
+    while ((currentToken = this.getToken()).token != TOKENS.EOF) {
       var nextExpression = null
-      switch (currentToken) {
+      switch (currentToken.token) {
       case TOKENS.DEFINE:
-        nextExpression = this.parseDefine()
+        nextExpression = this.parseDefine(currentToken)
         break
       case TOKENS.DO:
-        nextExpression = this.parseDo()
+        nextExpression = this.parseDo(currentToken)
         break
       case TOKENS.IDENTIFIER:
-        nextExpression = this.parseIdentifier()
+        nextExpression = this.parseIdentifier(currentToken)
         break
       case TOKENS.IF:
-        nextExpression = this.parseIf()
+        nextExpression = this.parseIf(currentToken)
         break
       case TOKENS.ELIF:
-        nextExpression = this.parseElif(expressions[expressions.length-1])
+        nextExpression = this.parseElif(currentToken, expressions[expressions.length-1])
         break
       case TOKENS.ELSE:
-        nextExpression = this.parseElse(expressions[expressions.length-1])
+        nextExpression = this.parseElse(currentToken, expressions[expressions.length-1])
         break
       case TOKENS.WHILE:
-        nextExpression = this.parseWhile()
+        nextExpression = this.parseWhile(currentToken)
         break
       case TOKENS.DEDENT:
         return expressions
