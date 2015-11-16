@@ -25,6 +25,15 @@ class ParseError {
   }
 }
 
+class Token {
+  constructor(from, to, token, text) {
+    this.from = from
+    this.to = to
+    this.token = token
+    this.text = text
+  }
+}
+
 export default class ProgramParser {
   constructor(code, builtins) {
     this.code = code
@@ -68,10 +77,20 @@ export default class ProgramParser {
             this.indentStack.pop()
             this.charIndex -= indent.length
             this.colIndex -= indent.length
-            return TOKENS.DEDENT
+            return new Token(
+              {line: this.lineIndex, ch: this.colIndex},
+              {line: this.lineIndex, ch: this.colIndex},
+              TOKENS.DEDENT,
+              ''
+            )
           } else if (indent.length > curIndent) {
             this.indentStack.push(indent.length)
-            return TOKENS.INDENT
+            return new Token(
+              {line: this.lineIndex, ch: this.colIndex - indent.length},
+              {line: this.lineIndex, ch: this.colIndex},
+              TOKENS.INDENT,
+              indent
+            )
           } else {
             // indentation is equal, so just skip
             return this.getToken()
@@ -97,7 +116,12 @@ export default class ProgramParser {
       }
       if (this.indentStack[this.indentStack.length-1] > indent) {
         this.indentStack.pop()
-        return TOKENS.DEDENT
+        return new Token(
+          {line: this.lineIndex, ch: this.colIndex},
+          {line: this.lineIndex, ch: this.colIndex},
+          TOKENS.DEDENT,
+          ''
+        )
       }
     }
 
@@ -111,35 +135,54 @@ export default class ProgramParser {
 
     this.identifier = ''
     if (isAlpha(this.peek())) {
+      let token
       //identifier, eat up the entire identifier
       while (isAlphaNum(this.peek())) {
         this.identifier += this.getch()
       }
       switch (this.identifier) {
       case 'define':
-        return TOKENS.DEFINE
+        token = TOKENS.DEFINE
+        break
       case 'while':
-        return TOKENS.WHILE
+        token = TOKENS.WHILE
+        break
       case 'if':
-        return TOKENS.IF
+        token = TOKENS.IF
+        break
       case 'else':
-        return TOKENS.ELSE
+        token = TOKENS.ELSE
+        break
       case 'elif':
-        return TOKENS.ELIF
+        token = TOKENS.ELIF
+        break
       case 'do':
-        return TOKENS.DO
+        token = TOKENS.DO
+        break
       default:
-        return TOKENS.IDENTIFIER
+        token = TOKENS.IDENTIFIER
+        break
       }
+      return new Token(
+        {line: this.lineIndex, ch: this.colIndex - this.identifier.length},
+        {line: this.lineIndex, ch: this.colIndex},
+        token,
+        this.identifier
+      )
     }
 
     if (this.peek() >= '0' && this.peek() <= '9') {
-      this.number = ''
+      let number = ''
       while (this.peek() >= '0' && this.peek() <= '9') {
-        this.number += this.getch()
+        number += this.getch()
       }
-      this.number = parseInt(this.number)
-      return TOKENS.NUMBER
+      this.number = parseInt(number)
+      return new Token(
+        {line: this.lineIndex, ch: this.colIndex - number.length},
+        {line: this.lineIndex, ch: this.colIndex},
+        TOKENS.NUMBER,
+        number
+      )
     }
 
     if (this.peek() == '#') {
@@ -150,30 +193,44 @@ export default class ProgramParser {
     }
 
     if (this.peek() == ':') {
-      return this.getch()
+      return new Token(
+        {line: this.lineIndex, ch: this.colIndex},
+        {line: this.lineIndex, ch: this.colIndex+1},
+        TOKENS.COLON,
+        this.getch()
+      )
     }
 
     if (this.peek() == '\n') {
-      return this.getch()
+      return new Token(
+        {line: this.lineIndex, ch: this.colIndex},
+        {line: this.lineIndex, ch: this.colIndex+1},
+        TOKENS.NEWLINE,
+        this.getch()
+      )
     }
 
     if (this.peek() == undefined) {
-      return TOKENS.EOF
+      return new Token(
+        {line: this.lineIndex, ch: this.colIndex},
+        {line: this.lineIndex, ch: this.colIndex},
+        TOKENS.EOF,
+        ''
+      )
     }
-
-    return this.getch()
+    throw new ParseError(this.lineIndex, `Unexpected token ${this.getch()}`)
   }
 
   getNumTokens() {
     var count = 0
-    while (this.getToken() != TOKENS.EOF) {
+    while (this.getToken().token != TOKENS.EOF) {
       count += 1
     }
     return count
   }
 
   parseNewBlock() {
-    var token = this.getToken()
+    var token = this.getToken().token
     if (token != TOKENS.COLON) {
       if (token == TOKENS.NEWLINE) {
         throw new ParseError(this.lineIndex-1, "Expected a colon.")
@@ -181,10 +238,10 @@ export default class ProgramParser {
         throw new ParseError(this.lineIndex, "Expected a colon.")
       }
     }
-    if (this.getToken() != TOKENS.NEWLINE) {
+    if (this.getToken().token != TOKENS.NEWLINE) {
       throw new ParseError(this.lineIndex, "Expected a newline.")
     }
-    while ((token = this.getToken()) == TOKENS.NEWLINE) {
+    while ((token = this.getToken().token) == TOKENS.NEWLINE) {
       continue
     }
     if (token != TOKENS.INDENT) {
@@ -193,7 +250,7 @@ export default class ProgramParser {
   }
 
   parseDefine() {
-    var identifier = this.getToken()
+    var identifier = this.getToken().token
     if (identifier != TOKENS.IDENTIFIER) {
       throw new ParseError(this.lineIndex, "Expected a function name after define.")
     }
@@ -205,7 +262,7 @@ export default class ProgramParser {
   }
 
   parseDo() {
-    var numberToken = this.getToken()
+    var numberToken = this.getToken().token
     if (numberToken != TOKENS.NUMBER) {
       throw new ParseError(this.lineIndex, "Expected number after do.")
     }
@@ -225,7 +282,7 @@ export default class ProgramParser {
   }
 
   parseIf() {
-    var identifierToken = this.getToken()
+    var identifierToken = this.getToken().token
     if (identifierToken != TOKENS.IDENTIFIER) {
       throw new ParseError(this.lineIndex, "Expected a conditional expression after an if.")
     }
@@ -243,7 +300,7 @@ export default class ProgramParser {
     if (!ifStatement || !ifStatement.elifs) {
       throw new ParseError(this.lineIndex, "elif statement can only come after an if statement.")
     }
-    var identifierToken = this.getToken()
+    var identifierToken = this.getToken().token
     if (identifierToken != TOKENS.IDENTIFIER) {
       throw new ParseError(this.lineIndex, "Expected a conditional expression after an elif.")
     }
@@ -267,7 +324,7 @@ export default class ProgramParser {
   }
 
   parseWhile() {
-    var identifierToken = this.getToken()
+    var identifierToken = this.getToken().token
     if (identifierToken != TOKENS.IDENTIFIER) {
       throw new ParseError(this.lineIndex, "Expected a conditional expression after a while.")
     }
@@ -281,7 +338,7 @@ export default class ProgramParser {
   parseBlock() {
     var expressions = []
     var currentToken
-    while ((currentToken = this.getToken()) != TOKENS.EOF) {
+    while ((currentToken = this.getToken().token) != TOKENS.EOF) {
       var nextExpression = null
       switch (currentToken) {
       case TOKENS.DEFINE:
