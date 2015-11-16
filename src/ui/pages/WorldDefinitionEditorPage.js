@@ -16,7 +16,7 @@ var Markdown = require('../Markdown');
 var CodeEditor = require('../CodeEditor');
 var TrackDropdown = require('../TrackDropdown');
 var WorldCanvas = require('../WorldCanvas');
-var CodeRunner = require('../CodeRunner');
+import CodeRunner from '../CodeRunner'
 
 require('./WorldDefinitionEditorPage.css');
 var WorldDefinitionEditorPage = React.createClass({

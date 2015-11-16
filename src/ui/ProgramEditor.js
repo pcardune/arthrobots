@@ -21,7 +21,7 @@ var Tab = require('./Tab');
 var Markdown = require('./Markdown');
 var WorldCanvas = require('./WorldCanvas');
 var CodeEditor = require('./CodeEditor');
-var CodeRunner = require('./CodeRunner');
+import CodeRunner from './CodeRunner'
 var LoadingBlock = require('./LoadingBlock');
 
 var WorldModel = require('../models/WorldModel');

@@ -1,41 +1,20 @@
 import Parse from 'parse'
-var Button = require('react-bootstrap').Button;
-var ButtonToolbar = require('react-bootstrap').ButtonToolbar;
-var DropdownButton = require('react-bootstrap').DropdownButton;
-var Link = require('react-router').Link;
-var ListGroup = require('react-bootstrap').ListGroup;
-var ListGroupItem = require('react-bootstrap').ListGroupItem;
-var MenuItem = require('react-bootstrap').MenuItem;
-var Modal = require('react-bootstrap').Modal;
-var ModalTrigger = require('react-bootstrap').ModalTrigger;
-var Nav = require('react-bootstrap').Nav;
-var NavItem = require('react-bootstrap').NavItem;
-var Navbar = require('react-bootstrap').Navbar;
-var Navigation = require('react-router').Navigation;
-var React = require('react');
-var Glyphicon = require('react-bootstrap').Glyphicon;
-var OverlayTrigger = require('react-bootstrap').OverlayTrigger;
-var Tooltip = require('react-bootstrap').Tooltip;
-var FluxMixin = require('fluxxor').FluxMixin(React);
-var StoreWatchMixin = require('fluxxor').StoreWatchMixin;
+var Button = require('react-bootstrap').Button
+var ButtonToolbar = require('react-bootstrap').ButtonToolbar
+var DropdownButton = require('react-bootstrap').DropdownButton
+var MenuItem = require('react-bootstrap').MenuItem
+var React = require('react')
+var OverlayTrigger = require('react-bootstrap').OverlayTrigger
+var Tooltip = require('react-bootstrap').Tooltip
 
-var Tab = require('./Tab');
-var Markdown = require('./Markdown');
-var WorldCanvas = require('./WorldCanvas');
-var CodeEditor = require('./CodeEditor');
-var LoadingBlock = require('./LoadingBlock');
-
-var WorldModel = require('../models/WorldModel');
-var TrackModel = require('../models/TrackModel');
-var ProgramModel = require('../models/ProgramModel');
-
-var ProgramStore = require('../stores/ProgramStore');
+var WorldCanvas = require('./WorldCanvas')
+var CodeEditor = require('./CodeEditor')
+var LoadingBlock = require('./LoadingBlock')
 
 import ProgramParser from '../core/ProgramParser'
 import Runner from '../core/Runner'
-import World from '../core/World'
 
-require('./ProgramEditor.css');
+require('./ProgramEditor.css')
 var CodeRunner = React.createClass({
 
   getDefaultProps: function() {
@@ -47,11 +26,11 @@ var CodeRunner = React.createClass({
       onContinue: function(){},
       isSaving: false,
       showStep: 0
-    };
+    }
   },
 
   getInitialState: function() {
-    var code = this.props.initialCode;
+    var code = this.props.initialCode
     return {
       runState: "",
       completedSteps: 0,
@@ -63,205 +42,201 @@ var CodeRunner = React.createClass({
 
       programCode: code,
       codeIsJS: code.indexOf("(") > 0,
-      numTokens: new ProgramParser(code).getNumTokens(),
+      numTokens: new ProgramParser(code).getNumTokens()
     }
   },
 
   componentWillReceiveProps: function(nextProps) {
     if (nextProps.world != this.props.world) {
-      this.setState({isFinished: false, completedSteps: 0, runState:''});
+      this.setState({isFinished: false, completedSteps: 0, runState:''})
     }
     if (nextProps.initialCode != this.props.initialCode) {
-      var code = nextProps.initialCode;
+      var code = nextProps.initialCode
       this.setState({
         programCode: code,
         codeIsJS: code.indexOf("(") > 0,
-        numTokens: new ProgramParser(code).getNumTokens(),
-      });
+        numTokens: new ProgramParser(code).getNumTokens()
+      })
     }
   },
 
   handleReset: function() {
-    this.refs.worldCanvas.renderWorld();
-    this.setState({runState:"", errors:[], completedSteps:0});
-    this.refs.codeEditor.setState({editing:true});
+    this.refs.worldCanvas.renderWorld()
+    this.setState({runState:"", errors:[], completedSteps:0})
+    this.refs.codeEditor.setState({editing:true})
   },
 
   handleDemo: function() {
-    Parse.Analytics.track('runDemo', {world:this.props.world.id});
-    this.handleReset();
-    var demoSolution = this.props.world.get('solution');
-    var program = new ProgramParser(demoSolution, this.refs.worldCanvas.world.robot).parse();
-    this.runner = new Runner(program, this.refs.worldCanvas.renderer);
-    this.setState({runState: "demo"});
+    Parse.Analytics.track('runDemo', {world:this.props.world.id})
+    this.handleReset()
+    var demoSolution = this.props.world.get('solution')
+    var program = new ProgramParser(demoSolution, this.refs.worldCanvas.world.robot).parse()
+    this.runner = new Runner(program, this.refs.worldCanvas.renderer)
+    this.setState({runState: "demo"})
     this.runner.run(
       this.getSpeed(),
       this.handleRunnerStopped,
       this.demoDidStep
-    );
+    )
   },
 
   demoDidStep: function(runner, lastExpression) {
-    var worldSteps = this.props.world.get('steps');
+    var worldSteps = this.props.world.get('steps')
     if (worldSteps && worldSteps.length > this.state.completedSteps) {
-      var nextStepWorld = this.props.world.getNewWorldAtStep(this.state.completedSteps);
+      var nextStepWorld = this.props.world.getNewWorldAtStep(this.state.completedSteps)
       if (this.refs.worldCanvas.world.isEqualTo(nextStepWorld)) {
         this.setState({
-          completedSteps: this.state.completedSteps + 1,
-        });
+          completedSteps: this.state.completedSteps + 1
+        })
       }
     }
   },
 
   handleStopDemo: function() {
-    this.handleStop();
-    this.handleReset();
+    this.handleStop()
+    this.handleReset()
   },
 
   handleRun: function() {
-    Parse.Analytics.track('runProgram', {world:this.props.world.id});
+    Parse.Analytics.track('runProgram', {world:this.props.world.id})
     this.props.onSaveAndRun(function(){
-      this.handleReset();
-      var parser = new ProgramParser(this.state.programCode, this.refs.worldCanvas.world.robot);
+      this.handleReset()
+      var parser = new ProgramParser(this.state.programCode, this.refs.worldCanvas.world.robot)
       if (this.state.programCode.indexOf('(') > 0) {
         //it's javascript
-        var js = parser.wrapJSForEval();
-        var robot = this.refs.worldCanvas.world.robot;
+        var js = parser.wrapJSForEval()
+        var robot = this.refs.worldCanvas.world.robot
         for (var key in robot) {
           if (typeof robot[key] == "function") {
-            robot[key] = robot[key].bind(robot);
+            robot[key] = robot[key].bind(robot)
           }
         }
         (function(robot) {
-          eval(js);
+          eval(js)
         })(robot)
-        this.refs.worldCanvas.renderer.render(1);
-        this.handleRunnerStopped();
+        this.refs.worldCanvas.renderer.render(1)
+        this.handleRunnerStopped()
         return
       }
       try {
-        this.program = parser.parse();
+        this.program = parser.parse()
       } catch (e) {
-        this.setState({runState:"", errors:[e]});
+        this.setState({runState:"", errors:[e]})
         return
       }
-      this.refs.codeEditor.setState({editing:false});
-      this.runner = new Runner(this.program, this.refs.worldCanvas.renderer);
-      this.handleContinue();
-    }.bind(this));
+      this.refs.codeEditor.setState({editing:false})
+      this.runner = new Runner(this.program, this.refs.worldCanvas.renderer)
+      this.handleContinue()
+    }.bind(this))
   },
 
   getSpeed: function() {
-    var ms = {"Slow":500,"Medium":200,"Fast":50, "Very Fast":1};
-    return ms[this.state.speed];
+    var ms = {"Slow":500,"Medium":200,"Fast":50, "Very Fast":1}
+    return ms[this.state.speed]
   },
 
   handleStop: function() {
-    this.runner && this.runner.stop();
-    this.setState({runState: "stopped"});
+    this.runner && this.runner.stop()
+    this.setState({runState: "stopped"})
   },
 
   handleContinue: function() {
-    this.setState({runState: "running"});
+    this.setState({runState: "running"})
 
     this.runner.run(
       this.getSpeed(),
       this.handleRunnerStopped,
       this.runnerDidStep,
       this.runnerDidError
-    );
+    )
   },
 
   runnerDidError: function(error) {
     this.setState({
       errors:[error],
       runState:"error"
-    });
-    this.refs.codeEditor.setState({editing:true});
+    })
+    this.refs.codeEditor.setState({editing:true})
   },
 
   runnerDidStep: function(runner, lastExpression) {
     if (lastExpression.instruction.lastExecutedLine) {
-      this.setState({lastExecutedLine: lastExpression.instruction.lastExecutedLine});
+      this.setState({lastExecutedLine: lastExpression.instruction.lastExecutedLine})
     }
-    var worldSteps = this.props.world.get('steps');
+    var worldSteps = this.props.world.get('steps')
     if (worldSteps && worldSteps.length > this.state.completedSteps) {
-      var nextStepWorld = this.props.world.getNewWorldAtStep(this.state.completedSteps);
+      var nextStepWorld = this.props.world.getNewWorldAtStep(this.state.completedSteps)
       if (this.refs.worldCanvas.world.isEqualTo(nextStepWorld)) {
-        var isFinished = worldSteps.length <= this.state.completedSteps + 1;
+        var isFinished = worldSteps.length <= this.state.completedSteps + 1
         this.setState({
           completedSteps: this.state.completedSteps + 1,
           isFinished: isFinished
-        });
+        })
         if (isFinished) {
-          this.props.onFinished();
+          this.props.onFinished()
         }
       }
     }
   },
 
   handleStep: function() {
-    if (!this.runner) {
-      this.program = LangParser.newParser(lines, this.refs.worldCanvas.world.robot).parse();
-      this.runner = new Runner(this.program, this.refs.worldCanvas.renderer);
-    }
     this.runner.step(
       this.handleRunnerStopped,
       this.runnerDidStep,
       this.runnerDidError
-    );
+    )
   },
 
   handleRunnerStopped: function() {
-    this.setState({runState: "finished"});
-    this.refs.codeEditor.setState({editing:true});
+    this.setState({runState: "finished"})
+    this.refs.codeEditor.setState({editing:true})
   },
 
   handleProgramChange: function (event) {
-    var numTokens = new ProgramParser(event.target.value).getNumTokens();
+    var numTokens = new ProgramParser(event.target.value).getNumTokens()
     this.setState(
       {
         programCode:event.target.value,
         numTokens: numTokens != null ? numTokens : this.state.numTokens,
         codeIsJS: event.target.value.indexOf("(") >= 0
       }
-    );
-    this.refs.codeEditor.setState({editing:true});
+    )
+    this.refs.codeEditor.setState({editing:true})
   },
 
   handleSpeedClick: function(speed) {
-    this.setState({speed:speed});
-    Parse.Analytics.track('setSpeed', {speed:speed, world:this.props.world.id});
-    this.refs.speedDrowndown.setState({open:false});
-    localStorage.setItem('speed', speed);
+    this.setState({speed:speed})
+    Parse.Analytics.track('setSpeed', {speed:speed, world:this.props.world.id})
+    this.refs.speedDrowndown.setState({open:false})
+    localStorage.setItem('speed', speed)
   },
 
   handleMouseoverStep: function(index) {
     if (this.state.runState == '') {
-      this.setState({showCheckpointAtIndex:index});
+      this.setState({showCheckpointAtIndex:index})
     }
   },
 
   handleMouseoutStep: function(index) {
-    this.setState({showCheckpointAtIndex:null});
+    this.setState({showCheckpointAtIndex:null})
   },
 
   render: function() {
-    var buttons = [];
+    var buttons = []
     if (this.state.runState == "running") {
       buttons = [
         <Button key="1" onClick={this.handleStop} className="pull-right" bsStyle="danger">Stop</Button>
-      ];
+      ]
     } else if (this.state.runState == "stopped") {
       buttons = [
         <Button key="1" onClick={this.handleContinue} className="pull-right" bsStyle="primary">Continue</Button>,
         <Button key="2" onClick={this.handleStep} className="pull-right">Step</Button>,
         <Button key="3" onClick={this.handleReset} className="pull-right">Reset</Button>
-      ];
+      ]
     } else if (this.state.runState == "error" || this.state.runState == "finished") {
       buttons = [
         <Button key="4" onClick={this.handleReset} bsStyle="primary" className="pull-right">Reset</Button>
-      ];
+      ]
     } else if (this.state.runState == 'demo') {
       buttons = <Button onClick={this.handleStopDemo} bsStyle="danger" className="pull-right">Stop Demo</Button>
     } else if (this.state.runState == '') {
@@ -279,14 +254,14 @@ var CodeRunner = React.createClass({
         </Button>,
         this.props.world.get('solution') ?
         <Button key="7" onClick={this.handleDemo} className="pull-right">Demo</Button> : null
-      ];
+      ]
     }
     if (this.props.world && this.props.world.get('steps')) {
-      var completedSteps = [];
+      var completedSteps = []
       for (var i = 0; i < this.props.world.get('steps').length; i++) {
-        var active = i < this.state.completedSteps;
+        var active = i < this.state.completedSteps
         if (this.props.showStep > 0 && i == this.props.showStep - 1) {
-          active = true;
+          active = true
         }
         completedSteps.push(
           <div
@@ -296,7 +271,7 @@ var CodeRunner = React.createClass({
             className={"badge "+(active ? "active" : "")}>
             {i+1}
           </div>
-        );
+        )
       }
     }
 
@@ -350,28 +325,28 @@ var CodeRunner = React.createClass({
     //       </pre>
     //     </div>
     //   </Modal>
-    // );
-    var definition = this.props.world.get('definition');
+    // )
+    var definition = this.props.world.get('definition')
     if (this.props.showStep > 0) {
-      definition = this.props.world.get('steps')[this.props.showStep - 1];
+      definition = this.props.world.get('steps')[this.props.showStep - 1]
     }
-    var worldCanvas = <WorldCanvas ref="worldCanvas" worldDefinition={definition} />;
+    var worldCanvas = <WorldCanvas ref="worldCanvas" worldDefinition={definition} />
     if (this.state.showCheckpointAtIndex != null) {
-      worldCanvas = <WorldCanvas ref="stepCanvas" worldDefinition={this.props.world.get('steps')[this.state.showCheckpointAtIndex]} />;
+      worldCanvas = <WorldCanvas ref="stepCanvas" worldDefinition={this.props.world.get('steps')[this.state.showCheckpointAtIndex]} />
     }
 
-    var languageDetect = null;
+    var languageDetect = null
     if (this.state.codeIsJS) {
       var tooltip = (
         <Tooltip>
           When you have parentheses in your program, it will be executed instantly as straight javascript.
         </Tooltip>
-      );
+      )
       languageDetect = (
         <OverlayTrigger placement="top" overlay={tooltip}>
           <p className="pull-right"><small>Interpreting as JavaScript</small></p>
         </OverlayTrigger>
-      );
+      )
     }
 
     var numTokensTooltip = <Tooltip id="numTokensTooltip">A measure of how long your program is.</Tooltip>
@@ -383,11 +358,11 @@ var CodeRunner = React.createClass({
             : null}
         </small>
       </OverlayTrigger>
-    );
+    )
 
-    var codeEditor = null;
+    var codeEditor = null
     if (this.state.isLoading) {
-      codeEditor = <LoadingBlock/>;
+      codeEditor = <LoadingBlock/>
     } else {
       codeEditor = (
         <div>
@@ -408,7 +383,7 @@ var CodeRunner = React.createClass({
           {languageDetect}
           {numTokens}
         </div>
-      );
+      )
     }
 
     return (
@@ -426,7 +401,7 @@ var CodeRunner = React.createClass({
             <div className="worldOverlay success">
               <div>
                 Great Success!
-                &nbsp;
+                &nbsp
                 <Button
                   onClick={function(){this.props.onContinue()}.bind(this)}
                   bsStyle="success">
@@ -439,8 +414,8 @@ var CodeRunner = React.createClass({
           <div>checkpoints:{completedSteps}</div>
         </div>
       </div>
-    );
+    )
   }
-});
+})
 
-module.exports = CodeRunner;
+export default CodeRunner
