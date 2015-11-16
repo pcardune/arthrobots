@@ -15,7 +15,7 @@ var WorldStore = require('./stores/WorldStore')
 var ProgramStore = require('./stores/ProgramStore')
 var UserStore = require('./stores/UserStore')
 
-var LandingPage = require('./ui/pages/LandingPage')
+import LandingPage from './ui/pages/LandingPage'
 var LoginPage = require('./ui/pages/LoginPage')
 var LogoutPage = require('./ui/pages/LogoutPage')
 var SignUpPage = require('./ui/pages/SignUpPage')

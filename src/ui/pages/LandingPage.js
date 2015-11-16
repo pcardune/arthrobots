@@ -1,20 +1,18 @@
 import Parse from 'parse'
-var Button = require('react-bootstrap').Button;
-var ButtonToolbar = require('react-bootstrap').ButtonToolbar;
-var Jumbotron = require('react-bootstrap').Jumbotron;
-var Link = require('react-router').Link;
-var Navigation = require('react-router').Navigation;
-var React = require('react');
+var Button = require('react-bootstrap').Button
+var ButtonToolbar = require('react-bootstrap').ButtonToolbar
+var Jumbotron = require('react-bootstrap').Jumbotron
+var Link = require('react-router').Link
+var Navigation = require('react-router').Navigation
+var React = require('react')
 
-import World from '../../core/World'
 import ProgramParser from '../../core/ProgramParser'
 import Runner from '../../core/Runner'
-var CanvasRenderer = require('../../core/CanvasRenderer');
 
-var WorldCanvas = require('../WorldCanvas');
-var UserUtils = require('../../UserUtils');
+var WorldCanvas = require('../WorldCanvas')
+var UserUtils = require('../../UserUtils')
 
-require('./LandingPage.css');
+require('./LandingPage.css')
 var LandingPage = React.createClass({
 
   mixins: [Navigation],
@@ -51,52 +49,52 @@ var LandingPage = React.createClass({
   },
 
   componentDidMount: function() {
-    this.handleRun();
+    this.handleRun()
   },
 
   handleRun: function() {
-    var parser = new ProgramParser(this.props.exampleProgram, this.refs.worldCanvas.world.robot);
-    var program = parser.parse();
+    var parser = new ProgramParser(this.props.exampleProgram, this.refs.worldCanvas.world.robot)
+    var program = parser.parse()
 
     //define a runner to run the program.
-    this.runner = new Runner(program, this.refs.worldCanvas.renderer, null, console.log);
+    this.runner = new Runner(program, this.refs.worldCanvas.renderer, null, console.log)
     //run the program at a rate of 5 execution steps per second.
-    this.runner.run(100);
+    this.runner.run(100)
   },
 
   componentWillUnmount: function() {
-    this.runner.stop();
+    this.runner.stop()
   },
 
   handleChooseTrack: function(trackId) {
     if (!Parse.User.current()) {
       UserUtils.loginAnonymousUser({
         success:function() {
-          window.location = "/tracks/"+trackId;
+          window.location = "/tracks/"+trackId
         }.bind(this),
         error: function() {
-          window.location = "/login";
+          window.location = "/login"
         }
-      });
+      })
     }
   },
 
   render: function() {
-    var buttonToolbar;
+    var buttonToolbar
     if (Parse.User.current()) {
       buttonToolbar = (
         <ButtonToolbar>
           <Link to="/tracks/yh1vdAIkHs" className="btn btn-success" bsSize="large">Beginner</Link>
           <Link to="/tracks/02eHrPIc55" className="btn btn-danger" bsSize="large">Advanced</Link>
         </ButtonToolbar>
-      );
+      )
     } else {
       buttonToolbar = (
         <ButtonToolbar>
           <Button onClick={this.handleChooseTrack.bind(this, 'yh1vdAIkHs')} bsStyle="success" bsSize="large">Beginner</Button>
           <Button onClick={this.handleChooseTrack.bind(this, '02eHrPIc55')} bsStyle="danger" bsSize="large">Advanced</Button>
         </ButtonToolbar>
-      );
+      )
     }
     return (
       <div className="row landingPage">
@@ -110,8 +108,8 @@ var LandingPage = React.createClass({
           </Jumbotron>
         </div>
       </div>
-    );
+    )
   }
-});
+})
 
-module.exports = LandingPage;
+export default LandingPage
