@@ -12,7 +12,7 @@ var FluxMixin = require('fluxxor').FluxMixin(React);
 var StoreWatchMixin = require('fluxxor').StoreWatchMixin;
 
 var Markdown = require('../Markdown');
-var ProgramEditor = require('../ProgramEditor');
+import ProgramEditor from '../ProgramEditor'
 var TrackBadge = require('../TrackBadge');
 var LoadingBlock = require('../LoadingBlock');
 

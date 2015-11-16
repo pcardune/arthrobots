@@ -1,38 +1,10 @@
 import Parse from 'parse'
-var Button = require('react-bootstrap').Button;
-var ButtonToolbar = require('react-bootstrap').ButtonToolbar;
-var DropdownButton = require('react-bootstrap').DropdownButton;
-var Link = require('react-router').Link;
-var ListGroup = require('react-bootstrap').ListGroup;
-var ListGroupItem = require('react-bootstrap').ListGroupItem;
-var MenuItem = require('react-bootstrap').MenuItem;
-var Nav = require('react-bootstrap').Nav;
-var NavItem = require('react-bootstrap').NavItem;
-var Navbar = require('react-bootstrap').Navbar;
-var Navigation = require('react-router').Navigation;
-var React = require('react');
-var Glyphicon = require('react-bootstrap').Glyphicon;
-var OverlayTrigger = require('react-bootstrap').OverlayTrigger;
-var Tooltip = require('react-bootstrap').Tooltip;
-var FluxMixin = require('fluxxor').FluxMixin(React);
-var StoreWatchMixin = require('fluxxor').StoreWatchMixin;
+var React = require('react')
+var FluxMixin = require('fluxxor').FluxMixin(React)
+var StoreWatchMixin = require('fluxxor').StoreWatchMixin
 
-var Tab = require('./Tab');
-var Markdown = require('./Markdown');
-var WorldCanvas = require('./WorldCanvas');
-var CodeEditor = require('./CodeEditor');
 import CodeRunner from './CodeRunner'
-var LoadingBlock = require('./LoadingBlock');
-
-var WorldModel = require('../models/WorldModel');
-var TrackModel = require('../models/TrackModel');
-var ProgramModel = require('../models/ProgramModel');
-
-var ProgramStore = require('../stores/ProgramStore');
-
-import ProgramParser from '../core/ProgramParser'
-import Runner from '../core/Runner'
-import World from '../core/World'
+var ProgramModel = require('../models/ProgramModel')
 
 require('./ProgramEditor.css')
 var ProgramEditor = React.createClass({
@@ -44,74 +16,73 @@ var ProgramEditor = React.createClass({
       worldModel: null,
       onFinished: function(){},
       onContinue: function(programModel){}
-    };
+    }
   },
 
   getStateFromFlux: function() {
-    var programStore = this.getFlux().store("ProgramStore");
-    var programModel = programStore.getProgramForWorld(this.props.worldModel.id);
-    var code = programModel ? programModel.get('code') : '';
+    var programStore = this.getFlux().store("ProgramStore")
+    var programModel = programStore.getProgramForWorld(this.props.worldModel.id)
     return {
       programModel: programModel,
       isSaving: programStore.isLoading()
-    };
+    }
   },
 
   componentDidMount: function() {
     window.setTimeout(function() {
-      this.getFlux().actions.loadPrograms();
-    }.bind(this));
+      this.getFlux().actions.loadPrograms()
+    }.bind(this))
   },
 
   componentWillReceiveProps: function(nextProps) {
     if (nextProps.worldModel != this.props.worldModel) {
       window.setTimeout(function() {
-        this.setState(this.getStateFromFlux());
-      }.bind(this));
+        this.setState(this.getStateFromFlux())
+      }.bind(this))
     }
   },
 
   handleSaveAndRun: function(callback) {
-    var program = this.state.programModel;
+    var program = this.state.programModel
     if (!program) {
-      program = new ProgramModel();
-      program.set('owner', Parse.User.current());
-      program.set('world', this.props.worldModel);
-      var acl = new Parse.ACL();
-      acl.setPublicReadAccess(true);
-      acl.setWriteAccess(Parse.User.current().id, true);
-      program.setACL(acl);
+      program = new ProgramModel()
+      program.set('owner', Parse.User.current())
+      program.set('world', this.props.worldModel)
+      var acl = new Parse.ACL()
+      acl.setPublicReadAccess(true)
+      acl.setWriteAccess(Parse.User.current().id, true)
+      program.setACL(acl)
     }
-    var code = this.refs.codeRunner.state.programCode;
+    var code = this.refs.codeRunner.state.programCode
     if (program.get('code') == code) {
-      callback(program);
-      return;
+      callback(program)
+      return
     }
     this.getFlux().actions.saveProgram(
       {code:code},
       program,
       callback
-    );
+    )
   },
 
   handleFinished: function() {
     if (this.state.programModel.get('finished')) {
       // already finished
-      this.props.onFinished(this.state.programModel);
+      this.props.onFinished(this.state.programModel)
     } else {
-      this.state.programModel.set('finished', true);
+      this.state.programModel.set('finished', true)
       this.state.programModel.save({
         success: function(program) {
-          Parse.Analytics.track('finishedWorld', {world:this.props.worldModel.id});
-          this.setState({programModel:program});
-          this.props.onFinished(program);
+          Parse.Analytics.track('finishedWorld', {world:this.props.worldModel.id})
+          this.setState({programModel:program})
+          this.props.onFinished(program)
         }.bind(this)
-      });
+      })
     }
   },
 
   handleContinue: function() {
-    this.props.onContinue(this.state.programModel);
+    this.props.onContinue(this.state.programModel)
   },
 
   render: function() {
@@ -124,8 +95,8 @@ var ProgramEditor = React.createClass({
         onFinished={this.handleFinished}
         onSaveAndRun={this.handleSaveAndRun}
         onContinue={this.handleContinue}/>
-    );
+    )
   }
-});
+})
 
-module.exports = ProgramEditor;
+export default ProgramEditor
