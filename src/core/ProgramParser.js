@@ -30,27 +30,44 @@ export default class ProgramParser {
     this.code = code
     this.builtins = builtins
     this.charIndex = 0
+    this.lineIndex = 0
+    this.colIndex = 0
     this.curIndent = 0
     this.indentStack = [0]
     this.identifier = null
     this.number = null
-    this.currentLine = 0
+  }
+
+  getch() {
+    let ch = this.code[this.charIndex]
+    this.charIndex++
+    this.colIndex++
+    if (ch == '\n') {
+      this.colIndex = 0
+      this.lineIndex++
+    }
+    return ch
+  }
+
+  peek(delta=0) {
+    return this.code[this.charIndex+delta]
   }
 
   getToken() {
-    if (this.code[this.charIndex] == ' ') {
-      if (this.code[this.charIndex-1] == '\n') {
+    if (this.peek() == ' ') {
+      if (this.peek(-1) == '\n') {
         // pay attention to whitespace at the beginning of a line
-        var indent = ''
-        while (this.code[this.charIndex] == ' ' && this.charIndex < this.code.length) {
+        let indent = ''
+        while (this.peek() == ' ' && this.charIndex < this.code.length) {
           indent += ' '
-          this.charIndex++
+          this.getch()
         }
-        if (this.code[this.charIndex] != '\n' && this.code[this.charIndex] != '#') {
+        if (this.peek() != '\n' && this.peek() != '#') {
           var curIndent = this.indentStack[this.indentStack.length-1]
           if (curIndent > indent.length) {
             this.indentStack.pop()
             this.charIndex -= indent.length
+            this.colIndex -= indent.length
             return TOKENS.DEDENT
           } else if (indent.length > curIndent) {
             this.indentStack.push(indent.length)
@@ -62,13 +79,13 @@ export default class ProgramParser {
         }
       } else {
         // don't pay attention to whitespace not at the beginning of a line
-        while (this.code[this.charIndex] == ' ') {
-          this.charIndex++
+        while (this.peek() == ' ') {
+          this.getch()
         }
       }
-    } else if (this.code[this.charIndex-1] == '\n' && this.indentStack[this.indentStack.length-1] > 0) {
+    } else if (this.peek(-1) == '\n' && this.indentStack[this.indentStack.length-1] > 0) {
       var nextTokenStart = this.charIndex
-      var indent = 0
+      let indent = 0
       while (this.code[nextTokenStart] && (this.code[nextTokenStart] == '\n' || this.code[nextTokenStart] == ' ')) {
         if (this.code[nextTokenStart] == '\n') {
           indent = 0
@@ -93,10 +110,10 @@ export default class ProgramParser {
     }
 
     this.identifier = ''
-    if (isAlpha(this.code[this.charIndex])) {
+    if (isAlpha(this.peek())) {
       //identifier, eat up the entire identifier
-      while (isAlphaNum(this.code[this.charIndex])) {
-        this.identifier += this.code[this.charIndex++]
+      while (isAlphaNum(this.peek())) {
+        this.identifier += this.getch()
       }
       switch (this.identifier) {
       case 'define':
@@ -116,36 +133,35 @@ export default class ProgramParser {
       }
     }
 
-    if (this.code[this.charIndex] >= '0' && this.code[this.charIndex] <= '9') {
+    if (this.peek() >= '0' && this.peek() <= '9') {
       this.number = ''
-      while (this.code[this.charIndex] >= '0' && this.code[this.charIndex] <= '9') {
-        this.number += this.code[this.charIndex++]
+      while (this.peek() >= '0' && this.peek() <= '9') {
+        this.number += this.getch()
       }
       this.number = parseInt(this.number)
       return TOKENS.NUMBER
     }
 
-    if (this.code[this.charIndex] == '#') {
-      while (this.code[this.charIndex] != '\n' && this.charIndex < this.code.length) {
-        this.charIndex++
+    if (this.peek() == '#') {
+      while (this.peek() != '\n' && this.charIndex < this.code.length) {
+        this.getch()
       }
       return this.getToken()
     }
 
-    if (this.code[this.charIndex] == ':') {
-      return this.code[this.charIndex++]
+    if (this.peek() == ':') {
+      return this.getch()
     }
 
-    if (this.code[this.charIndex] == '\n') {
-      this.currentLine++
-      return this.code[this.charIndex++]
+    if (this.peek() == '\n') {
+      return this.getch()
     }
 
-    if (this.code[this.charIndex] == undefined) {
+    if (this.peek() == undefined) {
       return TOKENS.EOF
     }
 
-    return this.code[++this.charIndex]
+    return this.getch()
   }
 
   getNumTokens() {
@@ -160,29 +176,29 @@ export default class ProgramParser {
     var token = this.getToken()
     if (token != TOKENS.COLON) {
       if (token == TOKENS.NEWLINE) {
-        throw new ParseError(this.currentLine-1, "Expected a colon.")
+        throw new ParseError(this.lineIndex-1, "Expected a colon.")
       } else {
-        throw new ParseError(this.currentLine, "Expected a colon.")
+        throw new ParseError(this.lineIndex, "Expected a colon.")
       }
     }
     if (this.getToken() != TOKENS.NEWLINE) {
-      throw new ParseError(this.currentLine, "Expected a newline.")
+      throw new ParseError(this.lineIndex, "Expected a newline.")
     }
     while ((token = this.getToken()) == TOKENS.NEWLINE) {
       continue
     }
     if (token != TOKENS.INDENT) {
-      throw new ParseError(this.currentLine, "Expected an indented block.")
+      throw new ParseError(this.lineIndex, "Expected an indented block.")
     }
   }
 
   parseDefine() {
     var identifier = this.getToken()
     if (identifier != TOKENS.IDENTIFIER) {
-      throw new ParseError(this.currentLine, "Expected a function name after define.")
+      throw new ParseError(this.lineIndex, "Expected a function name after define.")
     }
     var funcName = this.identifier
-    var funcLine = this.currentLine
+    var funcLine = this.lineIndex
     this.parseNewBlock()
     var expressions = this.parseBlock()
     return new lang.Define(funcLine, funcName, expressions)
@@ -191,10 +207,10 @@ export default class ProgramParser {
   parseDo() {
     var numberToken = this.getToken()
     if (numberToken != TOKENS.NUMBER) {
-      throw new ParseError(this.currentLine, "Expected number after do.")
+      throw new ParseError(this.lineIndex, "Expected number after do.")
     }
     var number = this.number
-    var doLine = this.currentLine
+    var doLine = this.lineIndex
     this.parseNewBlock()
     var expressions = this.parseBlock()
     return new lang.Do(doLine, number, expressions)
@@ -202,22 +218,22 @@ export default class ProgramParser {
 
   parseIdentifier() {
     if (this.builtins[this.identifier]) {
-      return new lang.Expression(this.currentLine, this.builtins[this.identifier], this.builtins)
+      return new lang.Expression(this.lineIndex, this.builtins[this.identifier], this.builtins)
     } else {
-      return new lang.FunctionCall(this.currentLine, this.identifier)
+      return new lang.FunctionCall(this.lineIndex, this.identifier)
     }
   }
 
   parseIf() {
     var identifierToken = this.getToken()
     if (identifierToken != TOKENS.IDENTIFIER) {
-      throw new ParseError(this.currentLine, "Expected a conditional expression after an if.")
+      throw new ParseError(this.lineIndex, "Expected a conditional expression after an if.")
     }
     var conditionIdentifier = this.identifier
     if (!this.builtins[this.identifier]) {
-      throw new ParseError(this.currentLine, `Unrecognized conditional expression "${this.identifier}".`)
+      throw new ParseError(this.lineIndex, `Unrecognized conditional expression "${this.identifier}".`)
     }
-    var ifLine = this.currentLine
+    var ifLine = this.lineIndex
     this.parseNewBlock()
     var expressions = this.parseBlock()
     return new lang.If(ifLine, this.builtins[conditionIdentifier], this.builtins, expressions)
@@ -225,17 +241,17 @@ export default class ProgramParser {
 
   parseElif(ifStatement) {
     if (!ifStatement || !ifStatement.elifs) {
-      throw new ParseError(this.currentLine, "elif statement can only come after an if statement.")
+      throw new ParseError(this.lineIndex, "elif statement can only come after an if statement.")
     }
     var identifierToken = this.getToken()
     if (identifierToken != TOKENS.IDENTIFIER) {
-      throw new ParseError(this.currentLine, "Expected a conditional expression after an elif.")
+      throw new ParseError(this.lineIndex, "Expected a conditional expression after an elif.")
     }
     var conditionIdentifier = this.identifier
     if (!this.builtins[this.identifier]) {
-      throw new ParseError(this.currentLine, `Unrecognized conditional expression "${this.identifier}".`)
+      throw new ParseError(this.lineIndex, `Unrecognized conditional expression "${this.identifier}".`)
     }
-    var elifLine = this.currentLine
+    var elifLine = this.lineIndex
     this.parseNewBlock()
     var expressions = this.parseBlock()
     ifStatement.elifs.push(new lang.If(elifLine, this.builtins[conditionIdentifier], this.builtins, expressions))
@@ -243,7 +259,7 @@ export default class ProgramParser {
 
   parseElse(ifStatement) {
     if (!ifStatement || !ifStatement.elseBlock) {
-      throw new ParseError(this.currentLine, "else statement can only come after an if statement.")
+      throw new ParseError(this.lineIndex, "else statement can only come after an if statement.")
     }
     this.parseNewBlock()
     var expressions = this.parseBlock()
@@ -253,10 +269,10 @@ export default class ProgramParser {
   parseWhile() {
     var identifierToken = this.getToken()
     if (identifierToken != TOKENS.IDENTIFIER) {
-      throw new ParseError(this.currentLine, "Expected a conditional expression after a while.")
+      throw new ParseError(this.lineIndex, "Expected a conditional expression after a while.")
     }
     var conditionIdentifier = this.identifier
-    var line = this.currentLine
+    var line = this.lineIndex
     this.parseNewBlock()
     var expressions = this.parseBlock()
     return new lang.While(line, this.builtins[conditionIdentifier], this.builtins, expressions)
