@@ -1,6 +1,22 @@
 var path = require('path')
 var webpack = require('webpack')
 
+var plugins = [
+  new webpack.DefinePlugin({
+    'process.env': {
+      'NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+    }
+  })
+]
+if (process.env.NODE_ENV == 'production') {
+  plugins.push(new webpack.optimize.DedupePlugin())
+  plugins.push(new webpack.optimize.UglifyJsPlugin({
+    compressor: {
+      warnings: false
+    }
+  }))
+}
+
 module.exports = {
   cache: true,
   context: path.join(__dirname, "src"),
@@ -31,19 +47,7 @@ module.exports = {
       fs: require.resolve('./false.js')
     }
   },
-  plugins:[
-    new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
-      }
-    }),
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin({
-      compressor: {
-        warnings: false
-      }
-    })
-  ],
+  plugins: plugins,
   devServer: {
     historyApiFallback: true
   },
