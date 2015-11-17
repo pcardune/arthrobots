@@ -204,7 +204,7 @@ export default class ProgramParser {
     if (this.peek() == '\n') {
       return new Token(
         {line: this.lineIndex, ch: this.colIndex},
-        {line: this.lineIndex, ch: this.colIndex+1},
+        {line: this.lineIndex+1, ch: 0},
         TOKENS.NEWLINE,
         this.getch()
       )
@@ -282,18 +282,22 @@ export default class ProgramParser {
   }
 
   parseIdentifier(startToken) {
-    if (this.builtins[this.identifier]) {
+    let newlineToken = this.getToken()
+    if (newlineToken.token != TOKENS.NEWLINE && newlineToken.token != TOKENS.EOF) {
+      throw new ParseError(this.lineIndex, `Expected a newline after ${startToken.text}.`)
+    }
+    if (this.builtins[startToken.text]) {
       return new lang.Expression(
         startToken.from,
-        startToken.to,
-        this.builtins[this.identifier],
+        newlineToken.to,
+        this.builtins[startToken.text],
         this.builtins
       )
     } else {
       return new lang.FunctionCall(
         startToken.from,
-        startToken.to,
-        this.identifier
+        newlineToken.to,
+        startToken.text
       )
     }
   }
